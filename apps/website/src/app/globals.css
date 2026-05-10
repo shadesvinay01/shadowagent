@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cyan-500: #00F0FF;
+  --color-purple-500: #A020F0;
+  --color-mint-500: #00FF9F;
+  --font-syne: var(--font-syne), sans-serif;
+  --font-manrope: var(--font-manrope), sans-serif;
+}
+
+body {
+  background-color: #050508;
+  color: #FAFAFA;
+  overflow-x: hidden;
+  font-family: var(--font-manrope), sans-serif;
+  cursor: none;
+}
+
+::selection {
+  background-color: rgba(0, 240, 255, 0.3);
+}
+
+/* Premium Headings — Syne for that distinct editorial feel */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-syne), sans-serif;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+}
+
+@layer utilities {
+  /* Solid dark panels — fully opaque so content is always readable over the glass prism */
+  .section-panel {
+    background: rgb(5, 5, 10);
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* Cards with solid visible backgrounds */
+  .card-solid {
+    background: linear-gradient(145deg, rgba(18,18,32,0.95) 0%, rgba(12,12,24,0.9) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .card-solid:hover {
+    border-color: rgba(255,255,255,0.15);
+    background: linear-gradient(145deg, rgba(25,25,45,0.97) 0%, rgba(18,18,36,0.95) 100%);
+  }
+
+  .glass {
+    background-color: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .glass-dark {
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  }
+
+  .text-gradient {
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(to right, #00F0FF, #A020F0, #00FF9F);
+  }
+}
+
+/* Lenis Scroll Tweaks */
+html.lenis {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Custom UI Elements */
+.scanline {
+  width: 100%;
+  height: 100px;
+  z-index: 10;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 240, 255, 0.05) 50%, rgba(0, 0, 0, 0) 100%);
+  opacity: 0.1;
+  position: absolute;
+  bottom: 100%;
+  animation: scanline 6s linear infinite;
+}
+
+@keyframes scanline {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(100vh); }
+}
+
+.grid-background {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+}

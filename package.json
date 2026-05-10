@@ -1,0 +1,8 @@
+{
+  "name": "shadowagent-monorepo",
+  "private": true,
+  "scripts": {
+    "build": "cd apps/website && npm install && npm run build",
+    "install": "cd apps/website && npm install"
+  }
+}

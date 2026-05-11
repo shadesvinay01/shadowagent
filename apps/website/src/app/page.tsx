@@ -16,6 +16,8 @@ import LiveDemo from "@/components/sections/LiveDemo";
 import Testimonials from "@/components/sections/Testimonials";
 import Pricing from "@/components/sections/Pricing";
 import FAQ from "@/components/sections/FAQ";
+import { motion } from "framer-motion";
+import { Zap } from "lucide-react";
 import CustomCursor from "@/components/ui/CustomCursor";
 import DownloadModal from "@/components/ui/DownloadModal";
 

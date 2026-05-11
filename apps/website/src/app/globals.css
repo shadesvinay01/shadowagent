@@ -8,16 +8,27 @@
   --font-manrope: var(--font-manrope), sans-serif;
 }
 
+::selection {
+  background: rgba(0, 240, 255, 0.2);
+  color: #fff;
+}
+
 body {
-  background-color: #050508;
-  color: #FAFAFA;
+  background: #050508;
+  color: #ffffff;
   overflow-x: hidden;
   font-family: var(--font-manrope), sans-serif;
   cursor: none;
 }
 
-::selection {
-  background-color: rgba(0, 240, 255, 0.3);
+/* Cinematic Vignette */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  box-shadow: inset 0 0 150px rgba(0,0,0,0.8);
+  pointer-events: none;
+  z-index: 99;
 }
 
 /* Premium Headings — Syne for that distinct editorial feel */

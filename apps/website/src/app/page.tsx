@@ -95,12 +95,20 @@ export default function Home() {
           <h2 className="text-5xl md:text-7xl font-syne font-bold mb-14 tracking-tight leading-[1.05]">
             Take Back Your <br /><span className="text-white/35">Digital Sovereignty.</span>
           </h2>
-          <button
-            onClick={() => setShowDownload(true)}
-            className="px-12 py-5 bg-white text-black font-syne font-bold rounded-full text-lg hover:bg-white/90 transition-all hover:scale-[1.03] active:scale-[0.97] shadow-[0_0_60px_rgba(255,255,255,0.2)]"
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            className="relative inline-block"
           >
-            Download ShadowAgent
-          </button>
+            <div className="absolute -inset-4 bg-cyan-500/20 blur-3xl rounded-full animate-pulse" />
+            <button
+              onClick={() => setShowDownload(true)}
+              className="relative px-14 py-6 bg-white text-black font-syne font-black rounded-full text-xl hover:scale-[1.05] active:scale-[0.95] transition-all duration-500 shadow-[0_0_80px_rgba(255,255,255,0.25)] flex items-center gap-4 group"
+            >
+              Initialize ShadowAgent
+              <Zap className="w-5 h-5 fill-black group-hover:animate-bounce" />
+            </button>
+          </motion.div>
           <p className="mt-8 text-white/30 text-xs font-manrope tracking-[0.2em] uppercase">
             v1.0.4-stable · Windows · macOS · Linux
           </p>

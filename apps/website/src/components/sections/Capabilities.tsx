@@ -1,8 +1,8 @@
 "use client";
 
-import { motion, useMotionValue, useScroll, useTransform, useMotionTemplate } from "framer-motion";
-import { MessageSquare, Mail, Calendar, FileText, Share2, Zap, Shield, HardDrive } from "lucide-react";
-import React from "react";
+import { motion, useMotionValue, useSpring, useMotionTemplate } from "framer-motion";
+import { MessageSquare, Mail, Calendar, FileText, Zap, Shield, HardDrive } from "lucide-react";
+import React, { useRef } from "react";
 
 const bentoItems = [
   {
@@ -49,54 +49,92 @@ const bentoItems = [
   }
 ];
 
+function BentoCard({ item, i }: { item: any, i: number }) {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  function onMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
+    const { left, top } = currentTarget.getBoundingClientRect();
+    mouseX.set(clientX - left);
+    mouseY.set(clientY - top);
+  }
+
+  const maskImage = useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, white, transparent)`;
+  const style = { maskImage, WebkitMaskImage: maskImage };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: i * 0.05 }}
+      onMouseMove={onMouseMove}
+      className={`group relative card-solid rounded-[2rem] p-8 overflow-hidden transition-all duration-500 hover:scale-[0.98] active:scale-[0.96] cursor-default border border-white/5 bg-white/[0.02] ${item.className}`}
+    >
+      {/* Animated Spotlight Overlay */}
+      <motion.div 
+        className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-500 group-hover:opacity-100"
+        style={{
+          background: useMotionTemplate`
+            radial-gradient(
+              650px circle at ${mouseX}px ${mouseY}px,
+              rgba(0, 240, 255, 0.07),
+              transparent 80%
+            )
+          `,
+        }}
+      />
+      
+      <div className="flex flex-col h-full relative z-10">
+        <div className="mb-auto">
+          <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+            {item.icon}
+          </div>
+        </div>
+        <div>
+          <h3 className="text-xl font-syne font-bold mb-3 text-white tracking-tight">{item.title}</h3>
+          <p className="text-white/40 text-sm font-manrope leading-relaxed group-hover:text-white/60 transition-colors duration-500">{item.description}</p>
+        </div>
+      </div>
+      
+      {/* Subtle bottom glow */}
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+    </motion.div>
+  );
+}
+
 export default function Capabilities() {
   return (
-    <section id="capabilities" className="relative py-32 px-6 section-panel">
-      <div className="container mx-auto max-w-6xl">
-        <div className="mb-16">
+    <section id="capabilities" className="relative py-40 px-6 overflow-hidden">
+      {/* Background radial gradient to give depth */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none" />
+
+      <div className="container mx-auto max-w-6xl relative z-10">
+        <div className="mb-24 text-center md:text-left">
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-xs font-manrope font-semibold tracking-[0.25em] uppercase text-cyan-400 mb-4"
+            className="text-[10px] font-manrope font-bold tracking-[0.4em] uppercase text-cyan-400/60 mb-6"
           >
-            Capabilities
+            Neural Interface Capabilities
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-4xl md:text-6xl font-syne font-bold tracking-tight mb-4 leading-[1.05]"
+            className="text-5xl md:text-8xl font-syne font-bold tracking-tighter mb-8 leading-[0.95]"
           >
-            Smarter. Faster.<br/><span className="text-white/40">Fully Local.</span>
+            Smarter. Faster.<br/><span className="text-white/20">Air-Gapped.</span>
           </motion.h2>
-          <p className="text-white/60 max-w-2xl text-lg font-manrope font-light leading-relaxed">
-            ShadowAgent integrates directly with your system APIs. No cloud proxies, no latency, no spying.
+          <p className="text-white/40 max-w-2xl text-xl font-manrope font-light leading-relaxed">
+            ShadowAgent integrates directly with your local system nodes. No cloud proxies, no latency, no spying.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-[220px] gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-[240px] gap-6">
           {bentoItems.map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.06 }}
-              className={`group card-solid rounded-2xl p-7 overflow-hidden transition-all duration-300 cursor-default ${item.className}`}
-            >
-              <div className="flex flex-col h-full">
-                <div className="mb-auto">
-                  <div className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-5">
-                    {item.icon}
-                  </div>
-                </div>
-                <div>
-                  <h3 className="text-lg font-syne font-bold mb-2 text-white leading-tight">{item.title}</h3>
-                  <p className="text-white/55 text-sm font-manrope leading-relaxed">{item.description}</p>
-                </div>
-              </div>
-            </motion.div>
+            <BentoCard key={i} item={item} i={i} />
           ))}
         </div>
       </div>

@@ -48,6 +48,18 @@ export default function App() {
                   <Bot className="w-6 h-6" />
                 </button>
                 <button 
+                  onClick={() => setActiveTab("voice")}
+                  className={`p-4 rounded-2xl transition-all ${activeTab === 'voice' ? 'bg-white/10 text-cyan-400 shadow-[0_0_15px_rgba(0,240,255,0.2)]' : 'text-white/30 hover:text-white'}`}
+                >
+                  <Mic className="w-6 h-6" />
+                </button>
+                <button 
+                  onClick={() => setActiveTab("plugins")}
+                  className={`p-4 rounded-2xl transition-all ${activeTab === 'plugins' ? 'bg-white/10 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.2)]' : 'text-white/30 hover:text-white'}`}
+                >
+                  <Grid2X2 className="w-6 h-6" />
+                </button>
+                <button 
                   onClick={() => setActiveTab("settings")}
                   className={`p-4 rounded-2xl transition-all ${activeTab === 'settings' ? 'bg-white/10 text-white shadow-glow' : 'text-white/30 hover:text-white'}`}
                 >
@@ -63,11 +75,39 @@ export default function App() {
             {/* Main Content Area */}
             <main className="flex-1 overflow-hidden relative">
               <AnimatePresence mode="wait">
-                {activeTab === "chat" ? (
+                {activeTab === "chat" && (
                   <motion.div key="chat" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="h-full">
                     <ChatInterface ollamaRunning={ollamaRunning} />
                   </motion.div>
-                ) : (
+                )}
+                {activeTab === "voice" && (
+                  <motion.div key="voice" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="h-full flex flex-col items-center justify-center space-y-8">
+                    <div className="w-32 h-32 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center relative">
+                       <div className="absolute inset-0 rounded-full bg-cyan-500/20 animate-ping" />
+                       <Mic className="w-12 h-12 text-cyan-400" />
+                    </div>
+                    <h3 className="text-2xl font-syne font-bold">Shadow Voice Protocol</h3>
+                    <p className="text-white/30 font-mono text-xs uppercase tracking-widest">Listening for local whisper input...</p>
+                  </motion.div>
+                )}
+                {activeTab === "plugins" && (
+                  <motion.div key="plugins" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="h-full p-12">
+                    <h3 className="text-3xl font-syne font-bold mb-8">Shadow Node Marketplace</h3>
+                    <div className="grid grid-cols-2 gap-6">
+                       <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/5 space-y-4 hover:border-purple-500/30 transition-all cursor-pointer">
+                          <h4 className="font-bold">Shopify Node</h4>
+                          <p className="text-xs text-white/30">Connect to your local inventory and manage orders privately.</p>
+                          <button className="text-[10px] uppercase font-bold text-purple-400">Install Node</button>
+                       </div>
+                       <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/5 space-y-4 hover:border-purple-500/30 transition-all cursor-pointer">
+                          <h4 className="font-bold">Discord Intelligence</h4>
+                          <p className="text-xs text-white/30">Analyze server conversations locally and draft summaries.</p>
+                          <button className="text-[10px] uppercase font-bold text-purple-400">Install Node</button>
+                       </div>
+                    </div>
+                  </motion.div>
+                )}
+                {activeTab === "settings" && (
                   <motion.div key="settings" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="h-full overflow-y-auto">
                     <Connections />
                   </motion.div>

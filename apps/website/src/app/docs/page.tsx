@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Shield, Book, Lock, Zap, Cpu, MessageSquare, Mail, Terminal, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import CustomCursor from "@/components/ui/CustomCursor";
+import DownloadModal from "@/components/ui/DownloadModal";
 
 const sections = [
   { id: "intro", title: "Introduction", icon: <Book className="w-4 h-4" /> },
@@ -14,11 +16,6 @@ const sections = [
   { id: "email", title: "Email & Calendar", icon: <Mail className="w-4 h-4" /> },
   { id: "licensing", title: "Licensing System", icon: <Lock className="w-4 h-4" /> },
 ];
-
-import { useState } from "react";
-import Navbar from "@/components/layout/Navbar";
-import CustomCursor from "@/components/ui/CustomCursor";
-import DownloadModal from "@/components/ui/DownloadModal";
 
 export default function DocsPage() {
   const [showDownload, setShowDownload] = useState(false);

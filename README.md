@@ -1,166 +1,80 @@
-<h1 align="center">
-  <br/>
-  <img src="apps/website/public/logo.svg" alt="ShadowAgent" width="60"/>
-  <br/>
-  ShadowAgent
-  <br/>
-</h1>
+# 🛡️ ShadowAgent
 
-<h4 align="center">Your Personal AI Agent. 100% Local. Zero Cloud. Total Privacy.</h4>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.4--stable-white?style=flat-square" />
-  <img src="https://img.shields.io/badge/license-MIT-white?style=flat-square" />
-  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-white?style=flat-square" />
-  <img src="https://img.shields.io/badge/cloud%20data-0%20bytes-brightgreen?style=flat-square" />
-</p>
-
-<p align="center">
-  <a href="#features">Features</a> •
-  <a href="#tech-stack">Tech Stack</a> •
-  <a href="#getting-started">Getting Started</a> •
-  <a href="#project-structure">Project Structure</a> •
-  <a href="#contributing">Contributing</a>
-</p>
+**The World's Most Private AI Desktop Agent.**  
+ShadowAgent is a 100% local, production-ready AI platform built on **Tauri 2** and **Ollama**. It allows you to automate your digital life—WhatsApp, Email, Calendar, and Local Files—without a single byte of your data ever leaving your machine.
 
 ---
 
-## What is ShadowAgent?
+## 🌟 Key Features
 
-ShadowAgent is an AI agent that runs **entirely on your own hardware**. It automates WhatsApp, Email, Calendar, and File operations using a locally-hosted LLM — no data ever leaves your machine.
-
-> **Zero bytes uploaded. Zero telemetry. Zero cloud dependencies.**
-
----
-
-## Features
-
-| Capability | Description |
-|---|---|
-| 💬 **WhatsApp Control** | Read, summarize, and auto-reply to messages via local whatsapp-web.js |
-| 📧 **Email Intelligence** | Draft replies, filter inbox, organize threads via local IMAP |
-| 📅 **Smart Calendar** | Schedule and reschedule events without cloud sync |
-| 📄 **Local RAG** | Search and summarize your PDFs and documents using a local vector store |
-| 🔒 **Air-Gapped Mode** | Works with zero internet after initial setup |
-| ⚡ **Hardware Optimized** | Leverages Apple Silicon, CUDA, and ARM acceleration |
+- **🧠 100% Local Intelligence**: Powered by Ollama. No cloud processing. No data leaks.
+- **📱 WhatsApp Automation**: Read, reply, and manage chats locally via secure session persistence.
+- **📧 Email & Calendar**: Unified AI control over your inbox and schedule.
+- **📁 Local RAG (File Analysis)**: Feed the AI your local PDFs and documents for instant, private insights.
+- **🛡️ Secure Keychain**: All credentials and API keys are stored in your OS-native secure vault.
+- **🔑 Annual Licensing**: A robust JWT-based licensing system that works fully offline after activation.
 
 ---
 
-## Tech Stack
+## 🏗️ Tech Stack
 
-### Website (Marketing)
-- **Next.js 16** (App Router, Turbopack)
-- **React Three Fiber** — Photorealistic 3D glass prism WebGL background
-- **Framer Motion** — Cinematic scroll animations, draggable components
-- **Tailwind CSS v4** — Utility-first styling
-- **Google Fonts: Syne + Manrope** — Premium editorial typography
-
-### Desktop App (Electron)
-- **Electron** — Cross-platform desktop wrapper
-- **Ollama / llama.cpp** — Local LLM inference (Mistral, LLaMA 3, Phi-3)
-- **ExLlamaV2 / GGUF** — Quantized model format support
-- **whatsapp-web.js** — WhatsApp automation via local browser session
-- **FAISS / LanceDB** — Local vector database for RAG
+- **Frontend**: React 19 + TypeScript + Tailwind CSS + Framer Motion
+- **Backend**: Rust (Tauri 2.0)
+- **AI Engine**: Ollama (LangChain.js + LangGraph)
+- **Design System**: "Cyber-Dark" Glassmorphism with Futuristic Micro-animations
 
 ---
 
-## Getting Started
+## 🚀 Getting Started
 
-### Prerequisites
-- Node.js 20+
-- pnpm 9+
+### 1. Prerequisites
+- **Rust**: [Install Rust](https://rustup.rs/)
+- **Ollama**: [Download Ollama](https://ollama.com/)
+- **Node.js**: [Install Node](https://nodejs.org/)
 
-### 1. Clone the repo
-
+### 2. Setup Local Model
 ```bash
+ollama pull llama3-groq-tool-use
+```
+
+### 3. Installation
+```bash
+# Clone the repository
 git clone https://github.com/shadesvinay01/shadowagent.git
 cd shadowagent
+
+# Install dependencies (Monorepo)
+npm install
 ```
 
-### 2. Install dependencies
-
+### 4. Development
 ```bash
-pnpm install
-```
+# Run the licensing server mock
+node licensing-server-mock.js
 
-### 3. Run the marketing website
-
-```bash
-cd apps/website
-pnpm dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) to view it.
-
-### 4. Run the desktop app (Electron)
-
-```bash
-cd apps/desktop
-pnpm dev
+# In another terminal, start the app
+npm run dev:desktop
 ```
 
 ---
 
-## Project Structure
+## 📂 Project Structure
 
-```
-shadowagent/
-├── apps/
-│   ├── website/          # Next.js marketing website
-│   │   ├── src/
-│   │   │   ├── app/       # App router pages & layouts
-│   │   │   ├── components/
-│   │   │   │   ├── canvas/    # Three.js WebGL components (GlassPrism)
-│   │   │   │   ├── layout/    # Navbar
-│   │   │   │   ├── sections/  # Hero, Capabilities, Pricing, FAQ, etc.
-│   │   │   │   └── ui/        # Reusable UI (LogoMark, DownloadModal, Cursor)
-│   │   │   └── ...
-│   │   └── package.json
-│   └── desktop/          # Electron desktop application
-│       └── ...
-├── packages/             # Shared packages (types, utils)
-├── README.md
-└── package.json
-```
+- `apps/website`: Next.js landing page (Optimized for performance & SEO).
+- `apps/desktop`: The main Tauri 2 application.
+- `licensing-server-mock.js`: Simulation of the production activation backend.
 
 ---
 
-## Website Sections
+## ⚖️ Licensing & Support
 
-The marketing website includes:
-
-- 🎬 **Cinematic Hero** — Full-screen GSAP reveal with the glass prism backdrop
-- 📊 **Stats Counter** — Animated counters (0 bytes cloud, 100% local, 12ms latency)
-- 🧩 **Capabilities** — Feature Bento grid
-- 🔢 **How It Works** — 4-step setup guide
-- ⚖️ **Comparison Table** — ShadowAgent vs ChatGPT vs Copilot
-- 🔐 **Privacy Fortress** — Air-gapped security breakdown
-- 🤖 **Live Demo** — Interactive local agent chat simulator
-- ⭐ **Testimonials** — Auto-scrolling dual-row ticker
-- 💰 **Pricing** — Starter / Pro / Enterprise tiers
-- ❓ **FAQ** — Animated accordion
-- 📥 **Download Modal** — OS-specific installer picker (Windows / macOS / Linux)
+ShadowAgent is designed as a privacy-first SaaS. It requires an annual license key for activation. After the initial handshake, the app remains fully functional offline for 365 days.
 
 ---
 
-## Privacy Guarantee
-
-ShadowAgent is built with one non-negotiable principle:
-
-> **Your data never leaves your device.**
-
-- ✅ No analytics, no Sentry, no Mixpanel
-- ✅ No cloud LLM API calls (no OpenAI, no Anthropic)
-- ✅ Integration tokens stored locally with AES-256 encryption
-- ✅ Works fully offline after installation
-- ✅ Open source — verify every line yourself
+## 🛡️ Privacy Statement
+**Your data is yours.** ShadowAgent does not track you, does not store your messages on any cloud, and does not sell your interactions. Everything happens in your shadow.
 
 ---
 
-## License
-
-MIT © 2026 ShadowAgent
-
----
-
-<p align="center">Built with privacy as the first principle, not an afterthought.</p>
+*Built with ❤️ by the ShadowAgent Team.*

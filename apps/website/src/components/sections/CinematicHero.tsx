@@ -55,7 +55,7 @@ export default function CinematicHero() {
       {/* Massive Cinematic Text */}
       <h1 
         ref={textRef}
-        className="relative z-20 text-[15vw] font-syne font-extrabold tracking-tighter text-white leading-none whitespace-nowrap"
+        className="relative z-20 text-[18vw] md:text-[15vw] font-syne font-extrabold tracking-tighter text-white leading-none text-center px-4"
         style={{ textShadow: "0 20px 80px rgba(0,0,0,0.8)" }}
       >
         SHADOWAGENT

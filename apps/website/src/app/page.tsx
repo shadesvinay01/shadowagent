@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import GlassPrism from "@/components/canvas/GlassPrism";
 import Navbar from "@/components/layout/Navbar";
@@ -21,9 +21,17 @@ import DownloadModal from "@/components/ui/DownloadModal";
 
 export default function Home() {
   const [showDownload, setShowDownload] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const checkIsDesktop = () => setIsDesktop(window.innerWidth > 768);
+    checkIsDesktop();
+    window.addEventListener("resize", checkIsDesktop);
+    return () => window.removeEventListener("resize", checkIsDesktop);
+  }, []);
 
   return (
-    <main className="relative min-h-screen bg-transparent text-white selection:bg-white/20 cursor-none">
+    <main className="relative min-h-screen bg-[#050508] text-white selection:bg-cyan-500/20 cursor-none overflow-x-hidden">
 
       {/* Custom Cursor */}
       <CustomCursor />
@@ -31,28 +39,32 @@ export default function Home() {
       {/* Download Modal */}
       {showDownload && <DownloadModal onClose={() => setShowDownload(false)} />}
 
-      {/* Photorealistic Glass Backdrop — fixed behind everything */}
+      {/* Photorealistic Glass Backdrop — only on desktop */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <Canvas 
-          camera={{ position: [0, 0, 10], fov: 45 }}
-          dpr={[1, 1.5]} // Cap pixel ratio for performance
-          gl={{ 
-            antialias: false, 
-            powerPreference: "high-performance",
-            alpha: true,
-            stencil: false,
-            depth: false
-          }}
-        >
-          <GlassPrism />
-        </Canvas>
+        {isDesktop ? (
+          <Canvas 
+            camera={{ position: [0, 0, 10], fov: 45 }}
+            dpr={[1, 1.5]}
+            gl={{ 
+              antialias: false, 
+              powerPreference: "high-performance",
+              alpha: true,
+              stencil: false,
+              depth: false
+            }}
+          >
+            <GlassPrism />
+          </Canvas>
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-[#050508] via-[#0a0a15] to-[#050508]" />
+        )}
       </div>
 
       {/* Sticky Navbar */}
       <Navbar onDownload={() => setShowDownload(true)} />
 
       {/* All page content sits above the canvas */}
-      <div className="relative z-20">
+      <div className="relative z-20 overflow-x-hidden">
 
         <CinematicHero />
 

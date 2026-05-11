@@ -7,12 +7,15 @@ const syne = Syne({ subsets: ["latin"], variable: "--font-syne", weight: ["400",
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", weight: ["300", "400", "500", "600", "700"] });
 
 export const metadata: Metadata = {
-  title: "ShadowAgent | Your Personal AI Agent. 100% Local.",
-  description: "Control WhatsApp, Email, Calendar, and Files locally with zero data sent to any server. Complete privacy for your digital life.",
-  keywords: "local ai, personal agent, privacy first, ai automation, whatsapp automation, local llm",
+  title: "ShadowAgent | The Ultimate Local AI Desktop Agent for Privacy",
+  description: "Experience the power of a fully local AI agent. Control WhatsApp, Emails, Calendar, and Local Files with zero data leakage. ShadowAgent runs 100% on your machine with Ollama support.",
+  keywords: "local ai agent, personal ai assistant, private ai, whatsapp automation, email automation, local llm, ollama desktop, shadowagent, tauri ai app, open source ai agent, local rag",
+  authors: [{ name: "ShadowAgent Team" }],
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
+  robots: "index, follow",
   openGraph: {
     title: "ShadowAgent | Local AI Agent",
-    description: "The AI that never leaves your device.",
+    description: "Your digital life, fully automated and 100% local.",
     type: "website",
     url: "https://shadowagent.ai",
   },

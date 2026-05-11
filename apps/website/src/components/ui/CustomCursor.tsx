@@ -56,7 +56,7 @@ export default function CustomCursor() {
       {/* Ring */}
       <div
         ref={ringRef}
-        className={`fixed top-0 left-0 w-10 h-10 rounded-full border border-white/40 pointer-events-none z-[9998] mix-blend-difference transition-all duration-150 ${
+        className={`fixed top-0 left-0 w-10 h-10 rounded-full border border-white/50 pointer-events-none z-[9998] transition-all duration-150 ${
           clicked ? "scale-150 opacity-0" : "scale-100 opacity-100"
         }`}
       />

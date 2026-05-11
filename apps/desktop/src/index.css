@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 10% 2%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 4%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 4%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 180 100% 50%;
+    --primary-foreground: 180 100% 5%;
+    --secondary: 240 10% 10%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 5% 15%;
+    --muted-foreground: 240 5% 60%;
+    --accent: 180 100% 50%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5% 12%;
+    --input: 240 5% 12%;
+    --ring: 180 100% 50%;
+    --radius: 1rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border selection:bg-primary/20 selection:text-primary;
+  }
+  body {
+    @apply bg-background text-foreground font-manrope antialiased overflow-hidden;
+    background-image: 
+      radial-gradient(circle at 0% 0%, rgba(0, 240, 255, 0.03) 0%, transparent 40%),
+      radial-gradient(circle at 100% 100%, rgba(160, 32, 240, 0.03) 0%, transparent 40%);
+  }
+}
+
+.glass-panel {
+  @apply bg-card/60 border border-white/5 backdrop-blur-2xl shadow-[0_0_40px_rgba(0,0,0,0.5)];
+}
+
+.cyber-border {
+  @apply relative overflow-hidden;
+}
+
+.cyber-border::after {
+  content: "";
+  @apply absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent;
+}
+
+.premium-gradient {
+  background: linear-gradient(135deg, #050508 0%, #0a0a14 100%);
+}
+
+.text-glow {
+  text-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+}

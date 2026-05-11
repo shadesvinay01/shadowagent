@@ -56,8 +56,11 @@ export default function CinematicReveal() {
         </div>
       </div>
       
-      {/* Subtle spotlight effect tracking the words */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-white/5 rounded-full blur-[100px] pointer-events-none" />
+      {/* Subtle spotlight effect using radial gradient (faster than blur) */}
+      <div 
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full pointer-events-none" 
+        style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%)' }}
+      />
     </section>
   );
 }

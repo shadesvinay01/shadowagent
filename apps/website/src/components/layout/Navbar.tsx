@@ -38,7 +38,7 @@ export default function Navbar({ onDownload }: { onDownload: () => void }) {
             ? "border border-white/8"
             : "border border-transparent"
         }`}
-        style={scrolled ? { background: "rgba(5,5,10,0.92)", backdropFilter: "blur(24px)" } : {}}
+        style={scrolled ? { background: "rgba(5,5,10,0.85)", backdropFilter: "blur(12px)" } : {}}
       >
         {/* Logo */}
         <a href="#" className="flex items-center gap-2.5 group">

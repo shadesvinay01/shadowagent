@@ -35,27 +35,27 @@ export default function GlassPrism() {
     <>
       <color attach="background" args={['#000000']} />
       
-      <Float speed={2} rotationIntensity={1} floatIntensity={2}>
+      <Float speed={1.5} rotationIntensity={0.5} floatIntensity={1}>
         <mesh ref={meshRef} position={[0, 0, 0]} scale={2.5}>
-          {/* Complex mathematically twisted Torus Knot */}
-          <torusKnotGeometry args={[1, 0.4, 256, 64, 2, 3]} />
+          {/* Reduced segments for better performance (128, 32 instead of 256, 64) */}
+          <torusKnotGeometry args={[1, 0.4, 128, 32, 2, 3]} />
           
-          {/* Advanced Physical Glass Material */}
+          {/* Optimized Physical Glass Material */}
           <MeshTransmissionMaterial 
-            backside
-            samples={4}
-            thickness={2.5}
-            chromaticAberration={0.05}
+            backside={false} // Faster rendering without backside
+            samples={2} // Reduced samples from 4 to 2
+            thickness={2}
+            chromaticAberration={0.03}
             anisotropy={0.1}
-            distortion={0.2}
+            distortion={0.1}
             distortionScale={0.1}
-            temporalDistortion={0.1}
-            ior={1.5}
+            temporalDistortion={0.05}
+            ior={1.2}
             color="#ffffff"
             attenuationDistance={1}
             attenuationColor="#ffffff"
             clearcoat={1}
-            clearcoatRoughness={0}
+            clearcoatRoughness={0.1}
           />
         </mesh>
       </Float>

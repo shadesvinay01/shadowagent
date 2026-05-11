@@ -22,11 +22,10 @@ export default function CinematicHero() {
         },
       });
 
-      // Background fades to absolute black
+      // Background fades and scales slightly
       tl.to(bgRef.current, {
-        opacity: 0.1,
-        filter: "blur(20px)",
-        scale: 1.1,
+        opacity: 0.05,
+        scale: 1.05,
         ease: "none",
       }, 0);
 

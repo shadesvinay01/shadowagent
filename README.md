@@ -1,80 +1,87 @@
-# 🛡️ ShadowAgent
+# 🛡️ ShadowAgent: The Sovereign AI Operating System
 
-**The World's Most Private AI Desktop Agent.**  
-ShadowAgent is a 100% local, production-ready AI platform built on **Tauri 2** and **Ollama**. It allows you to automate your digital life—WhatsApp, Email, Calendar, and Local Files—without a single byte of your data ever leaving your machine.
+> **The only AI agent that values your privacy as much as you do. 100% Local. 100% Yours.**
 
----
-
-## 🌟 Key Features
-
-- **🧠 100% Local Intelligence**: Powered by Ollama. No cloud processing. No data leaks.
-- **📱 WhatsApp Automation**: Read, reply, and manage chats locally via secure session persistence.
-- **📧 Email & Calendar**: Unified AI control over your inbox and schedule.
-- **📁 Local RAG (File Analysis)**: Feed the AI your local PDFs and documents for instant, private insights.
-- **🛡️ Secure Keychain**: All credentials and API keys are stored in your OS-native secure vault.
-- **🔑 Annual Licensing**: A robust JWT-based licensing system that works fully offline after activation.
+ShadowAgent is a high-performance, privacy-first personal AI assistant built for the modern age. Unlike traditional cloud-based AI, ShadowAgent runs entirely on your local hardware, ensuring your messages, files, and thoughts never leave your control.
 
 ---
 
-## 🏗️ Tech Stack
+## ✨ Key Features
 
-- **Frontend**: React 19 + TypeScript + Tailwind CSS + Framer Motion
-- **Backend**: Rust (Tauri 2.0)
-- **AI Engine**: Ollama (LangChain.js + LangGraph)
-- **Design System**: "Cyber-Dark" Glassmorphism with Futuristic Micro-animations
+### 🧠 Local Intelligence (RAG)
+Analyze PDFs, documents, and private data using a full local RAG pipeline. Powered by **Ollama** and **LangChain.js**, your data is indexed and searched without ever touching a cloud server.
+
+### 💬 Unified Integration Hub
+- **WhatsApp Node**: Automate outreach and summarize chats using local session mirroring.
+- **Email & Calendar**: Draft responses and manage your schedule via encrypted local IMAP/SMTP protocols.
+- **Shadow Nodes**: An expandable plugin marketplace for integrating with tools like Shopify, Discord, and more.
+
+### 🎙️ Shadow Voice Protocol
+Interactive local voice interface using Whisper STT and Piper TTS. Talk to your agent in real-time with zero latency.
+
+### 🏎️ Hardware Acceleration
+Native support for **Apple Silicon (MLX)** and **NVIDIA (CUDA)**. ShadowAgent automatically detects your hardware to provide sub-100ms response times.
+
+---
+
+## 🔒 Security Protocol (The Shadow-Vault)
+
+- **Zero-Server Policy**: Daily tasks are executed entirely offline.
+- **OS-Native Encryption**: Credentials and session tokens are stored in the **macOS Keychain** or **Windows Credential Manager** using AES-256 encryption.
+- **JWT Activation**: A one-time activation handshake issues an annual local token, after which the app enters air-gapped mode.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Desktop Core**: [Tauri 2.0](https://tauri.app/) (Rust + React)
+- **Neural Engine**: [Ollama](https://ollama.com/)
+- **Frontend**: Next.js 16 (Website), React (Desktop)
+- **Styling**: Vanilla CSS + Framer Motion (Cinematic Aesthetic)
+- **Vector Store**: HNSWLib (Local)
 
 ---
 
 ## 🚀 Getting Started
 
-### 1. Prerequisites
-- **Rust**: [Install Rust](https://rustup.rs/)
-- **Ollama**: [Download Ollama](https://ollama.com/)
-- **Node.js**: [Install Node](https://nodejs.org/)
+### Prerequisites
+- [Ollama](https://ollama.com/) installed and running.
+- [Node.js](https://nodejs.org/) (v18+)
+- (Windows Only) Visual Studio with "Desktop development with C++" workload.
 
-### 2. Setup Local Model
-```bash
-ollama pull llama3-groq-tool-use
-```
+### Installation
 
-### 3. Installation
-```bash
-# Clone the repository
-git clone https://github.com/shadesvinay01/shadowagent.git
-cd shadowagent
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/shadesvinay01/shadowagent.git
+   cd shadowagent
+   ```
 
-# Install dependencies (Monorepo)
-npm install
-```
+2. **Install Dependencies**:
+   ```bash
+   npm install --legacy-peer-deps
+   ```
 
-### 4. Development
-```bash
-# Run the licensing server mock
-node licensing-server-mock.js
+3. **Launch the Desktop App**:
+   ```bash
+   npm run dev:desktop
+   ```
 
-# In another terminal, start the app
-npm run dev:desktop
-```
-
----
-
-## 📂 Project Structure
-
-- `apps/website`: Next.js landing page (Optimized for performance & SEO).
-- `apps/desktop`: The main Tauri 2 application.
-- `licensing-server-mock.js`: Simulation of the production activation backend.
+4. **Run the Website Locally**:
+   ```bash
+   npm run dev:website
+   ```
 
 ---
 
-## ⚖️ Licensing & Support
-
-ShadowAgent is designed as a privacy-first SaaS. It requires an annual license key for activation. After the initial handshake, the app remains fully functional offline for 365 days.
-
----
-
-## 🛡️ Privacy Statement
-**Your data is yours.** ShadowAgent does not track you, does not store your messages on any cloud, and does not sell your interactions. Everything happens in your shadow.
+## 🗺️ Roadmap: Phase 3
+- [x] Hardware Detection (MLX/CUDA)
+- [x] Voice Protocol Interface
+- [x] Plugin Marketplace Foundation
+- [ ] P2P Cross-Device Sync
+- [ ] Enterprise Dashboard
 
 ---
 
-*Built with ❤️ by the ShadowAgent Team.*
+## 📄 License
+© 2026 ShadowAgent Collective. All rights reserved locally. ShadowAgent is a subscription-based software. See [Documentation](/docs) for licensing details.

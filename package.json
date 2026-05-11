@@ -5,7 +5,7 @@
     "apps/*"
   ],
   "scripts": {
-    "install": "npm install -w website",
+    "install": "npm install -w website --legacy-peer-deps",
     "build": "npm run build -w website",
     "dev:website": "npm run dev -w website",
     "dev:desktop": "npm run tauri dev -w desktop",

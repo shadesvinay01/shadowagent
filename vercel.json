@@ -1,5 +1,5 @@
 {
   "buildCommand": "npm run build -w website",
-  "installCommand": "npm install -w website",
+  "installCommand": "npm install -w website --legacy-peer-deps",
   "framework": "nextjs"
 }

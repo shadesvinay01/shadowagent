@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Shield, Book, Lock, Zap, Cpu, MessageSquare, Mail, Terminal, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import CustomCursor from "@/components/ui/CustomCursor";
 import DownloadModal from "@/components/ui/DownloadModal";
 
@@ -147,9 +148,7 @@ export default function DocsPage() {
             </div>
           </section>
 
-          <footer className="pt-20 border-t border-white/5 text-center">
-            <p className="text-white/20 text-xs">ShadowAgent Protocol v1.0.4 · Last Updated May 2026</p>
-          </footer>
+          <Footer />
         </div>
       </div>
     </main>

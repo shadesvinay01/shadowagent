@@ -6,44 +6,44 @@ import React, { useRef } from "react";
 
 const bentoItems = [
   {
-    title: "WhatsApp Control",
-    description: "Read, summarize, and reply to messages entirely locally. Automate your outreach without Meta APIs.",
+    title: "WhatsApp Ecosystem",
+    description: "Deep local integration. Read, summarize, and automate outreach with zero cloud proxies.",
     icon: <MessageSquare className="w-6 h-6 text-cyan-400" />,
     className: "md:col-span-2 md:row-span-2",
   },
   {
-    title: "Email Intelligence",
-    description: "Drafts replies and organizes your inbox with zero cloud involvement.",
+    title: "Neural Inbox",
+    description: "Draft, organize, and reply. Your emails never touch an AI server.",
     icon: <Mail className="w-5 h-5 text-purple-400" />,
     className: "md:col-span-1 md:row-span-1",
   },
   {
-    title: "Smart Calendar",
-    description: "Schedule events without big tech oversight.",
+    title: "Private Calendar",
+    description: "Autonomous scheduling without Big Tech surveillance.",
     icon: <Calendar className="w-5 h-5 text-mint-500" />,
     className: "md:col-span-1 md:row-span-1",
   },
   {
-    title: "Local Execution",
-    description: "Powered by quantized local models. Fast, efficient, and 100% offline-ready.",
+    title: "Shadow Engine",
+    description: "Quantized local LLMs optimized for zero-latency neural processing.",
     icon: <Zap className="w-6 h-6 text-yellow-400" />,
     className: "md:col-span-2 md:row-span-1",
   },
   {
-    title: "File Analysis RAG",
-    description: "Search, summarize and cross-reference your PDFs and docs locally.",
+    title: "Sovereign RAG",
+    description: "Search and index your private archives locally with sub-100ms vector lookups.",
     icon: <FileText className="w-5 h-5 text-orange-400" />,
     className: "md:col-span-1 md:row-span-2",
   },
   {
-    title: "Air-Gapped Secure",
-    description: "Zero external network requests — ever.",
+    title: "Air-Gapped Vault",
+    description: "AES-256 Keychain encryption for every session token.",
     icon: <Shield className="w-5 h-5 text-green-400" />,
     className: "md:col-span-1 md:row-span-1",
   },
   {
-    title: "Hardware Optimized",
-    description: "Leverages Apple Silicon, CUDA, and ARM acceleration natively.",
+    title: "Neural Hardware",
+    description: "Natively accelerated for MLX, CUDA, and Apple Silicon.",
     icon: <HardDrive className="w-5 h-5 text-blue-400" />,
     className: "md:col-span-1 md:row-span-1",
   }
@@ -117,7 +117,7 @@ export default function Capabilities() {
             viewport={{ once: true }}
             className="text-[10px] font-manrope font-bold tracking-[0.4em] uppercase text-cyan-400/60 mb-6"
           >
-            Neural Interface Capabilities
+            The Sovereignty Ecosystem
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
@@ -125,10 +125,10 @@ export default function Capabilities() {
             viewport={{ once: true }}
             className="text-5xl md:text-8xl font-syne font-bold tracking-tighter mb-8 leading-[0.95]"
           >
-            Smarter. Faster.<br/><span className="text-white/20">Air-Gapped.</span>
+            Autonomous AI.<br/><span className="text-white/20">Deeply Local.</span>
           </motion.h2>
           <p className="text-white/40 max-w-2xl text-xl font-manrope font-light leading-relaxed">
-            ShadowAgent integrates directly with your local system nodes. No cloud proxies, no latency, no spying.
+            ShadowAgent is the neural hub for your digital life. No cloud, no middleman, just pure localized intelligence.
           </p>
         </div>
 

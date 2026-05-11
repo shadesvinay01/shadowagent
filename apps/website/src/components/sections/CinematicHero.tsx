@@ -53,13 +53,17 @@ export default function CinematicHero() {
       <div className="absolute inset-0 z-10 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none" />
 
       {/* Massive Cinematic Text */}
-      <h1 
-        ref={textRef}
-        className="relative z-20 text-[18vw] md:text-[15vw] font-syne font-extrabold tracking-tighter text-white leading-none text-center px-4"
-        style={{ textShadow: "0 20px 80px rgba(0,0,0,0.8)" }}
-      >
-        SHADOWAGENT
-      </h1>
+      <div ref={textRef} className="relative z-20 flex flex-col items-center gap-4">
+        <h1 
+          className="text-[18vw] md:text-[15vw] font-syne font-extrabold tracking-tighter text-white leading-none text-center px-4"
+          style={{ textShadow: "0 20px 80px rgba(0,0,0,0.8)" }}
+        >
+          SHADOWAGENT
+        </h1>
+        <p className="text-sm md:text-xl font-manrope font-light text-white/40 tracking-[0.4em] uppercase">
+          The Local AI Operating System.
+        </p>
+      </div>
       
       {/* Scroll indicator that fades out immediately */}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 text-white/50 animate-pulse">

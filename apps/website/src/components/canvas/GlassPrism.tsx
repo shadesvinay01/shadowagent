@@ -37,44 +37,41 @@ export default function GlassPrism() {
       
       <Float speed={1.5} rotationIntensity={0.5} floatIntensity={1}>
         <mesh ref={meshRef} position={[0, 0, 0]} scale={2.5}>
-          {/* Reduced segments for better performance (128, 32 instead of 256, 64) */}
-          <torusKnotGeometry args={[1, 0.4, 128, 32, 2, 3]} />
+          {/* Reduced segments for extreme performance */}
+          <torusKnotGeometry args={[1, 0.4, 64, 16, 2, 3]} />
           
           {/* Optimized Physical Glass Material */}
           <MeshTransmissionMaterial 
-            backside={false} // Faster rendering without backside
-            samples={2} // Reduced samples from 4 to 2
-            thickness={2}
-            chromaticAberration={0.03}
-            anisotropy={0.1}
-            distortion={0.1}
-            distortionScale={0.1}
-            temporalDistortion={0.05}
-            ior={1.2}
+            backside={false} 
+            samples={1} // Lowest possible samples
+            resolution={512} // Cap resolution of the transmission map
+            thickness={1}
+            chromaticAberration={0.02}
+            anisotropy={0}
+            distortion={0}
+            distortionScale={0}
+            temporalDistortion={0}
+            ior={1.1}
             color="#ffffff"
             attenuationDistance={1}
             attenuationColor="#ffffff"
-            clearcoat={1}
-            clearcoatRoughness={0.1}
+            clearcoat={0.5}
+            clearcoatRoughness={0.2}
           />
         </mesh>
       </Float>
 
-      {/* Dynamic Refracting Lights */}
-      <pointLight ref={lightRef} intensity={50} color="#00F0FF" /> {/* Electric Cyan */}
-      <pointLight ref={lightRef2} intensity={50} color="#A020F0" /> {/* Deep Purple */}
+      {/* Dynamic Refracting Lights - Reduced intensity for performance */}
+      <pointLight ref={lightRef} intensity={20} color="#00F0FF" />
+      <pointLight ref={lightRef2} intensity={20} color="#A020F0" />
       
-      {/* Ambient and directional fill to highlight edges */}
       <ambientLight intensity={0.5} />
-      <directionalLight position={[10, 10, 10]} intensity={2} color="#ffffff" />
-      <directionalLight position={[-10, -10, -10]} intensity={1} color="#00FF9F" />
-
-      {/* Environment map is critical for glass reflections */}
-      <Environment resolution={256}>
+      
+      {/* Optimized Environment */}
+      <Environment resolution={128}>
         <group rotation={[-Math.PI / 4, -0.3, 0]}>
-          <Lightformer intensity={4} rotation-x={Math.PI / 2} position={[0, 5, -9]} scale={[10, 10, 1]} />
-          <Lightformer intensity={2} rotation-y={Math.PI / 2} position={[-5, 1, -1]} scale={[10, 2, 1]} />
-          <Lightformer intensity={2} rotation-y={-Math.PI / 2} position={[10, 1, 0]} scale={[20, 2, 1]} />
+          <Lightformer intensity={2} rotation-x={Math.PI / 2} position={[0, 5, -9]} scale={[10, 10, 1]} />
+          <Lightformer intensity={1} rotation-y={Math.PI / 2} position={[-5, 1, -1]} scale={[10, 2, 1]} />
         </group>
       </Environment>
     </>

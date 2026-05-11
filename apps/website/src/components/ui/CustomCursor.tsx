@@ -8,6 +8,10 @@ export default function CustomCursor() {
   const [clicked, setClicked] = useState(false);
 
   useEffect(() => {
+    // Disable custom cursor on touch devices for performance
+    const isTouch = window.matchMedia("(pointer: coarse)").matches;
+    if (isTouch) return;
+
     let ringX = 0, ringY = 0;
     let dotX = 0, dotY = 0;
     let animId: number;

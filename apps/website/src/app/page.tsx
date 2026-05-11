@@ -33,7 +33,17 @@ export default function Home() {
 
       {/* Photorealistic Glass Backdrop — fixed behind everything */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <Canvas camera={{ position: [0, 0, 10], fov: 45 }}>
+        <Canvas 
+          camera={{ position: [0, 0, 10], fov: 45 }}
+          dpr={[1, 1.5]} // Cap pixel ratio for performance
+          gl={{ 
+            antialias: false, 
+            powerPreference: "high-performance",
+            alpha: true,
+            stencil: false,
+            depth: false
+          }}
+        >
           <GlassPrism />
         </Canvas>
       </div>

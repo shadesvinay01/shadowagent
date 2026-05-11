@@ -15,11 +15,19 @@ const sections = [
   { id: "licensing", title: "Licensing System", icon: <Lock className="w-4 h-4" /> },
 ];
 
+import { useState } from "react";
+import Navbar from "@/components/layout/Navbar";
+import CustomCursor from "@/components/ui/CustomCursor";
+import DownloadModal from "@/components/ui/DownloadModal";
+
 export default function DocsPage() {
+  const [showDownload, setShowDownload] = useState(false);
+
   return (
     <main className="min-h-screen bg-[#050508] text-white font-manrope cursor-none">
       <CustomCursor />
-      <Navbar onDownload={() => {}} />
+      {showDownload && <DownloadModal onClose={() => setShowDownload(false)} />}
+      <Navbar onDownload={() => setShowDownload(true)} />
 
       <div className="container mx-auto px-6 pt-32 pb-20 flex flex-col md:flex-row gap-12">
         {/* Sidebar Navigation */}

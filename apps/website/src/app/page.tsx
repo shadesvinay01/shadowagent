@@ -21,6 +21,7 @@ import PrivacyComparison from "@/components/sections/PrivacyComparison";
 import ProductRoadmap from "@/components/sections/ProductRoadmap";
 import { motion } from "framer-motion";
 import { Zap } from "lucide-react";
+import Newsletter from "@/components/sections/Newsletter";
 import CustomCursor from "@/components/ui/CustomCursor";
 import DownloadModal from "@/components/ui/DownloadModal";
 
@@ -124,6 +125,8 @@ export default function Home() {
             v1.0.4-stable · Windows · macOS · Linux
           </p>
         </section>
+
+        <Newsletter />
 
         {/* Footer */}
         <footer className="py-16 section-panel">

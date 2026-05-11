@@ -11,6 +11,7 @@ const navLinks = [
   { label: "Privacy", href: "#privacy" },
   { label: "Demo", href: "#demo" },
   { label: "Pricing", href: "#pricing" },
+  { label: "Docs", href: "/docs" },
 ];
 
 export default function Navbar({ onDownload }: { onDownload: () => void }) {

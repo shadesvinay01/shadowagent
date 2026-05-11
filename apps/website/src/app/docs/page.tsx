@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Shield, Book, Lock, Zap, Cpu, MessageSquare, Mail, Terminal, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
+import CustomCursor from "@/components/ui/CustomCursor";
 
 const sections = [
   { id: "intro", title: "Introduction", icon: <Book className="w-4 h-4" /> },

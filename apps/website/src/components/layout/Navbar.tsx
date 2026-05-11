@@ -6,11 +6,11 @@ import LogoMark from "@/components/ui/LogoMark";
 import { Download, Menu, X } from "lucide-react";
 
 const navLinks = [
-  { label: "Features", href: "#capabilities" },
-  { label: "How It Works", href: "#how-it-works" },
-  { label: "Privacy", href: "#privacy" },
-  { label: "Demo", href: "#demo" },
-  { label: "Pricing", href: "#pricing" },
+  { label: "Features", href: "/#capabilities" },
+  { label: "How It Works", href: "/#how-it-works" },
+  { label: "Privacy", href: "/#privacy" },
+  { label: "Demo", href: "/#demo" },
+  { label: "Pricing", href: "/#pricing" },
   { label: "Docs", href: "/docs" },
 ];
 
@@ -42,7 +42,7 @@ export default function Navbar({ onDownload }: { onDownload: () => void }) {
         style={scrolled ? { background: "rgba(5,5,10,0.96)" } : {}}
       >
         {/* Logo */}
-        <a href="#" className="flex items-center gap-2.5 group">
+        <a href="/" className="flex items-center gap-2.5 group">
           <LogoMark size={36} className="group-hover:scale-105 transition-transform" />
           <span className="text-base font-syne font-bold tracking-tight">SHADOWAGENT</span>
         </a>

@@ -10,24 +10,37 @@ export default function TermsPage() {
       <CustomCursor />
       <Navbar onDownload={() => {}} />
 
-      <div className="container mx-auto px-6 pt-40 pb-20 max-w-3xl">
-        <section className="space-y-12">
-          <h1 className="text-5xl font-syne font-bold tracking-tighter text-white/40">Terms of Service</h1>
+      <div className="container mx-auto px-6 pt-40 pb-20 max-w-4xl">
+        <section className="space-y-16">
+          <div className="space-y-4">
+             <h1 className="text-6xl md:text-8xl font-syne font-bold tracking-tighter text-white/20">Terms.</h1>
+             <p className="text-white/40 text-xl font-light italic">The protocol for using ShadowAgent.</p>
+          </div>
           
-          <div className="space-y-8 text-white/60 leading-relaxed">
+          <div className="space-y-12 text-white/50 leading-relaxed max-w-2xl">
             <div className="space-y-4">
-              <h3 className="text-xl font-bold text-white uppercase tracking-widest text-sm">1. License Grant</h3>
-              <p>Upon purchase, ShadowAgent grants you a non-exclusive, non-transferable license to use the software on a single machine for one year. Renewal is required for continued updates and local tool support.</p>
+              <h3 className="text-xl font-bold text-white uppercase tracking-widest text-xs">1. Software License</h3>
+              <p className="text-sm">ShadowAgent is a subscription-based local software. Each purchase grants a one-year license for one device. Reverse engineering or attempting to bypass the local licensing server is a violation of these terms.</p>
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-xl font-bold text-white uppercase tracking-widest text-sm">2. Responsibility</h3>
-              <p>Since ShadowAgent runs locally, you are solely responsible for the data you process. ShadowAgent is a tool; how you use it with third-party services (WhatsApp, Email) is your responsibility.</p>
+              <h3 className="text-xl font-bold text-white uppercase tracking-widest text-xs">2. User Responsibility</h3>
+              <p className="text-sm">You are solely responsible for the content you generate and the automation you perform. ShadowAgent does not moderate your local data. Use automation tools (WhatsApp, Email) in accordance with the third-party provider's terms.</p>
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-xl font-bold text-white uppercase tracking-widest text-sm">3. No Warranty</h3>
-              <p>ShadowAgent is provided "as is." While we strive for 100% local stability, we are not liable for any data loss or account bans resulting from automation activities on third-party platforms.</p>
+              <h3 className="text-xl font-bold text-white uppercase tracking-widest text-xs">3. Intellectual Property</h3>
+              <p className="text-sm">The "ShadowAgent" brand, logo, and proprietary Rust architecture are the intellectual property of the ShadowAgent Collective. You may not distribute modified versions of the binary without explicit permission.</p>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold text-white uppercase tracking-widest text-xs">4. Limitation of Liability</h3>
+              <p className="text-sm">In no event shall ShadowAgent be liable for any indirect, incidental, or consequential damages (including account bans from third-party services) resulting from the use of this software.</p>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold text-white uppercase tracking-widest text-xs">5. Governing Law</h3>
+              <p className="text-sm">The protocol is governed by the laws of digital sovereignty. Any disputes shall be resolved through transparent, peer-to-peer communication.</p>
             </div>
           </div>
         </section>

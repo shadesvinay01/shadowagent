@@ -16,6 +16,9 @@ import LiveDemo from "@/components/sections/LiveDemo";
 import Testimonials from "@/components/sections/Testimonials";
 import Pricing from "@/components/sections/Pricing";
 import FAQ from "@/components/sections/FAQ";
+import AgentTerminal from "@/components/sections/AgentTerminal";
+import PrivacyComparison from "@/components/sections/PrivacyComparison";
+import ProductRoadmap from "@/components/sections/ProductRoadmap";
 import { motion } from "framer-motion";
 import { Zap } from "lucide-react";
 import CustomCursor from "@/components/ui/CustomCursor";
@@ -70,6 +73,8 @@ export default function Home() {
 
         <CinematicHero />
 
+        <AgentTerminal />
+
         <CinematicReveal />
 
         <StatsSection />
@@ -80,6 +85,8 @@ export default function Home() {
 
         <ComparisonTable />
 
+        <PrivacyComparison />
+
         <PrivacyFortress />
 
         <LiveDemo />
@@ -89,6 +96,8 @@ export default function Home() {
         <Pricing />
 
         <FAQ />
+
+        <ProductRoadmap />
 
         {/* Final CTA */}
         <section className="py-36 px-6 text-center relative overflow-hidden section-panel">

@@ -16,7 +16,8 @@ const sections = [
 
 export default function DocsPage() {
   return (
-    <main className="min-h-screen bg-[#050508] text-white font-manrope">
+    <main className="min-h-screen bg-[#050508] text-white font-manrope cursor-none">
+      <CustomCursor />
       <Navbar onDownload={() => {}} />
 
       <div className="container mx-auto px-6 pt-32 pb-20 flex flex-col md:flex-row gap-12">

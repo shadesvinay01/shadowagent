@@ -58,8 +58,6 @@ export default function ChatInterface({ ollamaRunning }: { ollamaRunning: boolea
 
   return (
     <div className="flex-1 flex flex-col h-full w-full relative">
-      
-      {/* 1. Chat History Area */}
       <div 
         ref={scrollRef}
         className="flex-1 overflow-y-auto space-y-12 p-12 pr-16 custom-scrollbar relative z-10"
@@ -72,8 +70,10 @@ export default function ChatInterface({ ollamaRunning }: { ollamaRunning: boolea
               animate={{ opacity: 1, y: 0 }}
               className={`flex gap-8 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
             >
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 border ${
-                msg.role === "user" ? "bg-white/5 border-white/10" : "bg-cyan-500/10 border-cyan-500/30"
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 border transition-all ${
+                msg.role === "user" 
+                ? "bg-white/5 border-white/10" 
+                : "bg-cyan-500/10 border-cyan-500/30 shadow-[0_0_20px_rgba(0,240,255,0.15)]"
               }`}>
                 {msg.role === "user" ? <User className="w-6 h-6 text-white/30" /> : <Bot className="w-6 h-6 text-cyan-400" />}
               </div>
@@ -86,14 +86,12 @@ export default function ChatInterface({ ollamaRunning }: { ollamaRunning: boolea
                 }`}>
                   {msg.content}
                 </div>
-                
                 <div className={`flex items-center gap-4 text-[9px] font-black uppercase tracking-[0.3em] ${msg.role === "user" ? "justify-end text-white/10" : "justify-start text-white/20"}`}>
                    <span>{msg.timestamp}</span>
                 </div>
               </div>
             </motion.div>
           ))}
-          
           {isThinking && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-8">
               <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center">
@@ -111,26 +109,46 @@ export default function ChatInterface({ ollamaRunning }: { ollamaRunning: boolea
         </AnimatePresence>
       </div>
 
-      {/* 2. Command Input */}
+      <div className="px-12 py-4 flex gap-4 overflow-x-auto no-scrollbar relative z-20">
+         {suggestions.map((s, i) => (
+           <button 
+             key={i}
+             onClick={() => setInput(s)}
+             className="px-6 py-2.5 rounded-full glass-card whitespace-nowrap text-[10px] font-bold uppercase tracking-widest hover:text-cyan-400 transition-all"
+           >
+              {s}
+           </button>
+         ))}
+      </div>
+
       <footer className="p-10 relative z-30">
         <div className="max-w-4xl mx-auto relative group">
+          <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-[2.5rem] blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity" />
           <div className="relative glass-panel rounded-[2.2rem] p-3 flex items-center gap-2">
+            <button className="w-12 h-12 rounded-2xl flex items-center justify-center text-white/20 hover:text-white/60 transition-all">
+               <Paperclip className="w-5 h-5" />
+            </button>
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              placeholder="Ask ShadowAgent..."
+              placeholder={ollamaRunning ? "Ask ShadowAgent to automate something..." : "Neural Engine Offline..."}
               disabled={!ollamaRunning || isThinking}
               className="flex-1 bg-transparent px-4 py-5 text-lg font-medium focus:outline-none placeholder:text-white/10"
             />
-            <button
-              onClick={handleSend}
-              disabled={!ollamaRunning || isThinking || !input.trim()}
-              className="w-12 h-12 rounded-2xl bg-white text-black flex items-center justify-center hover:scale-105 transition-all"
-            >
-              <Send className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-3 px-3">
+               <button className="w-12 h-12 rounded-2xl flex items-center justify-center text-white/20 hover:text-cyan-400 transition-all">
+                  <Mic className="w-5 h-5" />
+               </button>
+               <button
+                  onClick={handleSend}
+                  disabled={!ollamaRunning || isThinking || !input.trim()}
+                  className="w-12 h-12 rounded-2xl bg-white text-black flex items-center justify-center hover:scale-105 transition-all shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+                >
+                  <Send className="w-5 h-5" />
+                </button>
+            </div>
           </div>
         </div>
       </footer>

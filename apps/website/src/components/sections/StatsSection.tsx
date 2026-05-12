@@ -16,6 +16,12 @@ function CountUp({ target, suffix, prefix }: { target: number; suffix: string; p
   const inView = useInView(ref, { once: true });
 
   useEffect(() => {
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+    if (isMobile) {
+      setCount(target);
+      return;
+    }
+    
     if (!inView) return;
     const duration = 2000;
     const steps = 60;

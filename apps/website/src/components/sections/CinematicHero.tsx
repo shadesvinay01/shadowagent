@@ -69,8 +69,10 @@ export default function CinematicHero() {
         } opacity-10`}
       />
       
-      {/* Noise Overlay */}
-      <div className="absolute inset-0 z-10 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none" />
+      {/* Noise Overlay - Disabled on mobile */}
+      {!isMobile && (
+        <div className="absolute inset-0 z-10 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none" />
+      )}
 
       {/* Massive Cinematic Text */}
       <div ref={textRef} className="relative z-20 flex flex-col items-center gap-4">

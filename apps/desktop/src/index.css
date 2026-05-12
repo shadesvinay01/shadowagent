@@ -4,87 +4,63 @@
 
 @layer base {
   :root {
-    --primary: 180 100% 50%;
-    --secondary: 280 100% 60%;
+    --background: 0 0% 2%;
+    --foreground: 0 0% 98%;
+    --primary: 210 100% 50%;
   }
 }
 
 @layer base {
   body {
-    @apply bg-black text-white font-orbitron antialiased overflow-hidden;
+    @apply bg-[#020202] text-[#E0E0E0] font-sans antialiased overflow-hidden;
   }
 }
 
-/* Cinematic Background */
-.cinematic-vignette {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.8) 100%);
-  pointer-events: none;
-  z-index: 5;
+/* Sophisticated Obsidian Glass */
+.glass-obsidian {
+  @apply bg-black/40 border border-white/[0.05] backdrop-blur-[60px] shadow-[0_24px_80px_rgba(0,0,0,1)];
+  background-image: linear-gradient(to bottom right, rgba(255,255,255,0.02), transparent);
 }
 
-/* Glowing Elements */
-.glow-cyan {
-  filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.4));
+.glass-card {
+  @apply bg-white/[0.02] border border-white/[0.05] backdrop-blur-3xl rounded-[2rem] transition-all duration-500 hover:bg-white/[0.04] hover:border-white/[0.1];
 }
 
-.glow-purple {
-  filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.4));
+/* Professional Depth */
+.inner-shadow {
+  box-shadow: inset 0 1px 1px 0 rgba(255,255,255,0.05);
 }
 
-/* Glassmorphism Ultra */
-.glass-ultra {
-  @apply bg-white/[0.03] border border-white/10 backdrop-blur-[40px] shadow-2xl;
+/* Clean Typography */
+.text-balance {
+  text-wrap: balance;
 }
 
-/* Animated HUD */
-@keyframes pulse-ring {
-  0% { transform: scale(0.8); opacity: 0; }
-  50% { opacity: 0.2; }
-  100% { transform: scale(1.2); opacity: 0; }
+.tracking-tighter {
+  letter-spacing: -0.02em;
 }
 
-.hud-ring {
-  position: absolute;
-  border: 1px solid rgba(0, 240, 255, 0.2);
-  border-radius: 50%;
-  animation: pulse-ring 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+/* Subtle Micro-Animations */
+@keyframes soft-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
-/* Typography Accents */
-.bg-text {
-  position: absolute;
-  font-size: 20rem;
-  font-weight: 900;
-  color: rgba(255,255,255,0.02);
-  line-height: 1;
-  pointer-events: none;
-  z-index: 1;
+.animate-float {
+  animation: soft-float 6s ease-in-out infinite;
 }
 
-/* Scanline / Grain */
-.grain-overlay {
-  position: absolute;
-  inset: 0;
-  background-image: url('https://grainy-gradients.vercel.app/noise.svg');
-  opacity: 0.05;
-  mix-blend-mode: overlay;
-  pointer-events: none;
-  z-index: 99;
+/* Refined HUD - Minimalist Lines */
+.refined-border {
+  @apply border border-white/[0.03] relative overflow-hidden;
 }
 
-.scanline-move {
-  position: absolute;
-  width: 100%;
-  height: 1px;
-  background: rgba(0, 240, 255, 0.1);
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
-  animation: scanmove 5s linear infinite;
-  z-index: 98;
+.refined-border::after {
+  content: "";
+  @apply absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent;
 }
 
-@keyframes scanmove {
-  0% { top: -10%; }
-  100% { top: 110%; }
-}
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.1); }

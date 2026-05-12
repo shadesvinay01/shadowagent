@@ -8,7 +8,7 @@ import { checkOllamaStatus } from "./lib/tauri/commands";
 import { 
   Bot, Settings, ShieldCheck, LogOut, Mic, Grid2X2, 
   Activity, Zap, Terminal, Lock, Cpu, Command, Shield, 
-  ChevronRight, Brain, Globe, Binary
+  ChevronRight, Brain, Globe, Binary, Search, Plus, Bell
 } from "lucide-react";
 
 type Tab = "chat" | "settings" | "voice" | "plugins";
@@ -26,177 +26,159 @@ export default function App() {
   }, []);
 
   return (
-    <div className="h-screen bg-black text-white font-orbitron overflow-hidden flex relative selection:bg-cyan-500/30">
+    <div className="h-screen bg-[#020202] text-[#f5f5f7] font-sans overflow-hidden flex relative selection:bg-blue-500/30">
       
-      {/* Ultra Cinematic Background Layers */}
+      {/* Sophisticated Ambient Background */}
       <NeuralCore />
-      <div className="cinematic-vignette" />
-      <div className="grain-overlay" />
-      <div className="scanline-move" />
-      <div className="bg-text top-[-2rem] left-[-2rem]">SHADOW</div>
-      <div className="bg-text bottom-[-2rem] right-[-2rem] opacity-[0.01]">CORE_v2</div>
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80 pointer-events-none" />
 
-      {/* Floating Orbital Navigation */}
-      <nav className="absolute left-10 top-1/2 -translate-y-1/2 flex flex-col gap-8 z-[100]">
-        {[
-          { id: 'chat', icon: <Bot className="w-6 h-6" />, label: 'NEURAL_LINK' },
-          { id: 'voice', icon: <Mic className="w-6 h-6" />, label: 'AUDIO_CORE' },
-          { id: 'plugins', icon: <Binary className="w-6 h-6" />, label: 'NODE_GRID' },
-          { id: 'settings', icon: <Settings className="w-6 h-6" />, label: 'SYSTEM' }
-        ].map((tab) => (
-          <button 
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id as Tab)}
-            className={`group relative w-16 h-16 rounded-full flex items-center justify-center transition-all duration-700 border ${
-              activeTab === tab.id 
-              ? 'bg-cyan-500/20 border-cyan-400 glow-cyan shadow-[0_0_30px_rgba(0,240,255,0.2)]' 
-              : 'bg-white/5 border-white/10 hover:border-white/30 hover:bg-white/10'
-            }`}
-          >
-            <div className="relative z-10">{tab.icon}</div>
-            
-            {/* Hover Label */}
-            <span className="absolute left-full ml-8 px-4 py-2 rounded bg-black/80 border border-cyan-500/20 text-[8px] font-bold tracking-[0.5em] uppercase opacity-0 group-hover:opacity-100 transition-all pointer-events-none whitespace-nowrap">
-               {tab.label}
-            </span>
-
-            {/* Active Indicator Pulse */}
-            {activeTab === tab.id && (
-              <div className="absolute inset-[-10px] border border-cyan-500/20 rounded-full animate-ping opacity-20" />
-            )}
-          </button>
-        ))}
-      </nav>
-
-      {/* Main UI Layout */}
-      <div className="flex-1 flex flex-col relative z-50">
+      {/* Modern Sidebar (Apple/Linear Style) */}
+      <aside className="w-[280px] border-r border-white/5 flex flex-col bg-black/20 backdrop-blur-3xl z-50">
         
-        {/* Top Telemetry Strip */}
-        <header className="h-20 px-12 flex items-center justify-between pointer-events-none">
-           <div className="flex items-center gap-12">
-              <div className="flex flex-col">
-                 <span className="text-[10px] font-black tracking-[0.4em] text-cyan-400">STATUS_REPORT</span>
-                 <div className="flex items-center gap-2 mt-1">
-                    <div className={`w-2 h-2 rounded-full ${ollamaRunning ? 'bg-cyan-500 animate-pulse' : 'bg-red-600'}`} />
-                    <span className="text-[8px] font-mono text-white/30 tracking-widest">{ollamaRunning ? 'ENGINE_ONLINE' : 'CRITICAL_OFFLINE'}</span>
-                 </div>
-              </div>
-              
-              <div className="flex flex-col">
-                 <span className="text-[10px] font-black tracking-[0.4em] text-white/20">SOVEREIGNTY</span>
-                 <span className="text-[8px] font-mono text-white/60 tracking-widest">100% LOCAL // ENCRYPTED</span>
-              </div>
+        {/* Workspace Branding */}
+        <div className="h-20 px-8 flex items-center gap-4">
+           <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center">
+              <Shield className="w-5 h-5 text-black" />
            </div>
-
-           <div className="flex items-center gap-6 pointer-events-auto">
-              <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors cursor-pointer">
-                 <Shield className="w-6 h-6 text-white/40" />
-              </div>
-              <LogoMark size={40} />
-           </div>
-        </header>
-
-        {/* Content Viewport */}
-        <div className="flex-1 flex">
-           
-           {/* Left Spacing (Navigation Area) */}
-           <div className="w-32" />
-
-           {/* Main Content Area */}
-           <div className="flex-1 relative flex">
-              <AnimatePresence mode="wait">
-                 {activeTab === "chat" && (
-                   <motion.div 
-                     key="chat" 
-                     initial={{ opacity: 0, x: -50 }} 
-                     animate={{ opacity: 1, x: 0 }} 
-                     exit={{ opacity: 0, x: 50 }}
-                     className="flex-1 max-w-4xl h-[85vh] my-auto ml-10 glass-ultra rounded-[3rem] relative overflow-hidden"
-                   >
-                      <div className="hud-corner hud-tl" />
-                      <div className="hud-corner hud-tr" />
-                      <div className="hud-corner hud-bl" />
-                      <div className="hud-corner hud-br" />
-                      <ChatInterface ollamaRunning={ollamaRunning} />
-                   </motion.div>
-                 )}
-
-                 {activeTab !== "chat" && (
-                    <motion.div 
-                      key="placeholder"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="flex-1 flex items-center justify-center"
-                    >
-                       <div className="text-center space-y-4">
-                          <Brain className="w-20 h-20 text-cyan-500 mx-auto animate-pulse" />
-                          <h2 className="text-3xl font-black tracking-widest text-glow-cyan uppercase">{activeTab}</h2>
-                          <p className="text-[10px] text-white/20 tracking-[0.5em] uppercase">Initializing Neural Matrix...</p>
-                       </div>
-                    </motion.div>
-                 )}
-              </AnimatePresence>
-           </div>
-
-           {/* Right Dashboard Sidebar */}
-           <div className="w-96 p-12 space-y-12 bg-gradient-to-l from-black/40 to-transparent backdrop-blur-sm border-l border-white/5">
-              <div className="space-y-6">
-                 <h4 className="text-[10px] font-black tracking-[0.5em] text-white/30 uppercase underline underline-offset-8">Neural_Activity</h4>
-                 <div className="space-y-4">
-                    {[
-                      { l: 'Mem_Load', v: '14.2 GB' },
-                      { l: 'GPU_Temp', v: '42°C' },
-                      { l: 'Neural_Rate', v: '48 t/s' }
-                    ].map(stat => (
-                      <div key={stat.l} className="flex justify-between items-center border-b border-white/5 pb-2">
-                         <span className="text-[9px] font-mono text-white/20 uppercase">{stat.l}</span>
-                         <span className="text-[10px] font-mono text-cyan-400">{stat.v}</span>
-                      </div>
-                    ))}
-                 </div>
-              </div>
-
-              <div className="space-y-6">
-                 <h4 className="text-[10px] font-black tracking-[0.5em] text-white/30 uppercase underline underline-offset-8">Recent_Nodes</h4>
-                 <div className="grid grid-cols-1 gap-4">
-                    {['WhatsApp_Sync', 'Email_Agent', 'File_Scanner'].map(node => (
-                      <div key={node} className="p-4 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-between group hover:bg-white/[0.05] transition-all cursor-pointer">
-                         <span className="text-[10px] font-bold text-white/50 group-hover:text-cyan-400 transition-colors uppercase">{node}</span>
-                         <ChevronRight className="w-3 h-3 text-white/10 group-hover:text-cyan-400" />
-                      </div>
-                    ))}
-                 </div>
-              </div>
-
-              <div className="pt-20">
-                 <div className="p-6 rounded-3xl bg-cyan-500/10 border border-cyan-500/20 text-center space-y-4">
-                    <Activity className="w-8 h-8 text-cyan-400 mx-auto" />
-                    <p className="text-[10px] font-bold text-cyan-400/60 uppercase tracking-widest leading-loose">
-                       All systems operational.<br />
-                       Encrypted link secure.
-                    </p>
-                 </div>
-              </div>
+           <div className="flex flex-col">
+              <span className="text-sm font-bold tracking-tight">ShadowAgent</span>
+              <span className="text-[10px] text-white/30 font-medium uppercase tracking-widest">Sovereign Studio</span>
            </div>
         </div>
 
-        {/* Bottom OS Bar */}
-        <footer className="h-12 border-t border-white/5 flex items-center px-12 justify-between pointer-events-none opacity-20">
-           <div className="text-[8px] font-mono tracking-[0.5em] uppercase">SHADOW_AGENT // KERNEL_v.2.0.1</div>
-           <div className="text-[8px] font-mono tracking-[0.5em] uppercase">05:42:11 UTC</div>
-        </footer>
-      </div>
-    </div>
-  );
-}
+        {/* Global Search Mockup */}
+        <div className="px-6 mb-8">
+           <div className="h-10 px-4 rounded-xl bg-white/5 border border-white/5 flex items-center gap-3 group hover:bg-white/10 transition-all cursor-text">
+              <Search className="w-4 h-4 text-white/20 group-hover:text-white/40" />
+              <span className="text-xs text-white/20 font-medium">Search neural nodes...</span>
+              <div className="ml-auto px-1.5 py-0.5 rounded border border-white/10 text-[8px] font-bold text-white/10 uppercase">⌘K</div>
+           </div>
+        </div>
 
-function LogoMark({ size }: { size: number }) {
-  return (
-    <div className="relative" style={{ width: size, height: size }}>
-      <div className="absolute inset-0 bg-cyan-500/20 rounded-full blur-xl" />
-      <div className="relative w-full h-full rounded-xl border border-white/20 flex items-center justify-center bg-black">
-         <div className="w-1/2 h-1/2 bg-cyan-500 rounded-sm rotate-45" />
-      </div>
+        {/* Main Navigation */}
+        <nav className="flex-1 px-4 space-y-1">
+          {[
+            { id: 'chat', icon: <Bot className="w-4 h-4" />, label: 'Neural Chat' },
+            { id: 'voice', icon: <Mic className="w-4 h-4" />, label: 'Voice Protocol' },
+            { id: 'plugins', icon: <Binary className="w-4 h-4" />, label: 'Marketplace' },
+            { id: 'settings', icon: <Settings className="w-4 h-4" />, label: 'Preferences' }
+          ].map((tab) => (
+            <button 
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as Tab)}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative group ${
+                activeTab === tab.id 
+                ? 'bg-white/10 text-white inner-shadow' 
+                : 'text-white/40 hover:bg-white/5 hover:text-white'
+              }`}
+            >
+              {tab.icon}
+              <span className="text-xs font-semibold">{tab.label}</span>
+              {activeTab === tab.id && (
+                <motion.div layoutId="activeNav" className="absolute left-[-4px] top-1/2 -translate-y-1/2 w-1 h-5 bg-white rounded-full" />
+              )}
+            </button>
+          ))}
+        </nav>
+
+        {/* Bottom Quick Stats */}
+        <div className="p-6 border-t border-white/5 space-y-6">
+           <div className="space-y-3">
+              <div className="flex justify-between items-center text-[10px] font-bold text-white/20 uppercase tracking-widest">
+                 <span>Neural Load</span>
+                 <span className="text-blue-400">12%</span>
+              </div>
+              <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                 <motion.div initial={{ width: 0 }} animate={{ width: '12%' }} className="h-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
+              </div>
+           </div>
+
+           <div className="flex items-center gap-3 px-2">
+              <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.4)]" />
+              <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Core Secured</span>
+           </div>
+        </div>
+      </aside>
+
+      {/* Main Content Viewport */}
+      <main className="flex-1 flex flex-col relative z-20">
+        
+        {/* Clean Global Header */}
+        <header className="h-20 px-10 flex items-center justify-between border-b border-white/5 bg-black/20 backdrop-blur-md">
+           <div className="flex items-center gap-6">
+              <h2 className="text-lg font-bold tracking-tight text-white/90 capitalize">{activeTab.replace('_', ' ')}</h2>
+              <div className="h-4 w-px bg-white/10" />
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/5 border border-blue-500/10">
+                 <span className="text-[9px] font-bold text-blue-400/80 uppercase tracking-widest">Main Branch // LTS</span>
+              </div>
+           </div>
+           
+           <div className="flex items-center gap-4">
+              <button className="p-2.5 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all">
+                 <Bell className="w-4 h-4 text-white/40" />
+              </button>
+              <button className="flex items-center gap-2 pl-2 pr-4 py-1.5 rounded-xl bg-white text-black font-bold text-[11px] hover:bg-white/90 transition-all shadow-lg shadow-white/5">
+                 <Plus className="w-4 h-4" />
+                 Deploy Node
+              </button>
+           </div>
+        </header>
+
+        {/* Dynamic Content Area */}
+        <div className="flex-1 relative flex flex-col overflow-hidden">
+           <AnimatePresence mode="wait">
+             {activeTab === "chat" && (
+               <motion.div 
+                 key="chat" 
+                 initial={{ opacity: 0, y: 10 }} 
+                 animate={{ opacity: 1, y: 0 }} 
+                 exit={{ opacity: 0, y: -10 }}
+                 className="flex-1"
+               >
+                 <ChatInterface ollamaRunning={ollamaRunning} />
+               </motion.div>
+             )}
+
+             {activeTab !== "chat" && (
+                <motion.div 
+                  key="placeholder"
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="flex-1 flex items-center justify-center p-20"
+                >
+                   <div className="max-w-md w-full glass-card p-12 text-center space-y-8 animate-float">
+                      <div className="w-20 h-20 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto">
+                         <Activity className="w-10 h-10 text-white/20" />
+                      </div>
+                      <div className="space-y-4">
+                         <h3 className="text-2xl font-bold tracking-tight uppercase tracking-widest">{activeTab} Interface</h3>
+                         <p className="text-sm text-white/30 leading-relaxed font-medium">Initialising the sovereign neural workspace. This process happens entirely on your machine.</p>
+                      </div>
+                      <div className="flex justify-center gap-2">
+                         {[0,1,2].map(i => <div key={i} className="w-1.5 h-1.5 rounded-full bg-white/10 animate-pulse" />)}
+                      </div>
+                   </div>
+                </motion.div>
+             )}
+           </AnimatePresence>
+        </div>
+      </main>
+
+      <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&display=swap');
+        
+        :root {
+          --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+          --font-syne: 'Syne', sans-serif;
+        }
+
+        .font-sans { font-family: var(--font-sans); }
+        .font-syne { font-family: var(--font-syne); }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
+      `}</style>
     </div>
   );
 }

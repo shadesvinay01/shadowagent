@@ -207,7 +207,7 @@ export default function PitchDeck() {
   const slide = slides[currentSlide];
 
   return (
-    <div className="fixed inset-0 bg-[#020204] text-white overflow-hidden flex flex-col font-manrope">
+    <div className="fixed inset-0 bg-[#020204] text-white overflow-hidden flex flex-col font-manrope cursor-default selection:bg-cyan-500/30">
       
       {/* 3D Neural Background */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-30">
@@ -233,7 +233,7 @@ export default function PitchDeck() {
       </div>
 
       {/* Main Slide Area - No Boxes */}
-      <div className="flex-1 relative flex items-center justify-center perspective-2000 px-10 md:px-24">
+      <div className="flex-1 relative flex items-center justify-center perspective-2000 px-10 md:px-24 z-30">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={slide.id}
@@ -370,7 +370,7 @@ export default function PitchDeck() {
       </div>
 
       {/* Navigation Footer - Minimal */}
-      <div className="p-12 flex justify-between items-center relative z-50">
+      <div className="p-12 flex justify-between items-center relative z-[100]">
         <div className="flex gap-4">
           <button onClick={() => paginate(-1)} disabled={currentSlide === 0} className="text-xs font-bold text-white/20 hover:text-white transition-all uppercase tracking-[0.2em] disabled:opacity-5">{'<'} Previous</button>
           <button onClick={() => paginate(1)} disabled={currentSlide === slides.length - 1} className="text-xs font-bold text-white/20 hover:text-white transition-all uppercase tracking-[0.2em] disabled:opacity-5">Next {'>'}</button>

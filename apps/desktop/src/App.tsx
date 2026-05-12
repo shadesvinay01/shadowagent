@@ -1,80 +1,181 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Shield, Zap, Activity, MessageSquare, Terminal } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import ChatInterface from "./components/chat/ChatInterface";
+import OnboardingWizard from "./components/onboarding/OnboardingWizard";
+import { checkOllamaStatus } from "./lib/tauri/commands";
+import { 
+  MessageSquare, LayoutGrid, History, Library, Settings, 
+  ChevronLeft, ChevronRight, Search, Bell, Plus, 
+  Zap, Shield, User, Activity, Mail, Calendar, FileText, Share2, ArrowRight
+} from "lucide-react";
+
+type Tab = "chat" | "tools" | "history" | "knowledge" | "settings";
 
 export default function App() {
-  const [mounted, setMounted] = useState(false);
+  const [activeTab, setActiveTab] = useState<Tab>("chat");
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [ollamaRunning, setOllamaRunning] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(true);
 
   useEffect(() => {
-    console.log("DEBUG: APP_MOUNTED");
-    setMounted(true);
+    const isComplete = localStorage.getItem("shadow_onboarding_complete");
+    if (isComplete) setShowOnboarding(false);
+
+    const interval = setInterval(() => {
+      checkOllamaStatus().then(setOllamaRunning).catch(() => setOllamaRunning(false));
+    }, 5000);
+    return () => clearInterval(interval);
   }, []);
 
-  if (!mounted) return <div className="bg-black h-screen w-screen" />;
+  const handleOnboardingComplete = () => {
+    localStorage.setItem("shadow_onboarding_complete", "true");
+    setShowOnboarding(false);
+  };
 
   return (
-    <div className="h-screen w-screen bg-[#0A0A0A] text-white flex flex-col items-center justify-center p-20 overflow-hidden relative">
+    <div className="h-screen w-screen flex bg-[#0A0A0A] text-white font-sans overflow-hidden relative selection:bg-cyan-500/30">
       
+      <AnimatePresence>
+        {showOnboarding && (
+          <motion.div exit={{ opacity: 0, scale: 1.1 }} className="fixed inset-0 z-[200]">
+             <OnboardingWizard onComplete={handleOnboardingComplete} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Background Decor */}
-      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(0,240,255,0.05)_0%,transparent_70%)]" />
-      <div className="absolute -top-40 -left-40 w-96 h-96 bg-cyan-500/10 blur-[150px] rounded-full" />
-      <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-purple-500/10 blur-[150px] rounded-full" />
+      <div className="bg-glow glow-left" />
+      <div className="bg-glow glow-right" />
 
-      {/* Main Debug Panel */}
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-2xl bg-white/[0.02] backdrop-blur-[100px] border border-white/5 rounded-[4rem] p-20 text-center space-y-12 relative z-10 shadow-2xl"
+      {/* 1. Left Sidebar */}
+      <motion.aside 
+        initial={false}
+        animate={{ width: isSidebarCollapsed ? 80 : 280 }}
+        className="h-full border-r border-white/5 bg-black/40 backdrop-blur-3xl flex flex-col z-[100] relative"
       >
-         <div className="relative inline-block">
-            <div className="absolute inset-0 bg-cyan-500/20 blur-3xl animate-pulse rounded-full" />
-            <div className="w-32 h-32 rounded-[2.5rem] bg-white/[0.03] border border-white/10 flex items-center justify-center text-cyan-400 relative z-10">
-               <Shield className="w-16 h-16" />
+        <div className="h-20 flex items-center px-6 gap-4 overflow-hidden whitespace-nowrap">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-purple-600 p-[1px] flex-shrink-0">
+            <div className="w-full h-full rounded-xl bg-black flex items-center justify-center">
+              <Shield className="w-5 h-5 text-cyan-400" />
             </div>
-         </div>
+          </div>
+          {!isSidebarCollapsed && (
+            <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-lg font-bold tracking-tighter">
+              ShadowAgent
+            </motion.span>
+          )}
+        </div>
 
-         <div className="space-y-6">
-            <h1 className="text-6xl font-black tracking-tighter uppercase">Shadow_Online</h1>
-            <p className="text-xl text-white/30 font-medium uppercase tracking-[0.2em]">Sovereign AI Node Initialized</p>
-         </div>
+        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+          {[
+            { id: 'chat', icon: <MessageSquare className="w-5 h-5" />, label: 'Neural Chat' },
+            { id: 'tools', icon: <LayoutGrid className="w-5 h-5" />, label: 'Tools Hub' },
+            { id: 'history', icon: <History className="w-5 h-5" />, label: 'Activity Log' },
+            { id: 'knowledge', icon: <Library className="w-5 h-5" />, label: 'Memory Bank' },
+            { id: 'settings', icon: <Settings className="w-5 h-5" />, label: 'Preferences' }
+          ].map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id as Tab)}
+              className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all relative ${
+                activeTab === item.id ? 'bg-white/10 text-white' : 'text-white/30 hover:bg-white/5 hover:text-white/60'
+              }`}
+            >
+              <div className="flex-shrink-0">{item.icon}</div>
+              {!isSidebarCollapsed && <span className="text-[10px] font-black tracking-[0.2em] uppercase">{item.label}</span>}
+            </button>
+          ))}
+        </nav>
 
-         <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white/5 border border-white/5 p-6 rounded-3xl flex items-center gap-4">
-               <Zap className="w-6 h-6 text-cyan-400" />
-               <div className="text-left">
-                  <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">Engine</p>
-                  <p className="text-sm font-bold text-cyan-400">Stable</p>
-               </div>
-            </div>
-            <div className="bg-white/5 border border-white/5 p-6 rounded-3xl flex items-center gap-4">
-               <Activity className="w-6 h-6 text-purple-400" />
-               <div className="text-left">
-                  <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">Render</p>
-                  <p className="text-sm font-bold text-purple-400">Hardware</p>
-               </div>
-            </div>
-         </div>
+        <div className="p-4 border-t border-white/5">
+          <button onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} className="w-full flex items-center justify-center py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+            {isSidebarCollapsed ? <ChevronRight className="w-4 h-4 text-white/40" /> : <ChevronLeft className="w-4 h-4 text-white/40" />}
+          </button>
+        </div>
+      </motion.aside>
 
-         <button 
-           onClick={() => window.location.reload()}
-           className="px-12 py-5 rounded-2xl bg-white text-black font-black text-xs uppercase tracking-[0.3em] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-white/10"
-         >
-            Force Refresh Node
-         </button>
-      </motion.div>
+      {/* 2. Main Area */}
+      <main className="flex-1 flex flex-col relative z-10 overflow-hidden">
+        <header className="h-20 px-10 flex items-center justify-between border-b border-white/5 bg-black/20 backdrop-blur-xl">
+           <div className="flex items-center gap-8 flex-1 max-w-2xl">
+              <div className="h-11 flex-1 px-5 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center gap-4">
+                 <Search className="w-4 h-4 text-white/20" />
+                 <input type="text" placeholder="Global Search (Cmd + K)" className="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-white/10 text-[10px] font-bold uppercase tracking-widest" />
+              </div>
+           </div>
+           <div className="flex items-center gap-4 pl-10">
+              <button className="flex items-center gap-3 px-6 py-2.5 rounded-2xl bg-white text-black font-black text-[10px] hover:bg-white/90 transition-all uppercase tracking-[0.2em]">
+                 <Plus className="w-4 h-4" /> New Task
+              </button>
+           </div>
+        </header>
 
-      {/* Security Footer */}
-      <footer className="absolute bottom-10 flex gap-12 opacity-20">
-         <div className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.5em]">
-            <Terminal className="w-4 h-4" /> System_OK
-         </div>
-         <div className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.5em]">
-            <MessageSquare className="w-4 h-4" /> Comm_Linked
-         </div>
-      </footer>
+        <div className="flex-1 flex overflow-hidden">
+           <div className="flex-1 overflow-hidden relative">
+              <AnimatePresence mode="wait">
+                 {activeTab === "chat" && (
+                   <motion.div key="chat" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="h-full">
+                      <ChatInterface ollamaRunning={ollamaRunning} />
+                   </motion.div>
+                 )}
 
+                 {activeTab === "tools" && (
+                   <motion.div key="tools" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="h-full p-12 overflow-y-auto">
+                      <div className="max-w-6xl mx-auto space-y-12">
+                         <h2 className="text-4xl font-extrabold tracking-tighter">Tools Hub</h2>
+                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {[
+                              { l: 'WhatsApp', i: <MessageSquare className="w-8 h-8" />, c: 'text-green-500', d: 'Secure local message sync.' },
+                              { l: 'Email Agent', i: <Mail className="w-8 h-8" />, c: 'text-blue-500', d: 'Smart sorting and drafts.' },
+                              { l: 'Calendar', i: <Calendar className="w-8 h-8" />, c: 'text-purple-500', d: 'Autonomous scheduling.' }
+                            ].map(tool => (
+                              <div key={tool.l} className="glass-panel p-8 rounded-[2.5rem] flex flex-col gap-6 group hover:border-cyan-500/30 transition-all cursor-pointer">
+                                 <div className={`w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center ${tool.c}`}>{tool.i}</div>
+                                 <div className="space-y-2">
+                                    <h4 className="text-xl font-bold tracking-tight">{tool.l}</h4>
+                                    <p className="text-sm text-white/30 leading-relaxed">{tool.d}</p>
+                                 </div>
+                                 <div className="mt-auto flex items-center justify-between pt-6 border-t border-white/5">
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-white/20">Operational</span>
+                                    <ArrowRight className="w-4 h-4 text-white/10 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" />
+                                 </div>
+                              </div>
+                            ))}
+                         </div>
+                      </div>
+                   </motion.div>
+                 )}
+
+                 {["history", "knowledge", "settings"].includes(activeTab) && (
+                   <motion.div key="other" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full flex items-center justify-center">
+                      <div className="max-w-xl w-full p-20 glass-panel rounded-[4rem] text-center space-y-8">
+                         <Activity className="w-12 h-12 text-cyan-400 mx-auto" />
+                         <h2 className="text-2xl font-extrabold tracking-tighter uppercase">{activeTab} Interface</h2>
+                         <p className="text-sm text-white/30 font-medium">Coming soon in the next Shadow update.</p>
+                      </div>
+                   </motion.div>
+                 )}
+              </AnimatePresence>
+           </div>
+
+           {/* Right Panel */}
+           <aside className="w-80 border-l border-white/5 bg-black/40 backdrop-blur-3xl hidden xl:flex flex-col p-8 space-y-10">
+              <div className="space-y-6">
+                 <h4 className="text-[10px] font-black text-white/20 uppercase tracking-[0.5em]">Command_Status</h4>
+                 <div className="space-y-3">
+                    {[{ l: 'WhatsApp', s: 'Syncing', c: 'bg-green-500' }, { l: 'Gmail', s: 'Connected', c: 'bg-blue-500' }].map(item => (
+                      <div key={item.l} className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+                         <span className="text-[10px] font-bold uppercase tracking-widest">{item.l}</span>
+                         <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 shadow-lg" />
+                      </div>
+                    ))}
+                 </div>
+              </div>
+           </aside>
+        </div>
+      </main>
     </div>
   );
 }

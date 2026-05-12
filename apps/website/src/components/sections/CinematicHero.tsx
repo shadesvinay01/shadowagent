@@ -11,13 +11,27 @@ export default function CinematicHero() {
   useEffect(() => {
     if (!containerRef.current || !textRef.current || !bgRef.current) return;
 
+    // Detect mobile to disable heavy scroll animations
+    const isMobile = window.innerWidth < 768;
+
     const ctx = gsap.context(() => {
+      if (isMobile) {
+        // Simplified mobile entrance animation without scroll pinning
+        gsap.from(textRef.current, {
+          y: 50,
+          opacity: 0,
+          duration: 1.5,
+          ease: "power3.out"
+        });
+        return;
+      }
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
-          end: "+=200%", // Pin for 2 viewport heights
-          scrub: 1, // Smooth scrubbing
+          end: "+=200%",
+          scrub: 1,
           pin: true,
         },
       });

@@ -86,7 +86,7 @@ export default function Navbar({ onDownload }: { onDownload: () => void }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             className="md:hidden mx-4 mt-2 rounded-2xl border border-white/8 overflow-hidden"
-            style={{ background: "rgba(5,5,10,0.97)", backdropFilter: "blur(24px)" }}
+            style={{ background: "rgba(5,5,10,0.99)" }}
           >
             <div className="p-6 flex flex-col gap-5">
               {navLinks.map((link) => (

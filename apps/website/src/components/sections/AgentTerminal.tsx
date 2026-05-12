@@ -22,11 +22,14 @@ export default function AgentTerminal() {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
+    // Detect mobile to slow down terminal for better readability and performance
+    const delay = typeof window !== "undefined" && window.innerWidth < 768 ? 2500 : 1500;
+
     if (index < logs.length) {
       const timeout = setTimeout(() => {
         setVisibleLogs((prev) => [...prev, logs[index]]);
         setIndex((prev) => prev + 1);
-      }, 1500);
+      }, delay);
       return () => clearTimeout(timeout);
     } else {
       const reset = setTimeout(() => {

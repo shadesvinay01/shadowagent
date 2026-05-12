@@ -49,6 +49,10 @@ export default function CustomCursor() {
     };
   }, []);
 
+  if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) {
+    return null;
+  }
+
   return (
     <>
       {/* Dot */}

@@ -1,30 +1,32 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
-import { Canvas } from "@react-three/fiber";
-import GlassPrism from "@/components/canvas/GlassPrism";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import LogoMark from "@/components/ui/LogoMark";
-import CinematicHero from "@/components/sections/CinematicHero";
-import CinematicReveal from "@/components/sections/CinematicReveal";
-import StatsSection from "@/components/sections/StatsSection";
-import Capabilities from "@/components/sections/Capabilities";
-import HowItWorks from "@/components/sections/HowItWorks";
-import ComparisonTable from "@/components/sections/ComparisonTable";
-import PrivacyFortress from "@/components/sections/PrivacyFortress";
-import LiveDemo from "@/components/sections/LiveDemo";
-import Testimonials from "@/components/sections/Testimonials";
-import Pricing from "@/components/sections/Pricing";
-import FAQ from "@/components/sections/FAQ";
-import AgentTerminal from "@/components/sections/AgentTerminal";
-import PrivacyComparison from "@/components/sections/PrivacyComparison";
-import ProductRoadmap from "@/components/sections/ProductRoadmap";
 import { motion } from "framer-motion";
 import { Zap } from "lucide-react";
-import Newsletter from "@/components/sections/Newsletter";
 import CustomCursor from "@/components/ui/CustomCursor";
-import DownloadModal from "@/components/ui/DownloadModal";
+
+// Dynamic Imports with No SSR for heavy components
+const CinematicHero = dynamic(() => import("@/components/sections/CinematicHero"), { ssr: true });
+const AgentTerminal = dynamic(() => import("@/components/sections/AgentTerminal"), { ssr: false });
+const CinematicReveal = dynamic(() => import("@/components/sections/CinematicReveal"), { ssr: false });
+const StatsSection = dynamic(() => import("@/components/sections/StatsSection"), { ssr: false });
+const Capabilities = dynamic(() => import("@/components/sections/Capabilities"), { ssr: false });
+const HowItWorks = dynamic(() => import("@/components/sections/HowItWorks"), { ssr: false });
+const ComparisonTable = dynamic(() => import("@/components/sections/ComparisonTable"), { ssr: false });
+const PrivacyComparison = dynamic(() => import("@/components/sections/PrivacyComparison"), { ssr: false });
+const PrivacyFortress = dynamic(() => import("@/components/sections/PrivacyFortress"), { ssr: false });
+const LiveDemo = dynamic(() => import("@/components/sections/LiveDemo"), { ssr: false });
+const Testimonials = dynamic(() => import("@/components/sections/Testimonials"), { ssr: false });
+const Pricing = dynamic(() => import("@/components/sections/Pricing"), { ssr: false });
+const FAQ = dynamic(() => import("@/components/sections/FAQ"), { ssr: false });
+const ProductRoadmap = dynamic(() => import("@/components/sections/ProductRoadmap"), { ssr: false });
+const Newsletter = dynamic(() => import("@/components/sections/Newsletter"), { ssr: false });
+const DownloadModal = dynamic(() => import("@/components/ui/DownloadModal"), { ssr: false });
+const GlassPrism = dynamic(() => import("@/components/canvas/GlassPrism"), { ssr: false });
+const Canvas = dynamic(() => import("@react-three/fiber").then(mod => mod.Canvas), { ssr: false });
 
 export default function Home() {
   const [showDownload, setShowDownload] = useState(false);
@@ -46,24 +48,27 @@ export default function Home() {
       {/* Download Modal */}
       {showDownload && <DownloadModal onClose={() => setShowDownload(false)} />}
 
-      {/* Photorealistic Glass Backdrop — only on desktop */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
+      {/* Photorealistic Glass Backdrop — only on desktop and only after hydration */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         {isDesktop ? (
-          <Canvas 
-            camera={{ position: [0, 0, 10], fov: 45 }}
-            dpr={[1, 1.5]}
-            gl={{ 
-              antialias: false, 
-              powerPreference: "high-performance",
-              alpha: true,
-              stencil: false,
-              depth: false
-            }}
-          >
-            <GlassPrism />
-          </Canvas>
+          <div className="w-full h-full opacity-60">
+            <Canvas 
+              camera={{ position: [0, 0, 10], fov: 45 }}
+              dpr={[1, 1.2]} // Further capped for safety
+              gl={{ 
+                antialias: false, 
+                powerPreference: "high-performance",
+                alpha: true,
+                stencil: false,
+                depth: false,
+                preserveDrawingBuffer: false
+              }}
+            >
+              <GlassPrism />
+            </Canvas>
+          </div>
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-[#050508] via-[#0a0a15] to-[#050508]" />
+          <div className="absolute inset-0 bg-[#050508]" />
         )}
       </div>
 

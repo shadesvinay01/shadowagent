@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import { Syne, Manrope } from "next/font/google";
+import { Syne, Manrope, Orbitron, Space_Grotesk, Syncopate } from "next/font/google";
 import "./globals.css";
 import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
 
 const syne = Syne({ subsets: ["latin"], variable: "--font-syne", weight: ["400", "600", "700", "800"] });
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", weight: ["300", "400", "500", "600", "700"] });
+const orbitron = Orbitron({ subsets: ["latin"], variable: "--font-orbitron", weight: ["400", "700", "900"] });
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space", weight: ["300", "400", "700"] });
+const syncopate = Syncopate({ subsets: ["latin"], variable: "--font-syncopate", weight: ["400", "700"] });
 
 export const metadata: Metadata = {
   title: "ShadowAgent | The Ultimate Local AI Desktop Agent for Privacy",
@@ -28,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className={`${syne.variable} ${manrope.variable} font-manrope antialiased bg-[#050508] text-white selection:bg-cyan-500/30 overflow-x-hidden`}>
+      <body className={`${syne.variable} ${manrope.variable} ${orbitron.variable} ${spaceGrotesk.variable} ${syncopate.variable} font-space antialiased bg-[#050508] text-white selection:bg-cyan-500/30 overflow-x-hidden`}>
         {/* Cinematic Noise Overlay - Disabled on mobile/touch for performance */}
         {typeof window !== "undefined" && window.innerWidth > 1024 && !window.matchMedia("(pointer: coarse)").matches && (
           <div className="fixed inset-0 z-[100] pointer-events-none opacity-[0.03] mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />

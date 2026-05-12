@@ -7,7 +7,7 @@ import Connections from "./components/settings/Connections";
 import { checkOllamaStatus } from "./lib/tauri/commands";
 import { 
   Bot, Settings, ShieldCheck, LogOut, Mic, Grid2X2, 
-  Activity, Zap, Terminal, Lock, Cpu, Command 
+  Activity, Zap, Terminal, Lock, Cpu, Command, Box, CpuIcon, Layers, Shield
 } from "lucide-react";
 
 type Tab = "chat" | "settings" | "voice" | "plugins";
@@ -18,96 +18,124 @@ export default function App() {
   const [systemLoad, setSystemLoad] = useState(12);
 
   useEffect(() => {
-    // Force setup complete for this demo session to ensure immediate access
     localStorage.setItem("shadow_setup_complete", "true");
-
     const checkStatus = () => {
       checkOllamaStatus().then(setOllamaRunning).catch(() => setOllamaRunning(false));
       setSystemLoad(Math.floor(Math.random() * 15) + 5);
     };
-
     checkStatus();
     const interval = setInterval(checkStatus, 5000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="h-screen bg-[#020203] text-white selection:bg-cyan-500/30 font-space overflow-hidden flex relative border border-white/5 m-2 rounded-2xl">
+    <div className="h-screen bg-black text-white selection:bg-cyan-500/30 font-orbitron overflow-hidden flex relative">
       
-      {/* Editorial Grid Background */}
-      <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none bg-[size:30px_30px] bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)]" />
+      {/* Immersive Background Layers */}
+      <div className="neural-bg" />
+      <div className="grid-overlay" />
+      <div className="scanline" />
 
-      {/* Modern Sidebar - Floating Design */}
-      <aside className="w-20 border-r border-white/5 flex flex-col items-center py-10 gap-10 bg-black/40 backdrop-blur-3xl z-50">
-        <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center">
-           <ShieldCheck className="w-6 h-6 text-black" />
-        </div>
+      {/* Floating Sidebar HUD */}
+      <aside className="w-28 relative z-50 flex flex-col items-center py-12 gap-14 bg-black/40 border-r border-white/10 backdrop-blur-3xl shadow-2xl">
+        <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 to-transparent pointer-events-none" />
         
-        <nav className="flex flex-col gap-6 flex-1">
+        <motion.div 
+          whileHover={{ scale: 1.1, rotate: 10 }}
+          className="relative w-16 h-16 rounded-[1.5rem] bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center neon-border-cyan group"
+        >
+           <Shield className="w-8 h-8 text-cyan-400 drop-shadow-[0_0_10px_rgba(0,240,255,0.8)]" />
+           <div className="hud-corner hud-tl !w-4 !h-4" />
+           <div className="hud-corner hud-br !w-4 !h-4" />
+        </motion.div>
+        
+        <nav className="flex flex-col gap-10 flex-1">
           {[
-            { id: 'chat', icon: <Bot className="w-5 h-5" />, color: 'text-white' },
-            { id: 'voice', icon: <Mic className="w-5 h-5" />, color: 'text-cyan-400' },
-            { id: 'plugins', icon: <Grid2X2 className="w-5 h-5" />, color: 'text-purple-400' },
-            { id: 'settings', icon: <Settings className="w-5 h-5" />, color: 'text-white/60' }
+            { id: 'chat', icon: <Bot className="w-6 h-6" />, label: 'NEURAL_LINK', color: 'cyan' },
+            { id: 'voice', icon: <Mic className="w-6 h-6" />, label: 'VOICE_IO', color: 'purple' },
+            { id: 'plugins', icon: <Layers className="w-6 h-6" />, label: 'NODE_STORE', color: 'cyan' },
+            { id: 'settings', icon: <Settings className="w-6 h-6" />, label: 'CORE_SYST', color: 'white' }
           ].map((tab) => (
             <button 
               key={tab.id}
               onClick={() => setActiveTab(tab.id as Tab)}
-              className={`p-4 rounded-xl transition-all duration-300 relative group ${
+              className={`group relative p-5 rounded-2xl transition-all duration-500 ${
                 activeTab === tab.id 
-                ? 'bg-white/10 text-white border border-white/10 shadow-[0_0_20px_rgba(255,255,255,0.05)]' 
-                : 'text-white/20 hover:text-white/60'
+                ? 'bg-cyan-500/20 border-cyan-500/40 neon-border-cyan text-cyan-400' 
+                : 'text-white/20 hover:text-white/80 hover:bg-white/5'
               }`}
             >
-              {tab.icon}
+              <div className="relative z-10">{tab.icon}</div>
+              <span className="absolute left-full ml-6 px-4 py-2 rounded-lg bg-black border border-cyan-500/20 text-[9px] font-bold tracking-[0.3em] uppercase opacity-0 group-hover:opacity-100 transition-all pointer-events-none whitespace-nowrap z-50">
+                {tab.label}
+              </span>
               {activeTab === tab.id && (
-                <motion.div layoutId="activeTab" className="absolute -left-4 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-full" />
+                <motion.div layoutId="navGlow" className="absolute -left-6 top-1/2 -translate-y-1/2 w-1 h-10 bg-cyan-500 rounded-full blur-[2px]" />
               )}
             </button>
           ))}
         </nav>
 
-        <button className="p-4 rounded-xl text-white/10 hover:text-red-500 transition-colors">
-          <LogOut className="w-5 h-5" />
+        <button className="p-5 rounded-2xl text-red-500/30 hover:text-red-500 transition-colors border border-transparent hover:border-red-500/20 hover:bg-red-500/5">
+          <LogOut className="w-6 h-6" />
         </button>
       </aside>
 
       {/* Main Viewport */}
-      <main className="flex-1 flex flex-col relative overflow-hidden bg-gradient-to-br from-transparent via-transparent to-white/[0.01]">
+      <main className="flex-1 flex flex-col relative z-20">
         
-        {/* Top Minimal Header */}
-        <header className="h-16 border-b border-white/5 flex items-center justify-between px-10 bg-black/20 backdrop-blur-md z-40">
-           <div className="flex items-center gap-6">
-              <span className="text-[10px] font-bold tracking-[0.5em] text-white/40 uppercase">System Status</span>
-              <div className="flex items-center gap-2">
-                 <div className={`w-1.5 h-1.5 rounded-full ${ollamaRunning ? 'bg-cyan-500' : 'bg-red-500'}`} />
-                 <span className="text-[9px] font-mono text-white/20 uppercase tracking-widest">{ollamaRunning ? 'Engine_Ready' : 'Engine_Offline'}</span>
+        {/* Cinematic Status Header */}
+        <header className="h-20 border-b border-white/10 flex items-center justify-between px-12 bg-black/40 backdrop-blur-2xl relative">
+           <div className="flex items-center gap-10">
+              <div className="flex flex-col">
+                 <span className="text-[10px] font-bold tracking-[0.4em] text-white/40 uppercase">Sovereign_ID</span>
+                 <span className="text-sm font-black text-white/90">SHADOW_AGENT_v2</span>
+              </div>
+              
+              <div className="h-8 w-px bg-white/10" />
+              
+              <div className="flex items-center gap-4">
+                 <div className={`w-2 h-2 rounded-full ${ollamaRunning ? 'bg-cyan-400 animate-pulse neon-border-cyan' : 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]'}`} />
+                 <div className="flex flex-col">
+                    <span className="text-[9px] font-bold text-white/60 tracking-widest">{ollamaRunning ? 'OLLAMA: ONLINE' : 'OLLAMA: DISCONNECTED'}</span>
+                    <span className="text-[7px] text-white/20 uppercase tracking-widest">Neural weights Loaded</span>
+                 </div>
               </div>
            </div>
            
-           <div className="flex items-center gap-8">
-              <div className="flex items-center gap-2">
-                 <Zap className="w-3 h-3 text-yellow-500/50" />
-                 <span className="text-[9px] font-mono text-white/20 uppercase tracking-widest">Load: {systemLoad}%</span>
+           <div className="flex items-center gap-12">
+              <div className="flex items-center gap-3">
+                 <Activity className="w-4 h-4 text-cyan-500/40" />
+                 <div className="flex flex-col">
+                    <span className="text-[8px] text-white/20 uppercase tracking-widest">Mem_Usage</span>
+                    <span className="text-[10px] font-mono text-cyan-400">{systemLoad * 1.2} GB</span>
+                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                 <Lock className="w-3 h-3 text-cyan-500/50" />
-                 <span className="text-[9px] font-mono text-white/20 uppercase tracking-widest">Local_Sovereignty: 100%</span>
+              <div className="flex items-center gap-3">
+                 <Zap className="w-4 h-4 text-yellow-500/40" />
+                 <div className="flex flex-col">
+                    <span className="text-[8px] text-white/20 uppercase tracking-widest">Neural_Load</span>
+                    <span className="text-[10px] font-mono text-yellow-500">{systemLoad}%</span>
+                 </div>
               </div>
            </div>
         </header>
 
-        {/* Content Area - Optimized for Speed */}
-        <div className="flex-1 relative">
+        {/* Dynamic Content Area */}
+        <div className="flex-1 relative p-12 overflow-hidden">
+           <div className="hud-corner hud-tl" />
+           <div className="hud-corner hud-tr" />
+           <div className="hud-corner hud-bl" />
+           <div className="hud-corner hud-br" />
+
            <AnimatePresence mode="wait">
              {activeTab === "chat" && (
                <motion.div 
                  key="chat" 
-                 initial={{ opacity: 0 }} 
-                 animate={{ opacity: 1 }} 
-                 exit={{ opacity: 0 }}
-                 transition={{ duration: 0.2 }}
-                 className="h-full"
+                 initial={{ opacity: 0, scale: 0.98 }} 
+                 animate={{ opacity: 1, scale: 1 }} 
+                 exit={{ opacity: 0, scale: 1.02 }}
+                 className="h-full bg-black/20 rounded-[2rem] border border-white/5 relative overflow-hidden"
                >
                  <ChatInterface ollamaRunning={ollamaRunning} />
                </motion.div>
@@ -116,45 +144,57 @@ export default function App() {
              {activeTab === "voice" && (
                <motion.div 
                  key="voice"
-                 initial={{ opacity: 0, y: 10 }}
+                 initial={{ opacity: 0, y: 50 }}
                  animate={{ opacity: 1, y: 0 }}
-                 className="h-full flex flex-col items-center justify-center"
+                 className="h-full flex flex-col items-center justify-center relative"
                >
-                  <div className="w-64 h-64 relative flex items-center justify-center">
-                     <div className="absolute inset-0 border border-white/5 rounded-full animate-ping opacity-20" />
-                     <div className="w-48 h-48 border border-white/10 rounded-full flex items-center justify-center bg-white/[0.02]">
-                        <Mic className="w-12 h-12 text-white" />
+                  <div className="absolute inset-0 bg-cyan-500/5 blur-[150px] rounded-full animate-pulse" />
+                  <div className="relative w-80 h-80 flex items-center justify-center group">
+                     <div className="absolute inset-0 border-2 border-cyan-500/10 rounded-full animate-spin-slow" />
+                     <div className="absolute inset-4 border border-purple-500/20 rounded-full animate-reverse-spin" />
+                     <div className="w-56 h-56 rounded-full glass-premium flex items-center justify-center neon-border-cyan">
+                        <Mic className="w-16 h-16 text-cyan-400 drop-shadow-[0_0_20px_rgba(0,240,255,0.8)]" />
                      </div>
                   </div>
-                  <h2 className="text-xl font-bold mt-10 tracking-tight">Voice Protocol</h2>
-                  <p className="text-white/20 text-[10px] mt-4 uppercase tracking-[0.4em]">Initializing Local Whisper Engine...</p>
+                  <h2 className="text-4xl font-black mt-16 tracking-tightest text-glow-cyan">VOICE PROTOCOL</h2>
+                  <p className="text-cyan-400/40 text-[11px] mt-6 uppercase tracking-[0.8em] font-bold">Neural link waiting for voice prompt...</p>
                </motion.div>
              )}
 
              {activeTab === "plugins" && (
                <motion.div 
                  key="plugins"
-                 initial={{ opacity: 0 }}
-                 animate={{ opacity: 1 }}
-                 className="h-full p-20 overflow-y-auto"
+                 initial={{ opacity: 0, scale: 0.9 }}
+                 animate={{ opacity: 1, scale: 1 }}
+                 className="h-full space-y-16"
                >
-                  <div className="max-w-4xl space-y-12">
-                     <div className="space-y-4">
-                        <h2 className="text-4xl font-bold tracking-tight">Shadow Nodes</h2>
-                        <p className="text-white/40 text-sm max-w-xl leading-relaxed">Expand your local agent's reach with encrypted tool-calling bridges. No cloud, just connection.</p>
+                  <div className="flex items-center gap-8">
+                     <Layers className="w-12 h-12 text-purple-400" />
+                     <div className="space-y-1">
+                        <h2 className="text-5xl font-black tracking-tightest">NEURAL NODES</h2>
+                        <p className="text-white/30 text-xs tracking-widest uppercase">Decentralized plugin architecture</p>
                      </div>
-                     
-                     <div className="grid grid-cols-2 gap-6">
-                        {['WhatsApp', 'Email', 'Files', 'Terminal'].map(node => (
-                          <div key={node} className="p-8 border border-white/5 bg-white/[0.02] rounded-2xl hover:border-white/20 transition-all cursor-pointer group">
-                             <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center mb-6 group-hover:bg-white group-hover:text-black transition-all">
-                                <Cpu className="w-5 h-5" />
-                             </div>
-                             <h4 className="font-bold text-lg">{node} Orchestrator</h4>
-                             <p className="text-[11px] text-white/30 mt-2 uppercase tracking-widest leading-loose">Deployment Ready // v.2.0.4</p>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-10">
+                     {[
+                       { name: 'WhatsApp_Core', desc: 'Secure local automation node.', color: 'cyan' },
+                       { name: 'Email_Vault', desc: 'Sovereign mail orchestration.', color: 'purple' },
+                       { name: 'File_Loom', desc: 'Local RAG & File intelligence.', color: 'cyan' },
+                       { name: 'Terminal_IO', desc: 'Direct OS interaction node.', color: 'purple' }
+                     ].map((node) => (
+                       <div key={node.name} className="p-10 glass-premium rounded-[2.5rem] group hover:scale-[1.02] transition-all cursor-pointer relative overflow-hidden">
+                          <div className={`absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-100 transition-opacity text-${node.color}-400`}>
+                             <Box className="w-10 h-10" />
                           </div>
-                        ))}
-                     </div>
+                          <h4 className="font-black text-2xl mb-4 tracking-tighter">{node.name}</h4>
+                          <p className="text-white/40 text-sm font-medium">{node.desc}</p>
+                          <div className="mt-8 flex gap-4">
+                             <div className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[8px] font-bold tracking-widest uppercase">STABLE</div>
+                             <div className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[8px] font-bold tracking-widest uppercase">ENCRYPTED</div>
+                          </div>
+                       </div>
+                     ))}
                   </div>
                </motion.div>
              )}
@@ -166,34 +206,14 @@ export default function App() {
              )}
            </AnimatePresence>
         </div>
-
-        {/* Global Floating HUD Elements */}
-        <div className="absolute bottom-6 left-6 text-[8px] font-mono text-white/10 uppercase tracking-[0.6em] z-50">
-           ShadowAgent_Core_v2.1.0_LTS
-        </div>
-        
-        <div className="absolute bottom-6 right-6 flex items-center gap-4 z-50">
-           <div className="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-md">
-              <Command className="w-2.5 h-2.5 text-white/30" />
-              <span className="text-[9px] font-bold text-white/40">CMD + K</span>
-           </div>
-        </div>
       </main>
 
       <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
-        
-        :root {
-          --font-syne: 'Syne', sans-serif;
-          --font-space: 'Space Grotesk', sans-serif;
-        }
-
-        .font-syne { font-family: var(--font-syne); }
-        .font-space { font-family: var(--font-space); }
-
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes reverse-spin { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+        .animate-spin-slow { animation: spin-slow 20s linear infinite; }
+        .animate-reverse-spin { animation: reverse-spin 15s linear infinite; }
+        .tracking-tightest { letter-spacing: -0.05em; }
       `}</style>
     </div>
   );

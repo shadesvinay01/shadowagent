@@ -35,7 +35,11 @@ async fn validate_license(email: String, license_key: String) -> Result<LicenseR
     // In a real production build, you would verify parts[1] (signature) 
     // against your embedded Public Key here.
     
-    let payload_bytes = base64::decode(payload_b64).map_err(|e| e.to_string())?;
+    use base64::Engine;
+    let payload_bytes = base64::prelude::BASE64_STANDARD
+        .decode(payload_b64)
+        .map_err(|e| e.to_string())?;
+    
     let claims: Claims = serde_json::from_slice(&payload_bytes).map_err(|e| e.to_string())?;
 
     if claims.sub == email {
@@ -86,6 +90,14 @@ fn store_secure_credential(service: String, key: String, value: String) -> Resul
 fn get_secure_credential(service: String, key: String) -> Result<String, String> {
     let entry = Entry::new(&service, &key).map_err(|e| e.to_string())?;
     entry.get_password().map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+async fn check_ollama_status() -> Result<bool, String> {
+    // Simple check if Ollama is running on default port 11434
+    let client = reqwest::Client::new();
+    let res = client.get("http://localhost:11434/api/tags").send().await;
+    Ok(res.is_ok())
 }
 
 #[tauri::command]

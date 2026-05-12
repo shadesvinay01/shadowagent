@@ -3,11 +3,12 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ChatInterface from "./components/chat/ChatInterface";
-import Connections from "./components/settings/Connections";
+import NeuralCore from "./components/canvas/NeuralCore";
 import { checkOllamaStatus } from "./lib/tauri/commands";
 import { 
   Bot, Settings, ShieldCheck, LogOut, Mic, Grid2X2, 
-  Activity, Zap, Terminal, Lock, Cpu, Command, Box, CpuIcon, Layers, Shield
+  Activity, Zap, Terminal, Lock, Cpu, Command, Shield, 
+  ChevronRight, Brain, Globe, Binary
 } from "lucide-react";
 
 type Tab = "chat" | "settings" | "voice" | "plugins";
@@ -15,206 +16,187 @@ type Tab = "chat" | "settings" | "voice" | "plugins";
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>("chat");
   const [ollamaRunning, setOllamaRunning] = useState(false);
-  const [systemLoad, setSystemLoad] = useState(12);
 
   useEffect(() => {
     localStorage.setItem("shadow_setup_complete", "true");
-    const checkStatus = () => {
+    const interval = setInterval(() => {
       checkOllamaStatus().then(setOllamaRunning).catch(() => setOllamaRunning(false));
-      setSystemLoad(Math.floor(Math.random() * 15) + 5);
-    };
-    checkStatus();
-    const interval = setInterval(checkStatus, 5000);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="h-screen bg-black text-white selection:bg-cyan-500/30 font-orbitron overflow-hidden flex relative">
+    <div className="h-screen bg-black text-white font-orbitron overflow-hidden flex relative selection:bg-cyan-500/30">
       
-      {/* Immersive Background Layers */}
-      <div className="neural-bg" />
-      <div className="grid-overlay" />
-      <div className="scanline" />
+      {/* Ultra Cinematic Background Layers */}
+      <NeuralCore />
+      <div className="cinematic-vignette" />
+      <div className="grain-overlay" />
+      <div className="scanline-move" />
+      <div className="bg-text top-[-2rem] left-[-2rem]">SHADOW</div>
+      <div className="bg-text bottom-[-2rem] right-[-2rem] opacity-[0.01]">CORE_v2</div>
 
-      {/* Floating Sidebar HUD */}
-      <aside className="w-28 relative z-50 flex flex-col items-center py-12 gap-14 bg-black/40 border-r border-white/10 backdrop-blur-3xl shadow-2xl">
-        <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 to-transparent pointer-events-none" />
-        
-        <motion.div 
-          whileHover={{ scale: 1.1, rotate: 10 }}
-          className="relative w-16 h-16 rounded-[1.5rem] bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center neon-border-cyan group"
-        >
-           <Shield className="w-8 h-8 text-cyan-400 drop-shadow-[0_0_10px_rgba(0,240,255,0.8)]" />
-           <div className="hud-corner hud-tl !w-4 !h-4" />
-           <div className="hud-corner hud-br !w-4 !h-4" />
-        </motion.div>
-        
-        <nav className="flex flex-col gap-10 flex-1">
-          {[
-            { id: 'chat', icon: <Bot className="w-6 h-6" />, label: 'NEURAL_LINK', color: 'cyan' },
-            { id: 'voice', icon: <Mic className="w-6 h-6" />, label: 'VOICE_IO', color: 'purple' },
-            { id: 'plugins', icon: <Layers className="w-6 h-6" />, label: 'NODE_STORE', color: 'cyan' },
-            { id: 'settings', icon: <Settings className="w-6 h-6" />, label: 'CORE_SYST', color: 'white' }
-          ].map((tab) => (
-            <button 
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as Tab)}
-              className={`group relative p-5 rounded-2xl transition-all duration-500 ${
-                activeTab === tab.id 
-                ? 'bg-cyan-500/20 border-cyan-500/40 neon-border-cyan text-cyan-400' 
-                : 'text-white/20 hover:text-white/80 hover:bg-white/5'
-              }`}
-            >
-              <div className="relative z-10">{tab.icon}</div>
-              <span className="absolute left-full ml-6 px-4 py-2 rounded-lg bg-black border border-cyan-500/20 text-[9px] font-bold tracking-[0.3em] uppercase opacity-0 group-hover:opacity-100 transition-all pointer-events-none whitespace-nowrap z-50">
-                {tab.label}
-              </span>
-              {activeTab === tab.id && (
-                <motion.div layoutId="navGlow" className="absolute -left-6 top-1/2 -translate-y-1/2 w-1 h-10 bg-cyan-500 rounded-full blur-[2px]" />
-              )}
-            </button>
-          ))}
-        </nav>
+      {/* Floating Orbital Navigation */}
+      <nav className="absolute left-10 top-1/2 -translate-y-1/2 flex flex-col gap-8 z-[100]">
+        {[
+          { id: 'chat', icon: <Bot className="w-6 h-6" />, label: 'NEURAL_LINK' },
+          { id: 'voice', icon: <Mic className="w-6 h-6" />, label: 'AUDIO_CORE' },
+          { id: 'plugins', icon: <Binary className="w-6 h-6" />, label: 'NODE_GRID' },
+          { id: 'settings', icon: <Settings className="w-6 h-6" />, label: 'SYSTEM' }
+        ].map((tab) => (
+          <button 
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id as Tab)}
+            className={`group relative w-16 h-16 rounded-full flex items-center justify-center transition-all duration-700 border ${
+              activeTab === tab.id 
+              ? 'bg-cyan-500/20 border-cyan-400 glow-cyan shadow-[0_0_30px_rgba(0,240,255,0.2)]' 
+              : 'bg-white/5 border-white/10 hover:border-white/30 hover:bg-white/10'
+            }`}
+          >
+            <div className="relative z-10">{tab.icon}</div>
+            
+            {/* Hover Label */}
+            <span className="absolute left-full ml-8 px-4 py-2 rounded bg-black/80 border border-cyan-500/20 text-[8px] font-bold tracking-[0.5em] uppercase opacity-0 group-hover:opacity-100 transition-all pointer-events-none whitespace-nowrap">
+               {tab.label}
+            </span>
 
-        <button className="p-5 rounded-2xl text-red-500/30 hover:text-red-500 transition-colors border border-transparent hover:border-red-500/20 hover:bg-red-500/5">
-          <LogOut className="w-6 h-6" />
-        </button>
-      </aside>
+            {/* Active Indicator Pulse */}
+            {activeTab === tab.id && (
+              <div className="absolute inset-[-10px] border border-cyan-500/20 rounded-full animate-ping opacity-20" />
+            )}
+          </button>
+        ))}
+      </nav>
 
-      {/* Main Viewport */}
-      <main className="flex-1 flex flex-col relative z-20">
+      {/* Main UI Layout */}
+      <div className="flex-1 flex flex-col relative z-50">
         
-        {/* Cinematic Status Header */}
-        <header className="h-20 border-b border-white/10 flex items-center justify-between px-12 bg-black/40 backdrop-blur-2xl relative">
-           <div className="flex items-center gap-10">
+        {/* Top Telemetry Strip */}
+        <header className="h-20 px-12 flex items-center justify-between pointer-events-none">
+           <div className="flex items-center gap-12">
               <div className="flex flex-col">
-                 <span className="text-[10px] font-bold tracking-[0.4em] text-white/40 uppercase">Sovereign_ID</span>
-                 <span className="text-sm font-black text-white/90">SHADOW_AGENT_v2</span>
+                 <span className="text-[10px] font-black tracking-[0.4em] text-cyan-400">STATUS_REPORT</span>
+                 <div className="flex items-center gap-2 mt-1">
+                    <div className={`w-2 h-2 rounded-full ${ollamaRunning ? 'bg-cyan-500 animate-pulse' : 'bg-red-600'}`} />
+                    <span className="text-[8px] font-mono text-white/30 tracking-widest">{ollamaRunning ? 'ENGINE_ONLINE' : 'CRITICAL_OFFLINE'}</span>
+                 </div>
               </div>
               
-              <div className="h-8 w-px bg-white/10" />
-              
-              <div className="flex items-center gap-4">
-                 <div className={`w-2 h-2 rounded-full ${ollamaRunning ? 'bg-cyan-400 animate-pulse neon-border-cyan' : 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]'}`} />
-                 <div className="flex flex-col">
-                    <span className="text-[9px] font-bold text-white/60 tracking-widest">{ollamaRunning ? 'OLLAMA: ONLINE' : 'OLLAMA: DISCONNECTED'}</span>
-                    <span className="text-[7px] text-white/20 uppercase tracking-widest">Neural weights Loaded</span>
-                 </div>
+              <div className="flex flex-col">
+                 <span className="text-[10px] font-black tracking-[0.4em] text-white/20">SOVEREIGNTY</span>
+                 <span className="text-[8px] font-mono text-white/60 tracking-widest">100% LOCAL // ENCRYPTED</span>
               </div>
            </div>
-           
-           <div className="flex items-center gap-12">
-              <div className="flex items-center gap-3">
-                 <Activity className="w-4 h-4 text-cyan-500/40" />
-                 <div className="flex flex-col">
-                    <span className="text-[8px] text-white/20 uppercase tracking-widest">Mem_Usage</span>
-                    <span className="text-[10px] font-mono text-cyan-400">{systemLoad * 1.2} GB</span>
-                 </div>
+
+           <div className="flex items-center gap-6 pointer-events-auto">
+              <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors cursor-pointer">
+                 <Shield className="w-6 h-6 text-white/40" />
               </div>
-              <div className="flex items-center gap-3">
-                 <Zap className="w-4 h-4 text-yellow-500/40" />
-                 <div className="flex flex-col">
-                    <span className="text-[8px] text-white/20 uppercase tracking-widest">Neural_Load</span>
-                    <span className="text-[10px] font-mono text-yellow-500">{systemLoad}%</span>
-                 </div>
-              </div>
+              <LogoMark size={40} />
            </div>
         </header>
 
-        {/* Dynamic Content Area */}
-        <div className="flex-1 relative p-12 overflow-hidden">
-           <div className="hud-corner hud-tl" />
-           <div className="hud-corner hud-tr" />
-           <div className="hud-corner hud-bl" />
-           <div className="hud-corner hud-br" />
+        {/* Content Viewport */}
+        <div className="flex-1 flex">
+           
+           {/* Left Spacing (Navigation Area) */}
+           <div className="w-32" />
 
-           <AnimatePresence mode="wait">
-             {activeTab === "chat" && (
-               <motion.div 
-                 key="chat" 
-                 initial={{ opacity: 0, scale: 0.98 }} 
-                 animate={{ opacity: 1, scale: 1 }} 
-                 exit={{ opacity: 0, scale: 1.02 }}
-                 className="h-full bg-black/20 rounded-[2rem] border border-white/5 relative overflow-hidden"
-               >
-                 <ChatInterface ollamaRunning={ollamaRunning} />
-               </motion.div>
-             )}
+           {/* Main Content Area */}
+           <div className="flex-1 relative flex">
+              <AnimatePresence mode="wait">
+                 {activeTab === "chat" && (
+                   <motion.div 
+                     key="chat" 
+                     initial={{ opacity: 0, x: -50 }} 
+                     animate={{ opacity: 1, x: 0 }} 
+                     exit={{ opacity: 0, x: 50 }}
+                     className="flex-1 max-w-4xl h-[85vh] my-auto ml-10 glass-ultra rounded-[3rem] relative overflow-hidden"
+                   >
+                      <div className="hud-corner hud-tl" />
+                      <div className="hud-corner hud-tr" />
+                      <div className="hud-corner hud-bl" />
+                      <div className="hud-corner hud-br" />
+                      <ChatInterface ollamaRunning={ollamaRunning} />
+                   </motion.div>
+                 )}
 
-             {activeTab === "voice" && (
-               <motion.div 
-                 key="voice"
-                 initial={{ opacity: 0, y: 50 }}
-                 animate={{ opacity: 1, y: 0 }}
-                 className="h-full flex flex-col items-center justify-center relative"
-               >
-                  <div className="absolute inset-0 bg-cyan-500/5 blur-[150px] rounded-full animate-pulse" />
-                  <div className="relative w-80 h-80 flex items-center justify-center group">
-                     <div className="absolute inset-0 border-2 border-cyan-500/10 rounded-full animate-spin-slow" />
-                     <div className="absolute inset-4 border border-purple-500/20 rounded-full animate-reverse-spin" />
-                     <div className="w-56 h-56 rounded-full glass-premium flex items-center justify-center neon-border-cyan">
-                        <Mic className="w-16 h-16 text-cyan-400 drop-shadow-[0_0_20px_rgba(0,240,255,0.8)]" />
-                     </div>
-                  </div>
-                  <h2 className="text-4xl font-black mt-16 tracking-tightest text-glow-cyan">VOICE PROTOCOL</h2>
-                  <p className="text-cyan-400/40 text-[11px] mt-6 uppercase tracking-[0.8em] font-bold">Neural link waiting for voice prompt...</p>
-               </motion.div>
-             )}
-
-             {activeTab === "plugins" && (
-               <motion.div 
-                 key="plugins"
-                 initial={{ opacity: 0, scale: 0.9 }}
-                 animate={{ opacity: 1, scale: 1 }}
-                 className="h-full space-y-16"
-               >
-                  <div className="flex items-center gap-8">
-                     <Layers className="w-12 h-12 text-purple-400" />
-                     <div className="space-y-1">
-                        <h2 className="text-5xl font-black tracking-tightest">NEURAL NODES</h2>
-                        <p className="text-white/30 text-xs tracking-widest uppercase">Decentralized plugin architecture</p>
-                     </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-10">
-                     {[
-                       { name: 'WhatsApp_Core', desc: 'Secure local automation node.', color: 'cyan' },
-                       { name: 'Email_Vault', desc: 'Sovereign mail orchestration.', color: 'purple' },
-                       { name: 'File_Loom', desc: 'Local RAG & File intelligence.', color: 'cyan' },
-                       { name: 'Terminal_IO', desc: 'Direct OS interaction node.', color: 'purple' }
-                     ].map((node) => (
-                       <div key={node.name} className="p-10 glass-premium rounded-[2.5rem] group hover:scale-[1.02] transition-all cursor-pointer relative overflow-hidden">
-                          <div className={`absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-100 transition-opacity text-${node.color}-400`}>
-                             <Box className="w-10 h-10" />
-                          </div>
-                          <h4 className="font-black text-2xl mb-4 tracking-tighter">{node.name}</h4>
-                          <p className="text-white/40 text-sm font-medium">{node.desc}</p>
-                          <div className="mt-8 flex gap-4">
-                             <div className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[8px] font-bold tracking-widest uppercase">STABLE</div>
-                             <div className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[8px] font-bold tracking-widest uppercase">ENCRYPTED</div>
-                          </div>
+                 {activeTab !== "chat" && (
+                    <motion.div 
+                      key="placeholder"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="flex-1 flex items-center justify-center"
+                    >
+                       <div className="text-center space-y-4">
+                          <Brain className="w-20 h-20 text-cyan-500 mx-auto animate-pulse" />
+                          <h2 className="text-3xl font-black tracking-widest text-glow-cyan uppercase">{activeTab}</h2>
+                          <p className="text-[10px] text-white/20 tracking-[0.5em] uppercase">Initializing Neural Matrix...</p>
                        </div>
-                     ))}
-                  </div>
-               </motion.div>
-             )}
+                    </motion.div>
+                 )}
+              </AnimatePresence>
+           </div>
 
-             {activeTab === "settings" && (
-               <motion.div key="settings" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full">
-                  <Connections />
-               </motion.div>
-             )}
-           </AnimatePresence>
+           {/* Right Dashboard Sidebar */}
+           <div className="w-96 p-12 space-y-12 bg-gradient-to-l from-black/40 to-transparent backdrop-blur-sm border-l border-white/5">
+              <div className="space-y-6">
+                 <h4 className="text-[10px] font-black tracking-[0.5em] text-white/30 uppercase underline underline-offset-8">Neural_Activity</h4>
+                 <div className="space-y-4">
+                    {[
+                      { l: 'Mem_Load', v: '14.2 GB' },
+                      { l: 'GPU_Temp', v: '42°C' },
+                      { l: 'Neural_Rate', v: '48 t/s' }
+                    ].map(stat => (
+                      <div key={stat.l} className="flex justify-between items-center border-b border-white/5 pb-2">
+                         <span className="text-[9px] font-mono text-white/20 uppercase">{stat.l}</span>
+                         <span className="text-[10px] font-mono text-cyan-400">{stat.v}</span>
+                      </div>
+                    ))}
+                 </div>
+              </div>
+
+              <div className="space-y-6">
+                 <h4 className="text-[10px] font-black tracking-[0.5em] text-white/30 uppercase underline underline-offset-8">Recent_Nodes</h4>
+                 <div className="grid grid-cols-1 gap-4">
+                    {['WhatsApp_Sync', 'Email_Agent', 'File_Scanner'].map(node => (
+                      <div key={node} className="p-4 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-between group hover:bg-white/[0.05] transition-all cursor-pointer">
+                         <span className="text-[10px] font-bold text-white/50 group-hover:text-cyan-400 transition-colors uppercase">{node}</span>
+                         <ChevronRight className="w-3 h-3 text-white/10 group-hover:text-cyan-400" />
+                      </div>
+                    ))}
+                 </div>
+              </div>
+
+              <div className="pt-20">
+                 <div className="p-6 rounded-3xl bg-cyan-500/10 border border-cyan-500/20 text-center space-y-4">
+                    <Activity className="w-8 h-8 text-cyan-400 mx-auto" />
+                    <p className="text-[10px] font-bold text-cyan-400/60 uppercase tracking-widest leading-loose">
+                       All systems operational.<br />
+                       Encrypted link secure.
+                    </p>
+                 </div>
+              </div>
+           </div>
         </div>
-      </main>
 
-      <style jsx global>{`
-        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes reverse-spin { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
-        .animate-spin-slow { animation: spin-slow 20s linear infinite; }
-        .animate-reverse-spin { animation: reverse-spin 15s linear infinite; }
-        .tracking-tightest { letter-spacing: -0.05em; }
-      `}</style>
+        {/* Bottom OS Bar */}
+        <footer className="h-12 border-t border-white/5 flex items-center px-12 justify-between pointer-events-none opacity-20">
+           <div className="text-[8px] font-mono tracking-[0.5em] uppercase">SHADOW_AGENT // KERNEL_v.2.0.1</div>
+           <div className="text-[8px] font-mono tracking-[0.5em] uppercase">05:42:11 UTC</div>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+function LogoMark({ size }: { size: number }) {
+  return (
+    <div className="relative" style={{ width: size, height: size }}>
+      <div className="absolute inset-0 bg-cyan-500/20 rounded-full blur-xl" />
+      <div className="relative w-full h-full rounded-xl border border-white/20 flex items-center justify-center bg-black">
+         <div className="w-1/2 h-1/2 bg-cyan-500 rounded-sm rotate-45" />
+      </div>
     </div>
   );
 }

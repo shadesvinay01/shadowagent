@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, User, Bot, Sparkles, Settings, AlertCircle, ShieldCheck, Terminal, Cpu, Info, CornerDownLeft, Target } from "lucide-react";
+import { Send, User, Bot, Sparkles, Settings, AlertCircle, ShieldCheck, Terminal, Cpu, Info, CornerDownLeft, Target, Fingerprint } from "lucide-react";
 import { shadowAgent } from "../../lib/agent/agent";
 import ReactMarkdown from "react-markdown";
 
@@ -50,109 +50,111 @@ export default function ChatInterface({ ollamaRunning }: { ollamaRunning: boolea
   return (
     <div className="flex-1 flex flex-col h-full w-full relative">
       
-      {/* Console Overlay Brackets */}
-      <div className="absolute top-6 left-6 w-32 h-1 border-t border-cyan-500/20" />
-      <div className="absolute top-6 left-6 w-1 h-32 border-l border-cyan-500/20" />
+      {/* Console Overlay Header */}
+      <div className="p-8 border-b border-white/5 flex items-center justify-between bg-white/[0.01]">
+         <div className="flex items-center gap-4">
+            <Fingerprint className="w-5 h-5 text-cyan-500/50" />
+            <span className="text-[10px] font-black tracking-[0.4em] text-white/40 uppercase">Encrypted_Session</span>
+         </div>
+         <div className="flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
+            <span className="text-[8px] font-mono text-cyan-500/60 uppercase tracking-widest">Live_Neural_Data</span>
+         </div>
+      </div>
 
       {/* Chat History */}
       <div 
         ref={scrollRef}
-        className="flex-1 overflow-y-auto space-y-12 p-12 pr-16 custom-scrollbar relative z-10"
+        className="flex-1 overflow-y-auto space-y-14 p-10 pr-12 custom-scrollbar relative z-10"
       >
         <AnimatePresence initial={false}>
           {messages.map((msg, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, x: msg.role === "user" ? 20 : -20 }}
+              initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className={`flex gap-8 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
             >
-              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 border transition-all ${
+              {/* Minimal Avatar */}
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 border transition-all ${
                 msg.role === "user" 
-                ? "bg-white/5 border-white/20" 
-                : "bg-cyan-500/10 border-cyan-500/40 neon-border-cyan"
+                ? "bg-white/5 border-white/10" 
+                : "bg-cyan-500/10 border-cyan-500/30 shadow-[0_0_20px_rgba(0,240,255,0.1)]"
               }`}>
-                {msg.role === "user" ? <User className="w-7 h-7 text-white/50" /> : <Bot className="w-7 h-7 text-cyan-400 drop-shadow-[0_0_10px_rgba(0,240,255,0.5)]" />}
+                {msg.role === "user" ? <User className="w-6 h-6 text-white/30" /> : <Bot className="w-6 h-6 text-cyan-400" />}
               </div>
 
-              <div className={`max-w-[75%] space-y-3 ${msg.role === "user" ? "text-right" : "text-left"}`}>
-                <div className={`inline-block px-10 py-6 rounded-[2.5rem] text-[1.1rem] leading-relaxed shadow-2xl transition-all border ${
+              {/* Minimal Content */}
+              <div className={`max-w-[80%] space-y-2 ${msg.role === "user" ? "text-right" : "text-left"}`}>
+                <div className={`inline-block px-8 py-5 rounded-[2rem] text-[1.1rem] leading-relaxed shadow-2xl transition-all ${
                   msg.role === "user" 
                   ? "bg-white text-black font-black rounded-tr-none" 
-                  : "bg-black/60 backdrop-blur-2xl border-white/10 text-white/90 rounded-tl-none"
+                  : "bg-black/40 border border-white/10 text-white/90 rounded-tl-none"
                 }`}>
-                  <ReactMarkdown className="markdown-content prose prose-invert max-w-none prose-p:leading-relaxed prose-strong:text-cyan-400">
+                  <ReactMarkdown className="markdown-content prose prose-invert max-w-none">
                     {msg.content}
                   </ReactMarkdown>
                 </div>
-                <div className="flex items-center gap-4 justify-end md:justify-start text-[9px] font-bold text-white/20 uppercase tracking-[0.4em]">
-                   <span>{msg.role === "user" ? "AUTHORIZED_USER" : "SHADOW_CORE_v2"}</span>
-                   <span className="w-1 h-1 rounded-full bg-cyan-500/50" />
-                   <span>{msg.timestamp}</span>
+                <div className="text-[8px] font-bold text-white/10 uppercase tracking-[0.4em]">
+                   {msg.role === "user" ? "SOVEREIGN_ID" : "SHADOW_CORE"} // {msg.timestamp}
                 </div>
               </div>
             </motion.div>
           ))}
           
           {isThinking && (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex gap-8">
-              <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center neon-border-cyan">
-                <Sparkles className="w-7 h-7 text-cyan-400 animate-pulse" />
+            <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="flex gap-8">
+              <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center shadow-[0_0_20px_rgba(0,240,255,0.1)]">
+                <Sparkles className="w-6 h-6 text-cyan-400 animate-pulse" />
               </div>
-              <div className="bg-black/40 backdrop-blur-3xl border border-cyan-500/20 px-10 py-6 rounded-[2.5rem] rounded-tl-none flex gap-6 items-center">
-                <div className="flex gap-3">
-                   <div className="w-2.5 h-2.5 bg-cyan-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                   <div className="w-2.5 h-2.5 bg-cyan-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                   <div className="w-2.5 h-2.5 bg-cyan-400 rounded-full animate-bounce" />
+              <div className="bg-black/40 border border-cyan-500/10 px-8 py-5 rounded-[2rem] rounded-tl-none flex gap-4 items-center">
+                <div className="flex gap-2">
+                   <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                   <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                   <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" />
                 </div>
-                <span className="text-xs text-cyan-400 font-bold tracking-[0.5em] uppercase">Processing...</span>
+                <span className="text-[10px] text-cyan-400/80 font-bold tracking-[0.4em] uppercase">Processing...</span>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
-      {/* High-End Command Console */}
-      <footer className="p-10 bg-black/60 border-t border-white/10 relative z-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-cyan-500/5 pointer-events-none" />
-        
+      {/* High-End Command Input */}
+      <footer className="p-10 bg-black/60 border-t border-white/5 relative z-20">
         <div className="max-w-4xl mx-auto relative group">
-          <div className="absolute -inset-1 bg-cyan-500/20 rounded-[2.5rem] blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-1000" />
+          <div className="absolute -inset-1 bg-cyan-500/10 rounded-[2.2rem] blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-1000" />
           <div className="relative">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              placeholder={ollamaRunning ? "ENTER_COMMAND >" : "BACKEND_DISCONNECTED_RETRYING..."}
+              placeholder={ollamaRunning ? "ENTER_COMMAND >" : "SYSTEM_OFFLINE"}
               disabled={!ollamaRunning || isThinking}
-              className="w-full bg-black/80 border-2 border-white/10 rounded-[2.2rem] px-12 py-8 text-xl font-bold tracking-tight focus:outline-none focus:border-cyan-500/40 transition-all placeholder:text-white/10 uppercase"
+              className="w-full bg-black/80 border border-white/10 rounded-[1.8rem] px-10 py-6 text-lg font-bold tracking-tight focus:outline-none focus:border-cyan-500/30 transition-all placeholder:text-white/10 uppercase"
             />
             
             <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center gap-6">
-               <div className="hidden md:flex items-center gap-2 text-cyan-500/40 text-[10px] font-bold tracking-widest uppercase bg-cyan-500/5 px-4 py-2 rounded-xl border border-cyan-500/10">
-                  <Target className="w-3.5 h-3.5" />
-                  EXE_WAITING
-               </div>
                <button
                   onClick={handleSend}
                   disabled={!ollamaRunning || isThinking || !input.trim()}
-                  className="p-5 rounded-2xl bg-cyan-500 text-black hover:scale-110 active:scale-95 transition-all disabled:opacity-0 shadow-[0_0_40px_rgba(0,240,255,0.6)]"
+                  className="p-4 rounded-2xl bg-cyan-500 text-black hover:scale-110 active:scale-95 transition-all shadow-[0_0_30px_rgba(0,240,255,0.4)]"
                 >
-                  <Send className="w-6 h-6" />
+                  <Send className="w-5 h-5" />
                 </button>
             </div>
           </div>
         </div>
 
         <div className="mt-8 flex justify-center gap-12 opacity-30">
-           <div className="flex items-center gap-3 text-[10px] font-bold tracking-[0.4em] uppercase text-cyan-400">
-              <Terminal className="w-4 h-4" />
-              SYSTEM_SECURE
+           <div className="flex items-center gap-3 text-[9px] font-bold tracking-[0.4em] uppercase">
+              <ShieldCheck className="w-4 h-4 text-cyan-500" />
+              Sovereign_Active
            </div>
-           <div className="flex items-center gap-3 text-[10px] font-bold tracking-[0.4em] uppercase">
-              <ShieldCheck className="w-4 h-4" />
-              PRIVATE_VAULT
+           <div className="flex items-center gap-3 text-[9px] font-bold tracking-[0.4em] uppercase">
+              <Terminal className="w-4 h-4" />
+              Zero_Leak_Protocol
            </div>
         </div>
       </footer>

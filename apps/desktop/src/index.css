@@ -4,99 +4,87 @@
 
 @layer base {
   :root {
-    --background: 240 10% 2%;
-    --foreground: 0 0% 98%;
     --primary: 180 100% 50%;
-    --accent: 280 100% 60%;
+    --secondary: 280 100% 60%;
   }
 }
 
 @layer base {
-  * {
-    @apply border-white/5 selection:bg-primary/20 selection:text-primary;
-  }
   body {
-    @apply bg-[#020205] text-white font-orbitron antialiased overflow-hidden;
+    @apply bg-black text-white font-orbitron antialiased overflow-hidden;
   }
 }
 
-/* Premium Glassmorphism */
-.glass-premium {
-  @apply bg-black/40 border border-white/10 backdrop-blur-3xl shadow-[0_0_50px_rgba(0,0,0,0.8)];
-  background-image: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 100%);
-}
-
-.neon-border-cyan {
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.1), inset 0 0 10px rgba(0, 240, 255, 0.05);
-  border: 1px solid rgba(0, 240, 255, 0.3);
-}
-
-.neon-border-purple {
-  box-shadow: 0 0 15px rgba(168, 85, 247, 0.1), inset 0 0 10px rgba(168, 85, 247, 0.05);
-  border: 1px solid rgba(168, 85, 247, 0.3);
-}
-
-/* Moving Background */
-.neural-bg {
+/* Cinematic Background */
+.cinematic-vignette {
   position: absolute;
   inset: 0;
-  background: 
-    radial-gradient(circle at 20% 20%, rgba(0, 240, 255, 0.05) 0%, transparent 40%),
-    radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.05) 0%, transparent 40%),
-    linear-gradient(to bottom, transparent, rgba(0,0,0,0.8));
+  background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.8) 100%);
   pointer-events: none;
+  z-index: 5;
 }
 
-/* Animated Grid */
-.grid-overlay {
+/* Glowing Elements */
+.glow-cyan {
+  filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.4));
+}
+
+.glow-purple {
+  filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.4));
+}
+
+/* Glassmorphism Ultra */
+.glass-ultra {
+  @apply bg-white/[0.03] border border-white/10 backdrop-blur-[40px] shadow-2xl;
+}
+
+/* Animated HUD */
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { opacity: 0.2; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
+
+.hud-ring {
+  position: absolute;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 50%;
+  animation: pulse-ring 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Typography Accents */
+.bg-text {
+  position: absolute;
+  font-size: 20rem;
+  font-weight: 900;
+  color: rgba(255,255,255,0.02);
+  line-height: 1;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Scanline / Grain */
+.grain-overlay {
   position: absolute;
   inset: 0;
-  background-image: 
-    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-  background-size: 50px 50px;
-  mask-image: radial-gradient(circle at center, black, transparent 80%);
+  background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+  opacity: 0.05;
+  mix-blend-mode: overlay;
   pointer-events: none;
+  z-index: 99;
 }
 
-/* Scanline Animation */
-@keyframes scanning {
-  from { transform: translateY(-100%); }
-  to { transform: translateY(100%); }
-}
-
-.scanline {
+.scanline-move {
   position: absolute;
   width: 100%;
-  height: 200px;
-  background: linear-gradient(to bottom, transparent, rgba(0, 240, 255, 0.02), transparent);
-  animation: scanning 8s linear infinite;
-  pointer-events: none;
-  z-index: 10;
+  height: 1px;
+  background: rgba(0, 240, 255, 0.1);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+  animation: scanmove 5s linear infinite;
+  z-index: 98;
 }
 
-.text-glow-cyan {
-  text-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+@keyframes scanmove {
+  0% { top: -10%; }
+  100% { top: 110%; }
 }
-
-.shadow-glow-purple {
-  box-shadow: 0 0 30px rgba(168, 85, 247, 0.2);
-}
-
-/* HUD Components */
-.hud-corner {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  border-color: rgba(0, 240, 255, 0.4);
-  pointer-events: none;
-}
-.hud-tl { top: 0; left: 0; border-top: 2px solid; border-left: 2px solid; }
-.hud-tr { top: 0; right: 0; border-top: 2px solid; border-right: 2px solid; }
-.hud-bl { bottom: 0; left: 0; border-bottom: 2px solid; border-left: 2px solid; }
-.hud-br { bottom: 0; right: 0; border-bottom: 2px solid; border-right: 2px solid; }
-
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(0, 240, 255, 0.2); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(0, 240, 255, 0.4); }

@@ -71,8 +71,8 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
   }
 
-  /* Performance optimization for mobile: disable expensive filters */
-  @media (max-width: 768px) {
+  /* Performance optimization for mobile and touch devices: disable expensive filters */
+  @media (max-width: 1024px), (pointer: coarse) {
     .card-solid, .glass, .glass-dark {
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
@@ -88,8 +88,8 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* Hardcore performance fixes for mobile scrolling */
-@media (max-width: 768px) {
+/* Hardcore performance fixes for mobile and touch devices scrolling */
+@media (max-width: 1024px), (pointer: coarse) {
   html, body {
     scroll-behavior: auto !important;
     -webkit-overflow-scrolling: touch;
@@ -97,11 +97,11 @@ h1, h2, h3, h4, h5, h6 {
   
   section {
     content-visibility: auto;
-    contain-intrinsic-size: 1px 500px; /* Placeholder size for the browser to calculate scrollbar */
+    contain-intrinsic-size: 1px 500px;
     will-change: transform;
   }
 
-  /* Disable expensive effects on mobile */
+  /* Disable expensive effects */
   .grid-background {
     background-image: none !important;
   }

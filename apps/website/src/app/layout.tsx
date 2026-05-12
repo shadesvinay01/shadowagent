@@ -29,8 +29,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${syne.variable} ${manrope.variable} font-manrope antialiased bg-[#050508] text-white selection:bg-cyan-500/30 overflow-x-hidden`}>
-        {/* Cinematic Noise Overlay - Disabled on mobile for performance */}
-        {typeof window !== "undefined" && window.innerWidth > 768 && (
+        {/* Cinematic Noise Overlay - Disabled on mobile/touch for performance */}
+        {typeof window !== "undefined" && window.innerWidth > 1024 && !window.matchMedia("(pointer: coarse)").matches && (
           <div className="fixed inset-0 z-[100] pointer-events-none opacity-[0.03] mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
         )}
         

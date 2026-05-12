@@ -33,7 +33,14 @@ export default function Home() {
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
-    const checkIsDesktop = () => setIsDesktop(window.innerWidth > 768);
+    const checkIsDesktop = () => {
+      // Robust check: Width > 768 AND not a touch device (mostly)
+      // Mobile browsers in "Desktop Mode" will have high width but still have touch points
+      const widthCheck = window.innerWidth > 1024;
+      const touchCheck = window.matchMedia("(pointer: coarse)").matches;
+      setIsDesktop(widthCheck && !touchCheck);
+    };
+    
     checkIsDesktop();
     window.addEventListener("resize", checkIsDesktop);
     return () => window.removeEventListener("resize", checkIsDesktop);

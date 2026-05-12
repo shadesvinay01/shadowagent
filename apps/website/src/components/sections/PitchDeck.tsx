@@ -297,7 +297,7 @@ export default function PitchDeck() {
                          <div key={i} className="grid grid-cols-3 py-2 border-b border-white/5 last:border-0">
                            <div className="text-xs font-medium text-white/40">{row.label}</div>
                            <div className="text-center text-xs font-bold text-white">{row.shadow}</div>
-                           <div className="text-center text-xs text-white/20 font-light">{row.other}</div>
+                           <div className="text-center text-xs text-white/20 font-light">{row.cloud}</div>
                          </div>
                        ))}
                     </div>

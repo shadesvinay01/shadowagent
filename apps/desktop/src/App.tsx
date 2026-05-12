@@ -4,11 +4,13 @@ import ChatInterface from "./components/chat/ChatInterface";
 import OnboardingWizard from "./components/onboarding/OnboardingWizard";
 import Connections from "./components/settings/Connections";
 import { checkOllamaStatus } from "./lib/tauri/commands";
-import { Bot, Settings, ShieldCheck, Zap, LogOut } from "lucide-react";
+import { Bot, Settings, ShieldCheck, LogOut, Mic, Grid2X2 } from "lucide-react";
+
+type Tab = "chat" | "settings" | "voice" | "plugins";
 
 export default function App() {
   const [setupComplete, setSetupComplete] = useState<boolean | null>(null);
-  const [activeTab, setActiveTab] = useState<"chat" | "settings">("chat");
+  const [activeTab, setActiveTab] = useState<Tab>("chat");
   const [ollamaRunning, setOllamaRunning] = useState(false);
 
   useEffect(() => {

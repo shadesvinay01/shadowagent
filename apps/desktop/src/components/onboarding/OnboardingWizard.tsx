@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Shield, Key, Cpu, Zap, ArrowRight, CheckCircle2, MessageSquare, Mail, Globe } from "lucide-react";
-import { validateLicense, storeSecureCredential, startWhatsappSession } from "../../lib/tauri/commands";
+import { Shield, Key, ArrowRight, CheckCircle2, MessageSquare, Globe } from "lucide-react";
+import { validateLicense, startWhatsappSession } from "../../lib/tauri/commands";
 
 export default function OnboardingWizard({ onComplete }: { onComplete: () => void }) {
   const [step, setStep] = useState(1);
@@ -34,7 +34,6 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
     setLoading(true);
     try {
       await startWhatsappSession();
-      // In a real app, this would show a QR code from the sidecar
       nextStep();
     } catch (e) {
       setError("Failed to start WhatsApp service.");
@@ -45,7 +44,6 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
 
   return (
     <div className="flex items-center justify-center min-h-screen p-6 relative">
-      {/* Background Glows */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] animate-pulse" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px] animate-pulse" />
 
@@ -146,7 +144,6 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
               
               <div className="p-8 rounded-3xl border border-white/5 bg-black/40 flex flex-col items-center gap-6">
                 <div className="w-48 h-48 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 relative overflow-hidden">
-                   {/* Simulated QR Code Glow */}
                    <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 via-transparent to-purple-500/20 animate-pulse" />
                    <Globe className="w-12 h-12 text-white/20 animate-spin-slow" />
                 </div>

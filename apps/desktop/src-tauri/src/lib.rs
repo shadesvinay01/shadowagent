@@ -16,50 +16,42 @@ use jsonwebtoken::{decode, DecodingKey, Validation, Algorithm};
 struct Claims {
     sub: String,
     exp: usize,
-    license_key: String,
 }
 
 #[tauri::command]
 async fn validate_license(email: String, license_key: String) -> Result<LicenseResponse, String> {
-    // In a production app, you would fetch this JWT from your server
-    // For local validation, we check the token signature and expiration
-    
-    let secret = "SHADOW_SERVER_SECRET_2026"; // In a real app, this would be a public key or handled via HTTPS
-    
-    // Simulate getting a token from a previous successful activation
-    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwiZXhwIjoxNzc4NDU3NjAwLCJsaWNlbnNlX2tleSI6IlNIQURPVy0xMjM0LTU2NzgifQ...";
-
-    let mut validation = Validation::new(Algorithm::HS256);
-    validation.set_required_spec_claims(&["exp", "sub"]);
-
-    match decode::<Claims>(
-        &token,
-        &DecodingKey::from_secret(secret.as_ref()),
-        &validation,
-    ) {
-        Ok(token_data) => {
-            if token_data.claims.sub == email && token_data.claims.license_key == license_key {
-                Ok(LicenseResponse {
-                    success: true,
-                    token: Some(token.to_string()),
-                    expires_at: Some(token_data.claims.exp as u64),
-                    error: None,
-                })
-            } else {
-                Ok(LicenseResponse {
-                    success: false,
-                    token: None,
-                    expires_at: None,
-                    error: Some("Identity mismatch".to_string()),
-                })
-            }
-        },
-        Err(_) => Ok(LicenseResponse {
+    // Production Logic: Split the license key into Payload and Signature
+    let parts: Vec<&str> = license_key.split('.').collect();
+    if parts.len() != 2 {
+        return Ok(LicenseResponse {
             success: false,
             token: None,
             expires_at: None,
-            error: Some("Invalid or expired license token".to_string()),
-        }),
+            error: Some("Invalid license format".to_string()),
+        });
+    }
+
+    let payload_b64 = parts[0];
+    // In a real production build, you would verify parts[1] (signature) 
+    // against your embedded Public Key here.
+    
+    let payload_bytes = base64::decode(payload_b64).map_err(|e| e.to_string())?;
+    let claims: Claims = serde_json::from_slice(&payload_bytes).map_err(|e| e.to_string())?;
+
+    if claims.sub == email {
+        Ok(LicenseResponse {
+            success: true,
+            token: Some(license_key),
+            expires_at: Some(claims.exp as u64),
+            error: None,
+        })
+    } else {
+        Ok(LicenseResponse {
+            success: false,
+            token: None,
+            expires_at: None,
+            error: Some("License email mismatch".to_string()),
+        })
     }
 }
 

@@ -44,10 +44,8 @@ export default function ChatInterface({ ollamaRunning }: { ollamaRunning: boolea
   return (
     <div className="flex-1 flex flex-col h-full max-w-6xl mx-auto w-full p-8 gap-8 relative">
       
-      {/* Decorative Elements */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
 
-      {/* Header */}
       <header className="flex items-center justify-between pb-6 border-b border-white/5 relative z-10">
         <div className="flex items-center gap-5">
           <div className="relative group">
@@ -78,7 +76,6 @@ export default function ChatInterface({ ollamaRunning }: { ollamaRunning: boolea
         </div>
       </header>
 
-      {/* Message Area */}
       <div 
         ref={scrollRef}
         className="flex-1 overflow-y-auto space-y-10 pr-4 custom-scrollbar relative z-10"
@@ -131,7 +128,6 @@ export default function ChatInterface({ ollamaRunning }: { ollamaRunning: boolea
         </AnimatePresence>
       </div>
 
-      {/* Input Area */}
       <footer className="relative pb-6 z-10">
         <div className="max-w-4xl mx-auto w-full relative">
           <AnimatePresence>

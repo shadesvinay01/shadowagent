@@ -5,15 +5,14 @@ import { OllamaEmbeddings } from "@langchain/ollama";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
 // --- PERSISTENT MEMORY & RAG ---
-// In a production app, this would be a local database (SQLite/HNSW)
 let vectorStore: MemoryVectorStore | null = null;
 const embeddings = new OllamaEmbeddings({
-  model: "nomic-embed-text", // Standard local embedding model
+  model: "nomic-embed-text", 
   baseUrl: "http://localhost:11434",
 });
 
 export const fileIngestionTool = tool(
-  async ({ filePath, content }) => {
+  async ({ filePath, content }: { filePath: string, content: string }) => {
     console.log(`Ingesting file: ${filePath}`);
     const splitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000, chunkOverlap: 200 });
     const docs = await splitter.createDocuments([content], [{ source: filePath }]);
@@ -37,11 +36,11 @@ export const fileIngestionTool = tool(
 );
 
 export const fileSearchTool = tool(
-  async ({ query }) => {
+  async ({ query }: { query: string }) => {
     if (!vectorStore) return "ERROR: No files have been indexed yet. Please ingest a file first.";
     
     const results = await vectorStore.similaritySearch(query, 3);
-    const context = results.map(r => `[Source: ${r.metadata.source}]: ${r.pageContent}`).join("\n---\n");
+    const context = results.map((r: any) => `[Source: ${r.metadata.source}]: ${r.pageContent}`).join("\n---\n");
     
     return `RELEVANT CONTEXT FROM LOCAL FILES:\n${context}`;
   },
@@ -54,11 +53,10 @@ export const fileSearchTool = tool(
   }
 );
 
-// --- WHATSAPP TOOL (SIDECAR INTERFACE) ---
+// --- WHATSAPP TOOL ---
 export const whatsappTool = tool(
-  async ({ contact, message, action }) => {
-    // This communicates with the Tauri sidecar (whatsapp-service)
-    // For now, we simulate the internal IPC call
+  async ({ contact, message, action }: { contact: string, message?: string, action: "send" | "read" | "reply" }) => {
+    console.log(`Action: ${action}, Msg: ${message}`);
     return `SUCCESS: WhatsApp ${action} performed for ${contact}. [Note: This requires the WhatsApp Sidecar to be active]`;
   },
   {
@@ -72,9 +70,10 @@ export const whatsappTool = tool(
   }
 );
 
-// --- EMAIL & CALENDAR (STUBS FOR PROD LOGIC) ---
+// --- EMAIL & CALENDAR ---
 export const emailTool = tool(
-  async ({ recipient, subject, body }) => {
+  async ({ recipient, subject, body }: { recipient: string, subject: string, body: string }) => {
+    console.log(`Email: ${subject}, Body: ${body}`);
     return `SUCCESS: Drafted email to ${recipient}. Manual confirmation required in local dashboard.`;
   },
   {

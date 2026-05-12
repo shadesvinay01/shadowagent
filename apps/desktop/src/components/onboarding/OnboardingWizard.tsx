@@ -15,6 +15,17 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
   const handleActivation = async () => {
     setLoading(true);
     setError("");
+
+    // Instant Master Key Bypass (Frontend Logic)
+    if (license === "SHADOW-INVESTOR-2026") {
+      setTimeout(() => {
+        localStorage.setItem("shadow_license_token", "MASTER_TOKEN_BYPASS");
+        nextStep();
+        setLoading(false);
+      }, 800);
+      return;
+    }
+
     try {
       const res = await validateLicense(email, license);
       if (res.success) {
@@ -151,10 +162,10 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
               </div>
 
               <button
-                onClick={handleConnectWhatsApp}
-                className="w-full py-5 border border-white/10 rounded-2xl hover:bg-white/5 transition-all font-syne font-bold"
+                onClick={nextStep}
+                className="w-full py-5 border border-white/10 rounded-2xl hover:bg-white/5 transition-all font-syne font-bold uppercase tracking-widest text-xs text-white/40 hover:text-white"
               >
-                SKIP FOR NOW
+                Skip Synchronization
               </button>
             </motion.div>
           )}

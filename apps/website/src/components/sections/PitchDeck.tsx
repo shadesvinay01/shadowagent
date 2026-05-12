@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Canvas } from "@react-three/fiber";
 import { 
   ChevronRight, ChevronLeft, Shield, Cpu, Lock, 
   Terminal, BarChart3, Rocket, AlertCircle, CheckCircle2, 
   MessageSquare, Mail, Calendar, FileText, Download, QrCode, Key, MessageCircle, TrendingUp, DollarSign, Target, Megaphone,
-  User, CpuIcon, Network, Globe2
+  User, CpuIcon, Network, Globe2, ArrowRight
 } from "lucide-react";
 import LogoMark from "@/components/ui/LogoMark";
 import GlassPrism from "@/components/canvas/GlassPrism";
@@ -16,122 +16,158 @@ const slides = [
   {
     id: "cover",
     title: "ShadowAgent",
-    subtitle: "The Ghost in the Machine.",
-    description: "Your digital sovereignty, re-imagined in three dimensions. Fully local. Fully yours.",
-    icon: <LogoMark size={160} />,
-    notes: "Welcome to the future of personal computing. This is ShadowAgent."
+    subtitle: "ShadowAgent",
+    tagline: "COMPLETE PRIVACY • UNLIMITED POWER",
+    description: "The Only AI Agent That Runs 100% on Your Machine.",
+    icon: <LogoMark size={140} />,
+    notes: "Welcome to ShadowAgent. The only 100% local AI agent."
   },
   {
     id: "problem",
     title: "The Crisis",
-    subtitle: "Cloud Surveillance.",
-    description: "Traditional AI is a flat, two-dimensional trap. Your data is being harvested in the shadows.",
-    icon: <AlertCircle className="w-32 h-32 text-red-500" />,
-    notes: "The problem is simple: Your data is being stolen to train models."
+    subtitle: "Your Private Data is No Longer Private",
+    bullets: [
+      "Cloud AI tools store your WhatsApp chats, emails & files",
+      "Major privacy risks and data leaks are common",
+      "Companies can read, use, or sell your information",
+      "Current automation tools are expensive and limited"
+    ],
+    icon: <AlertCircle className="w-24 h-24 text-red-500" />,
+    notes: "The problem: Your data is being harvested by cloud AI."
   },
   {
     id: "solution",
     title: "The Shift",
-    subtitle: "Sovereign Intelligence.",
-    description: "100% Local. 0% Tracking. The first AI agent that actually lives with you.",
-    icon: <Shield className="w-32 h-32 text-emerald-400" />,
-    notes: "Our solution is a local-only neural orchestrator."
+    subtitle: "Meet ShadowAgent",
+    description: "A powerful personal AI agent that lives entirely on your computer — never sends your data anywhere.",
+    bullets: [
+      "100% Local Execution",
+      "Works offline after setup",
+      "Controls WhatsApp, Email, Calendar & Files",
+      "Full privacy guaranteed"
+    ],
+    icon: <Shield className="w-24 h-24 text-emerald-400" />,
+    notes: "ShadowAgent is the local solution."
   },
   {
-    id: "action",
+    id: "demo",
     title: "In Action",
-    subtitle: "Real-Time Logic.",
-    description: "Interacting with your OS at machine speed, without the surveillance.",
-    icon: <Terminal className="w-32 h-32 text-cyan-400" />,
-    notes: "Speed and privacy, combined."
+    subtitle: "See ShadowAgent in Action",
+    examples: [
+      "“Summarize my last 50 WhatsApp messages”",
+      "“Send birthday wishes to Mom”",
+      "“Schedule team meeting for next Tuesday 4 PM”",
+      "“Analyze all my Q1 expense reports”"
+    ],
+    icon: <Terminal className="w-24 h-24 text-cyan-400" />,
+    notes: "Real-world automation examples."
   },
   {
     id: "how-it-works",
-    title: "The Engine",
-    subtitle: "4-Step Setup.",
-    description: "Install, Link, Activate, and Automate. No complex setup required.",
-    icon: <Download className="w-32 h-32 text-purple-400" />,
-    notes: "Simple deployment for the average user."
+    title: "Setup",
+    subtitle: "Simple 4-Step Setup",
+    steps: [
+      "1. Download & Install (One time)",
+      "2. Connect your accounts (WhatsApp QR, Email)",
+      "3. Activate License",
+      "4. Start talking to your AI Agent"
+    ],
+    icon: <Download className="w-24 h-24 text-purple-400" />,
+    notes: "Easy installation process."
   },
   {
     id: "features",
-    title: "The Grid",
-    subtitle: "Neural Orchestration.",
-    description: "Automate WhatsApp, Email, and Files with local-only intelligence.",
-    icon: <CpuIcon className="w-32 h-32 text-purple-400" />,
-    notes: "WhatsApp, Email, Files, and more."
+    title: "Capabilities",
+    subtitle: "One Agent. Everything You Need.",
+    features: [
+      "WhatsApp Reading & Sending",
+      "Email Management & Summarization",
+      "Calendar Automation",
+      "Local Files Analysis (PDFs)",
+      "Social Media Posting",
+      "Smart Scheduling",
+      "Natural Language Automation"
+    ],
+    icon: <CpuIcon className="w-24 h-24 text-blue-400" />,
+    notes: "A comprehensive local toolkit."
   },
   {
     id: "privacy",
-    title: "The Wall",
-    subtitle: "Fortress Design.",
-    description: "Comparing Shadow to the legacy cloud panopticon.",
-    icon: <Lock className="w-32 h-32 text-cyan-400" />,
-    notes: "Shadow vs The Cloud."
-  },
-  {
-    id: "link",
-    title: "Shadow Link",
-    subtitle: "Unified Control.",
-    description: "Seamlessly bridging your local apps with your local agent.",
-    icon: <Network className="w-32 h-32 text-emerald-400" />,
-    notes: "Native app interaction."
+    title: "Fortress",
+    subtitle: "We Never See Your Data",
+    boldStatement: "“Your chats, emails, and files never leave your device.”",
+    comparison: [
+      { label: "Data Location", shadow: "Your Computer", cloud: "Their Servers" },
+      { label: "Privacy", shadow: "100% Private", cloud: "Compromised" },
+      { label: "Offline Access", shadow: "Yes", cloud: "No" },
+      { label: "Monthly Fee", shadow: "No", cloud: "Yes" }
+    ],
+    icon: <Lock className="w-24 h-24 text-cyan-400" />,
+    notes: "Comparison with Cloud AI."
   },
   {
     id: "tech",
-    title: "The Core",
-    subtitle: "Tauri + Rust.",
-    description: "Performance and security built into the very foundation.",
-    icon: <Cpu className="w-32 h-32 text-blue-400" />,
-    notes: "Built with Rust and Tauri 2."
+    title: "Technology",
+    subtitle: "Built for Privacy & Performance",
+    bullets: [
+      "Powered by Local AI (Ollama)",
+      "Advanced Tool-Calling Agent",
+      "Built with Tauri 2 (Light & Secure)",
+      "End-to-End Local Encryption"
+    ],
+    icon: <Cpu className="w-24 h-24 text-blue-400" />,
+    notes: "Built with Tauri and Ollama."
   },
   {
     id: "market",
     title: "Dynamics",
-    subtitle: "The $50B Wave.",
-    description: "Privacy is no longer a niche—it's the massive market requirement.",
-    icon: <BarChart3 className="w-32 h-32 text-orange-400" />,
-    notes: "The market is shifting to the edge."
+    subtitle: "Huge & Growing Market",
+    bullets: [
+      "Personal AI Market: $50+ Billion by 2028",
+      "Rising demand for privacy-focused AI",
+      "Target: Professionals, Executives, Doctors"
+    ],
+    icon: <TrendingUp className="w-24 h-24 text-orange-400" />,
+    notes: "The market is ready."
   },
   {
     id: "business",
-    title: "Architecture",
-    subtitle: "Scalable Profit.",
-    description: "Zero cloud GPU costs means massive margins and sustainable growth.",
-    icon: <DollarSign className="w-32 h-32 text-green-400" />,
-    notes: "$99/yr renewal model."
-  },
-  {
-    id: "roadmap",
-    title: "The Horizon",
-    subtitle: "The Roadmap.",
-    description: "Mobile sovereignty and P2P neural networks are next.",
-    icon: <Globe2 className="w-32 h-32 text-yellow-400" />,
-    notes: "Mobile is Q3 2026."
+    title: "Model",
+    subtitle: "Simple & Profitable",
+    bullets: [
+      "Free Download + 1 Year Full Access",
+      "Annual Renewal: $99 per year",
+      "Low Server Cost (Only licensing)",
+      "High Lifetime Value"
+    ],
+    icon: <DollarSign className="w-24 h-24 text-emerald-400" />,
+    notes: "$99/yr license model."
   },
   {
     id: "team",
-    title: "The Minds",
-    subtitle: "Founders.",
-    description: "Expertise in Rust, Local LLMs, and high-end Product Design.",
-    icon: <User className="w-32 h-32 text-cyan-400" />,
-    notes: "The team behind the sovereignty."
+    title: "The Sovereigns",
+    subtitle: "The Team",
+    team: [
+      { name: "Sarveshwar Mandal", role: "CEO" },
+      { name: "Rohitash Goyal", role: "CTO" },
+      { name: "Mohd. Hidyat", role: "CMO" }
+    ],
+    icon: <User className="w-24 h-24 text-cyan-400" />,
+    notes: "Meet the founders."
   },
   {
     id: "ask",
-    title: "The Mission",
-    subtitle: "Join the Shadow.",
-    description: "We are raising $500k to build the future of private neural computing.",
-    icon: <Rocket className="w-32 h-32 text-orange-400" />,
+    title: "The Ask",
+    subtitle: "Join the Future.",
+    description: "We are raising capital to build the world's most private AI agent.",
+    bullets: [
+      "Product Development & Polish",
+      "Marketing & User Acquisition",
+      "Team Expansion"
+    ],
+    finalLine: "Let’s build the world’s most private AI agent.",
+    icon: <Rocket className="w-24 h-24 text-orange-400" />,
     notes: "Investing in privacy."
-  },
-  {
-    id: "closing",
-    title: "Initialize",
-    subtitle: "Reclaim Yourself.",
-    description: "The vision is local. The future is private. Join the Shadow today.",
-    icon: <LogoMark size={160} />,
-    notes: "Thank you for joining us."
   }
 ];
 
@@ -139,16 +175,15 @@ export default function PitchDeck() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [direction, setDirection] = useState(0);
   const [isDesktop, setIsDesktop] = useState(false);
-  const [showNotes, setShowNotes] = useState(false);
 
   // Mouse Parallax Logic
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const springX = useSpring(mouseX, { stiffness: 100, damping: 30 });
-  const springY = useSpring(mouseY, { stiffness: 100, damping: 30 });
+  const springX = useSpring(mouseX, { stiffness: 50, damping: 20 });
+  const springY = useSpring(mouseY, { stiffness: 50, damping: 20 });
   
-  const rotateX = useTransform(springY, [-0.5, 0.5], [10, -10]);
-  const rotateY = useTransform(springX, [-0.5, 0.5], [-10, 10]);
+  const rotateX = useTransform(springY, [-0.5, 0.5], [5, -5]);
+  const rotateY = useTransform(springX, [-0.5, 0.5], [-5, 5]);
 
   useEffect(() => {
     const checkIsDesktop = () => setIsDesktop(window.innerWidth > 1024 && !window.matchMedia("(pointer: coarse)").matches);
@@ -159,19 +194,9 @@ export default function PitchDeck() {
       mouseY.set(e.clientY / window.innerHeight - 0.5);
     };
     
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); paginate(1); }
-      if (e.key === "ArrowLeft") { e.preventDefault(); paginate(-1); }
-      if (e.key === "n") setShowNotes(prev => !prev);
-    };
-    
     window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [currentSlide]);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   const paginate = (newDirection: number) => {
     if (currentSlide + newDirection < 0 || currentSlide + newDirection >= slides.length) return;
@@ -182,10 +207,10 @@ export default function PitchDeck() {
   const slide = slides[currentSlide];
 
   return (
-    <div className="fixed inset-0 bg-black text-white overflow-hidden flex flex-col font-manrope">
+    <div className="fixed inset-0 bg-[#020204] text-white overflow-hidden flex flex-col font-manrope">
       
       {/* 3D Neural Background */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-30">
         {isDesktop && (
           <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
             <GlassPrism />
@@ -193,91 +218,150 @@ export default function PitchDeck() {
         )}
       </div>
 
-      {/* Floating HUD Brackets */}
-      <div className="absolute inset-20 border border-white/5 pointer-events-none z-10">
-        <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-white/20" />
-        <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-white/20" />
-        <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-white/20" />
-        <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-white/20" />
-      </div>
+      {/* Decorative Scanlines */}
+      <div className="absolute inset-0 z-[1] pointer-events-none opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
 
-      {/* Top Header */}
+      {/* Top Header - Minimal */}
       <div className="p-10 flex justify-between items-center relative z-50">
         <div className="flex items-center gap-4">
-          <LogoMark size={40} />
-          <div className="flex flex-col">
-            <span className="font-syne font-black text-2xl tracking-tighter text-white/90">SHADOW_AGENT</span>
-            <span className="text-[8px] font-mono tracking-[0.4em] text-white/30 uppercase">Neural Intelligence</span>
-          </div>
+          <LogoMark size={32} />
+          <span className="font-orbitron font-black text-xl tracking-tighter text-white/80">SHADOW_AGENT</span>
         </div>
-        <div className="flex items-center gap-6">
-           <button onClick={() => setShowNotes(!showNotes)} className="text-[10px] font-bold tracking-widest text-white/30 hover:text-white transition-colors uppercase border-b border-white/10 pb-1">
-             Speaker_Notes [N]
-           </button>
-           <div className="font-syne font-black text-xs bg-white/5 px-4 py-2 rounded-lg border border-white/10 text-white/40">
-             {currentSlide + 1} / {slides.length}
-           </div>
+        <div className="text-[10px] font-orbitron text-white/20 tracking-[0.4em]">
+          {currentSlide + 1} // {slides.length}
         </div>
       </div>
 
-      {/* 3D Slide Container */}
+      {/* Main Slide Area - No Boxes */}
       <div className="flex-1 relative flex items-center justify-center perspective-2000 px-10 md:px-24">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={slide.id}
             custom={direction}
             style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-            initial={{ opacity: 0, rotateY: direction > 0 ? 90 : -90, z: -500 }}
-            animate={{ opacity: 1, rotateY: 0, z: 0 }}
-            exit={{ opacity: 0, rotateY: direction > 0 ? -90 : 90, z: -500 }}
+            initial={{ opacity: 0, x: direction > 0 ? 100 : -100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: direction > 0 ? -100 : 100 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full max-w-6xl relative"
+            className="w-full max-w-7xl"
           >
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 items-center">
               
-              {/* Content Card */}
-              <div className="space-y-8 translate-z-100">
-                <motion.div
-                  initial={{ opacity: 0, x: -50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  <p className="text-xs font-bold tracking-[0.8em] text-white/30 uppercase mb-6">{slide.title}</p>
-                  <h1 className="text-7xl md:text-9xl font-syne font-black leading-none tracking-tightest text-white mb-8">
+              {/* Left Column: Content (7 cols) */}
+              <div className="lg:col-span-7 space-y-10">
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+                  <p className="text-[10px] font-bold tracking-[0.5em] text-cyan-500 mb-6 uppercase border-l-2 border-cyan-500 pl-4">{slide.title}</p>
+                  <h1 className="text-4xl md:text-6xl font-orbitron font-black leading-[1.1] tracking-tighter text-white/95 mb-10 uppercase">
                     {slide.subtitle}
                   </h1>
-                  <p className="text-xl md:text-2xl text-white/40 font-light leading-relaxed max-w-xl">
-                    {slide.description}
-                  </p>
-                </motion.div>
+                  
+                  {slide.description && (
+                    <p className="text-lg md:text-xl text-white/40 font-light leading-relaxed max-w-xl">
+                      {slide.description}
+                    </p>
+                  )}
 
-                <motion.button
-                  whileHover={{ scale: 1.05, x: 10 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => paginate(1)}
-                  className="group flex items-center gap-6 px-10 py-5 bg-white text-black rounded-full font-syne font-black uppercase text-sm tracking-tighter"
-                >
-                  {currentSlide === slides.length - 1 ? "End Mission" : "Next Segment"}
-                  <ChevronRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
-                </motion.button>
+                  {slide.tagline && (
+                    <p className="text-xs font-bold text-cyan-400 mt-10 tracking-[0.3em] uppercase opacity-60">
+                      {slide.tagline}
+                    </p>
+                  )}
+
+                  {slide.boldStatement && (
+                    <p className="text-2xl font-orbitron font-bold text-white border-l-4 border-cyan-500 pl-8 my-10 leading-tight">
+                      {slide.boldStatement}
+                    </p>
+                  )}
+
+                  {/* Bullet List - Clean, no box */}
+                  {(slide.bullets || slide.steps) && (
+                    <div className="grid grid-cols-1 gap-4 mt-12">
+                      {(slide.bullets || slide.steps).map((b: any, i: number) => (
+                        <div key={i} className="flex items-center gap-4 group">
+                          <div className="w-1.5 h-1.5 rounded-full bg-cyan-500/40 group-hover:bg-cyan-500 transition-colors" />
+                          <span className="text-sm font-medium text-white/50 group-hover:text-white/80 transition-colors">{b}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Comparison Grid - Minimal lines */}
+                  {slide.comparison && (
+                    <div className="mt-12 space-y-4">
+                       <div className="grid grid-cols-3 pb-4 border-b border-white/10">
+                          <div className="text-[9px] font-bold text-white/20 uppercase tracking-widest">Logic</div>
+                          <div className="text-center text-[9px] font-bold text-cyan-400 uppercase tracking-widest">ShadowAgent</div>
+                          <div className="text-center text-[9px] font-bold text-white/20 uppercase tracking-widest">Cloud AI</div>
+                       </div>
+                       {slide.comparison.map((row, i) => (
+                         <div key={i} className="grid grid-cols-3 py-2 border-b border-white/5 last:border-0">
+                           <div className="text-xs font-medium text-white/40">{row.label}</div>
+                           <div className="text-center text-xs font-bold text-white">{row.shadow}</div>
+                           <div className="text-center text-xs text-white/20 font-light">{row.other}</div>
+                         </div>
+                       ))}
+                    </div>
+                  )}
+
+                  {/* Feature Grid - Small items */}
+                  {slide.features && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 mt-12">
+                       {slide.features.map((f, i) => (
+                         <div key={i} className="flex items-center gap-4">
+                            <CheckCircle2 className="w-4 h-4 text-cyan-500/40" />
+                            <span className="text-sm font-bold text-white/40">{f}</span>
+                         </div>
+                       ))}
+                    </div>
+                  )}
+
+                  {/* Examples - Code style */}
+                  {slide.examples && (
+                    <div className="grid grid-cols-1 gap-3 mt-10">
+                       {slide.examples.map((ex, i) => (
+                         <div key={i} className="text-xs font-mono text-cyan-500/60 flex items-center gap-4">
+                            <span className="text-white/20">{'>'}</span> {ex}
+                         </div>
+                       ))}
+                    </div>
+                  )}
+
+                  {/* Team Grid */}
+                  {slide.team && (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                       {slide.team.map((m, i) => (
+                         <div key={i} className="space-y-2">
+                            <div className="w-12 h-px bg-cyan-500/40" />
+                            <h4 className="font-orbitron font-bold text-sm text-white">{m.name}</h4>
+                            <p className="text-[10px] text-white/30 uppercase tracking-widest">{m.role}</p>
+                         </div>
+                       ))}
+                    </div>
+                  )}
+
+                  {slide.finalLine && (
+                    <p className="text-xl font-orbitron font-bold text-cyan-400 mt-16">{slide.finalLine}</p>
+                  )}
+                </motion.div>
               </div>
 
-              {/* 3D Icon Presentation */}
-              <div className="flex justify-center items-center translate-z-200">
-                <motion.div
-                  initial={{ scale: 0.5, opacity: 0, rotate: -20 }}
-                  animate={{ scale: 1, opacity: 1, rotate: 0 }}
-                  transition={{ delay: 0.4, type: "spring", stiffness: 100 }}
-                  className="relative group"
-                >
-                  <div className="absolute inset-0 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all duration-1000 scale-150" />
-                  <div className="relative z-10 w-[400px] h-[400px] rounded-[4rem] border border-white/10 bg-white/[0.02] backdrop-blur-3xl flex items-center justify-center overflow-hidden shadow-2xl">
-                    <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:40px_40px]" />
-                    <div className="relative z-20 group-hover:scale-110 transition-transform duration-1000">
-                      {slide.icon}
-                    </div>
-                  </div>
-                </motion.div>
+              {/* Right Column: Visual (5 cols) */}
+              <div className="lg:col-span-5 hidden lg:block">
+                 <motion.div 
+                   initial={{ opacity: 0, scale: 0.9 }}
+                   animate={{ opacity: 1, scale: 1 }}
+                   transition={{ delay: 0.4 }}
+                   className="relative flex justify-center items-center"
+                 >
+                   {/* HUD Decorative Elements */}
+                   <div className="absolute -inset-10 border border-white/5 rounded-full animate-pulse-slow" />
+                   <div className="absolute -inset-20 border border-white/5 rounded-full opacity-50" />
+                   
+                   {/* Centered Visual Icon */}
+                   <div className="relative z-10 p-12 text-white filter drop-shadow-[0_0_50px_rgba(0,240,255,0.2)]">
+                      {slide.id === 'cover' ? <LogoMark size={200} /> : slide.icon}
+                   </div>
+                 </motion.div>
               </div>
 
             </div>
@@ -285,47 +369,33 @@ export default function PitchDeck() {
         </AnimatePresence>
       </div>
 
-      {/* Speaker Notes Overlay */}
-      <AnimatePresence>
-        {showNotes && (
-          <motion.div 
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            className="fixed bottom-0 left-0 right-0 z-[100] h-[30%] bg-black/90 backdrop-blur-3xl border-t border-white/10 p-12 overflow-y-auto"
-          >
-            <div className="max-w-5xl mx-auto">
-              <h3 className="font-syne font-bold text-xs text-white/30 mb-6 tracking-widest uppercase underline decoration-white/10 underline-offset-8">SPEAKER_NOTES // {slide.id}</h3>
-              <p className="text-2xl text-white/80 font-light leading-relaxed">
-                {slide.notes}
-              </p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Navigation Footer */}
+      {/* Navigation Footer - Minimal */}
       <div className="p-12 flex justify-between items-center relative z-50">
         <div className="flex gap-4">
-          <button onClick={() => paginate(-1)} disabled={currentSlide === 0} className="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/5 disabled:opacity-20 transition-all"><ChevronLeft className="w-6 h-6" /></button>
-          <button onClick={() => paginate(1)} disabled={currentSlide === slides.length - 1} className="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/5 disabled:opacity-20 transition-all"><ChevronRight className="w-6 h-6" /></button>
+          <button onClick={() => paginate(-1)} disabled={currentSlide === 0} className="text-xs font-bold text-white/20 hover:text-white transition-all uppercase tracking-[0.2em] disabled:opacity-5">{'<'} Previous</button>
+          <button onClick={() => paginate(1)} disabled={currentSlide === slides.length - 1} className="text-xs font-bold text-white/20 hover:text-white transition-all uppercase tracking-[0.2em] disabled:opacity-5">Next {'>'}</button>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-1.5">
           {slides.map((_, i) => (
-            <div key={i} className={`h-1 rounded-full transition-all duration-1000 ${i === currentSlide ? "w-16 bg-white" : "w-4 bg-white/10"}`} />
+            <div key={i} className={`h-0.5 rounded-full transition-all duration-700 ${i === currentSlide ? "w-8 bg-cyan-500" : "w-2 bg-white/10"}`} />
           ))}
         </div>
 
-        <div className="text-[9px] font-bold text-white/20 tracking-widest uppercase">
-          Confidential // Neural OS v.1.0
-        </div>
+        <button 
+          onClick={() => paginate(1)}
+          disabled={currentSlide === slides.length - 1}
+          className="group flex items-center gap-3 px-8 py-3 rounded-full border border-white/10 hover:border-white/40 transition-all text-[10px] font-bold uppercase tracking-widest"
+        >
+          {currentSlide === slides.length - 1 ? "End" : "Next Segment"}
+          <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+        </button>
       </div>
 
       <style jsx global>{`
         .perspective-2000 { perspective: 2000px; }
-        .translate-z-100 { transform: translateZ(100px); }
-        .translate-z-200 { transform: translateZ(200px); }
+        .animate-pulse-slow { animation: pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 0.1; } 50% { opacity: 0.3; } }
       `}</style>
     </div>
   );

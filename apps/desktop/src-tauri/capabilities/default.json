@@ -8,9 +8,6 @@
     "opener:default",
     "shell:default",
     "os:default",
-    "store:allow-save",
-    "store:allow-set",
-    "store:allow-get",
-    "store:allow-load"
+    "store:default"
   ]
 }

@@ -14,12 +14,30 @@ export default function CinematicReveal() {
 
     const words = textRef.current.querySelectorAll(".word");
 
+    // Detect mobile to disable heavy scroll animations
+    const isMobile = window.innerWidth < 768;
+
     const ctx = gsap.context(() => {
+      if (isMobile) {
+        // Simple fade-in for mobile without pinning
+        gsap.from(words, {
+          opacity: 0.1,
+          y: 20,
+          stagger: 0.05,
+          duration: 1,
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top 80%",
+          }
+        });
+        return;
+      }
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
-          end: "+=150%", // Pin for 1.5 viewport heights
+          end: "+=150%",
           scrub: 1,
           pin: true,
         },

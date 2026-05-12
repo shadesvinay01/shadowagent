@@ -55,12 +55,18 @@ export default function CinematicHero() {
     return () => ctx.revert();
   }, []);
 
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
   return (
     <section ref={containerRef} className="relative h-screen w-full overflow-hidden flex flex-col items-center justify-center">
-      {/* Deep Atmospheric Background - Made transparent to let the Prism show */}
+      {/* Deep Atmospheric Background - Optimized for mobile */}
       <div 
         ref={bgRef}
-        className="absolute inset-0 z-0 bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-screen"
+        className={`absolute inset-0 z-0 ${
+          isMobile 
+            ? "bg-gradient-to-b from-[#050508] via-[#0a0a15] to-[#050508]" 
+            : "bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')] bg-cover bg-center mix-blend-screen"
+        } opacity-10`}
       />
       
       {/* Noise Overlay */}

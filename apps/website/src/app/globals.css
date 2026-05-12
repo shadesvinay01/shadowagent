@@ -88,6 +88,25 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* Hardcore performance fixes for mobile scrolling */
+@media (max-width: 768px) {
+  html, body {
+    scroll-behavior: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  section {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 500px; /* Placeholder size for the browser to calculate scrollbar */
+    will-change: transform;
+  }
+
+  /* Disable expensive effects on mobile */
+  .grid-background {
+    background-image: none !important;
+  }
+}
+
 /* Lenis Scroll Tweaks */
 html.lenis {
   height: auto;

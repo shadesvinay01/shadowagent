@@ -52,8 +52,10 @@ const bentoItems = [
 function BentoCard({ item, i }: { item: any, i: number }) {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
   function onMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
+    if (isMobile) return;
     const { left, top } = currentTarget.getBoundingClientRect();
     mouseX.set(clientX - left);
     mouseY.set(clientY - top);
@@ -67,23 +69,25 @@ function BentoCard({ item, i }: { item: any, i: number }) {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: i * 0.05 }}
+      transition={{ duration: 0.5, delay: isMobile ? 0 : i * 0.05 }}
       onMouseMove={onMouseMove}
-      className={`group relative card-solid rounded-[2rem] p-8 overflow-hidden transition-all duration-500 hover:scale-[0.98] active:scale-[0.96] cursor-default border border-white/5 bg-white/[0.02] ${item.className}`}
+      className={`group relative card-solid rounded-[2rem] p-8 overflow-hidden transition-all duration-500 ${isMobile ? '' : 'hover:scale-[0.98] active:scale-[0.96]'} cursor-default border border-white/5 bg-white/[0.02] ${item.className}`}
     >
-      {/* Animated Spotlight Overlay */}
-      <motion.div 
-        className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-500 group-hover:opacity-100"
-        style={{
-          background: useMotionTemplate`
-            radial-gradient(
-              650px circle at ${mouseX}px ${mouseY}px,
-              rgba(0, 240, 255, 0.07),
-              transparent 80%
-            )
-          `,
-        }}
-      />
+      {/* Animated Spotlight Overlay - Hidden on mobile */}
+      {!isMobile && (
+        <motion.div 
+          className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-500 group-hover:opacity-100"
+          style={{
+            background: useMotionTemplate`
+              radial-gradient(
+                650px circle at ${mouseX}px ${mouseY}px,
+                rgba(0, 240, 255, 0.07),
+                transparent 80%
+              )
+            `,
+          }}
+        />
+      )}
       
       <div className="flex flex-col h-full relative z-10">
         <div className="mb-auto">

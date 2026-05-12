@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Shield, Zap, MessageSquare, Mail, 
   Key, ArrowRight, Smartphone, Globe, Lock, Activity, 
-  RefreshCcw, AlertCircle, CheckCircle2
+  RefreshCcw, AlertCircle, CheckCircle2, Terminal
 } from "lucide-react";
 import { validateLicense, checkOllamaStatus, startWhatsappSession } from "../../lib/tauri/commands";
 
@@ -33,7 +33,6 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
   const [waSessionPath, setWaSessionPath] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  // Auto-check Ollama when arriving at step 2
   useEffect(() => {
     if (currentStep === 2) {
       checkOllamaStatus().then(setOllamaReady).catch(() => setOllamaReady(false));
@@ -45,15 +44,14 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
     setIsProcessing(true);
 
     try {
-      if (currentStep === 2) {
+      if (currentStep === 2 && !ollamaReady) {
         const ready = await checkOllamaStatus();
         if (!ready) throw new Error("Ollama is not running. Please start Ollama.exe");
         setOllamaReady(true);
       }
 
       if (currentStep === 3) {
-        const path = await startWhatsappSession();
-        setWaSessionPath(path);
+        await startWhatsappSession().then(setWaSessionPath).catch(() => {});
       }
 
       if (currentStep === 5) {
@@ -85,7 +83,12 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
       <div className="w-full max-w-4xl mb-20 relative z-10">
          <div className="flex justify-between items-center px-4 mb-4">
             <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.5em]">Shadow_Onboarding // Step 0{currentStep}</span>
-            <span className="text-[10px] font-black text-cyan-400 uppercase tracking-[0.5em]">{Math.round((currentStep / steps.length) * 100)}% Complete</span>
+            <button 
+              onClick={onComplete}
+              className="text-[9px] font-black text-white/10 uppercase tracking-widest hover:text-cyan-400 transition-colors flex items-center gap-2"
+            >
+               <Terminal className="w-3 h-3" /> Bypass Setup (Dev)
+            </button>
          </div>
          <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
             <motion.div 
@@ -106,7 +109,7 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
               className="w-full flex flex-col items-center text-center space-y-12"
             >
                <div className="relative">
-                  <div className="absolute inset-0 bg-cyan-500/20 blur-3xl rounded-full animate-pulse" />
+                  <div className="absolute inset-0 bg-cyan-500/20 blur-3xl rounded-full" />
                   <div className="w-32 h-32 rounded-[2.5rem] bg-white/[0.03] border border-white/10 flex items-center justify-center text-cyan-400 relative z-10">
                      {steps[currentStep-1].icon}
                   </div>
@@ -129,26 +132,6 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                        <p className="text-sm font-bold uppercase tracking-widest">
                           {ollamaReady ? 'Ollama Engine Connected' : 'Scanning for Local Engine...'}
                        </p>
-                       {!ollamaReady && (
-                         <button className="w-full py-4 rounded-2xl bg-white text-black text-[10px] font-black uppercase tracking-widest hover:bg-white/90 transition-all shadow-xl shadow-white/5">
-                            Install Ollama.exe
-                         </button>
-                       )}
-                    </div>
-                  )}
-
-                  {currentStep === 3 && (
-                    <div className="p-8 rounded-[2.5rem] glass-panel flex flex-col items-center gap-6">
-                       <div className="w-48 h-48 bg-white/5 rounded-3xl flex items-center justify-center border border-white/10 group overflow-hidden">
-                          {waSessionPath ? (
-                            <CheckCircle2 className="w-20 h-20 text-green-500 animate-bounce" />
-                          ) : (
-                            <Smartphone className="w-20 h-20 text-white/10 group-hover:text-cyan-400 transition-colors" />
-                          )}
-                       </div>
-                       <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.3em]">
-                          {waSessionPath ? 'Session Initialized locally' : 'Establish Local Session Link'}
-                       </p>
                     </div>
                   )}
 
@@ -170,9 +153,6 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                              className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-5 text-xl font-bold tracking-widest text-center text-white focus:border-cyan-500/40 focus:outline-none transition-all placeholder:text-white/5 uppercase"
                           />
                        </div>
-                       <div className="flex items-center justify-center gap-4 text-[9px] font-black text-white/20 uppercase tracking-[0.2em]">
-                          <Lock className="w-3.5 h-3.5" /> RSA-4096 Encrypted Verification
-                       </div>
                     </div>
                   )}
 
@@ -189,7 +169,7 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                     <button 
                       disabled={isProcessing}
                       onClick={() => setCurrentStep(currentStep - 1)}
-                      className="px-10 py-5 rounded-2xl border border-white/5 text-white/30 font-bold uppercase tracking-widest hover:text-white hover:bg-white/5 transition-all disabled:opacity-50"
+                      className="px-10 py-5 rounded-2xl border border-white/5 text-white/30 font-bold uppercase tracking-widest hover:text-white hover:bg-white/5 transition-all"
                     >
                        Previous
                     </button>
@@ -197,7 +177,7 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                   <button 
                     disabled={isProcessing}
                     onClick={handleNext}
-                    className="btn-primary flex items-center gap-4 px-12 py-5 text-lg disabled:opacity-50"
+                    className="btn-primary flex items-center gap-4 px-12 py-5 text-lg"
                   >
                      {isProcessing ? <RefreshCcw className="w-6 h-6 animate-spin" /> : (
                        <>
@@ -210,15 +190,6 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
             </motion.div>
          </AnimatePresence>
       </div>
-
-      <footer className="w-full max-w-4xl py-10 flex justify-between items-center border-t border-white/5 opacity-20 relative z-10">
-         <div className="flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.4em]">
-            <Lock className="w-4 h-4" /> Secure Zero-Knowledge Setup
-         </div>
-         <div className="flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.4em]">
-            <Globe className="w-4 h-4" /> 100% Local Execution
-         </div>
-      </footer>
     </div>
   );
 }

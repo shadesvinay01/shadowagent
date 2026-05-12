@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,14 +9,20 @@
     --background: 0 0% 2%;
     --foreground: 0 0% 98%;
     --primary: 210 100% 50%;
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-syne: 'Syne', sans-serif;
   }
 }
 
 @layer base {
   body {
-    @apply bg-[#020202] text-[#E0E0E0] font-sans antialiased overflow-hidden;
+    @apply bg-[#020202] text-[#E0E0E0] antialiased overflow-hidden;
+    font-family: var(--font-sans);
   }
 }
+
+.font-syne { font-family: var(--font-syne); }
+.font-sans { font-family: var(--font-sans); }
 
 /* Sophisticated Obsidian Glass */
 .glass-obsidian {

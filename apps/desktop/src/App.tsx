@@ -163,22 +163,17 @@ export default function App() {
            </AnimatePresence>
         </div>
       </main>
+    </div>
+  );
+}
 
-      <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&display=swap');
-        
-        :root {
-          --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-          --font-syne: 'Syne', sans-serif;
-        }
-
-        .font-sans { font-family: var(--font-sans); }
-        .font-syne { font-family: var(--font-syne); }
-
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
-      `}</style>
+function LogoMark({ size }: { size: number }) {
+  return (
+    <div className="relative" style={{ width: size, height: size }}>
+      <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-xl" />
+      <div className="relative w-full h-full rounded-xl border border-white/20 flex items-center justify-center bg-black">
+         <div className="w-1/2 h-1/2 bg-white rounded-sm rotate-45 shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
+      </div>
     </div>
   );
 }

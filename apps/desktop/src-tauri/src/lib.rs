@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use keyring::Entry;
-use tauri_plugin_shell::ShellExt;
+use tauri::Manager;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LicenseResponse {
@@ -9,8 +9,6 @@ pub struct LicenseResponse {
     expires_at: Option<u64>,
     error: Option<String>,
 }
-
-use jsonwebtoken::{decode, DecodingKey, Validation, Algorithm};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Claims {

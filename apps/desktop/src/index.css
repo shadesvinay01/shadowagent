@@ -1,8 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800&display=swap');
 
 :root {
   --bg: #0A0A0A;
@@ -10,24 +10,14 @@
   --glass: rgba(255, 255, 255, 0.06);
   --accent-cyan: #00F0FF;
   --accent-purple: #A020F0;
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --font-heading: 'Syne', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
 }
 
 @layer base {
   body {
     @apply bg-[#0A0A0A] text-[#F5F5F7] antialiased overflow-hidden selection:bg-cyan-500/30;
-    font-family: var(--font-sans);
+    font-family: 'Inter', system-ui, sans-serif;
   }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading);
-  }
-
-  code, pre {
-    font-family: var(--font-mono);
-  }
+  h1, h2, h3, h4, h5, h6 { font-family: 'Syne', sans-serif; }
 }
 
 /* Glassmorphism System */
@@ -40,32 +30,7 @@
   @apply bg-white/[0.04] backdrop-blur-3xl border border-white/[0.06] rounded-2xl transition-all duration-300;
 }
 
-.glass-card:hover {
-  @apply bg-white/[0.08] border-white/[0.12] -translate-y-1;
-  box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
-}
-
-/* Typography Utilities */
-.text-cyan { color: var(--accent-cyan); }
-.text-purple { color: var(--accent-purple); }
-.glow-cyan { filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.4)); }
-.glow-purple { filter: drop-shadow(0 0 10px rgba(160, 32, 240, 0.4)); }
-
-/* Layout Grid */
-.layout-grid {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  height: 100vh;
-  width: 100vw;
-}
-
-/* Custom Scrollbar - Minimal */
-::-webkit-scrollbar { width: 3px; height: 3px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
-
-/* Animated Background Particles */
+/* Background Decor */
 .bg-glow {
   position: absolute;
   width: 800px;
@@ -78,32 +43,18 @@
 }
 
 .glow-left {
-  background: radial-gradient(circle, var(--accent-cyan) 0%, transparent 70%);
-  top: -20%;
-  left: -20%;
+  background: radial-gradient(circle, #00F0FF 0%, transparent 70%);
+  top: -20%; left: -20%;
 }
 
 .glow-right {
-  background: radial-gradient(circle, var(--accent-purple) 0%, transparent 70%);
-  bottom: -20%;
-  right: -20%;
+  background: radial-gradient(circle, #A020F0 0%, transparent 70%);
+  bottom: -20%; right: -20%;
 }
 
-/* Micro-interactions */
 .btn-primary {
-  @apply relative overflow-hidden px-8 py-3 rounded-xl bg-white text-black font-bold transition-all hover:scale-105 active:scale-95 shadow-xl shadow-white/5;
+  @apply relative overflow-hidden px-8 py-3 rounded-xl bg-white text-black font-extrabold transition-all hover:scale-105 active:scale-95 shadow-xl shadow-white/5;
 }
 
-.btn-secondary {
-  @apply px-8 py-3 rounded-xl border border-white/10 hover:border-white/30 bg-white/5 transition-all;
-}
-
-/* Onboarding Glow Rings */
-.glow-ring {
-  @apply relative;
-}
-
-.glow-ring::after {
-  content: "";
-  @apply absolute -inset-1 rounded-full border border-cyan-500/20 animate-ping;
-}
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }

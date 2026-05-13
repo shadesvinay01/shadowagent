@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { 
-  Shield, Key, Cpu, Zap, LogOut, CheckCircle2, 
-  AlertTriangle, CreditCard, RefreshCcw, Bell, Lock, Globe
+  Shield, Key, Cpu, Zap, LogOut, 
+  CreditCard, Bell, Lock, Globe
 } from "lucide-react";
 import { checkOllamaStatus, getHardwareInfo } from "../../lib/tauri/commands";
 

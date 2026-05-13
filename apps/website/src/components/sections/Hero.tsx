@@ -45,20 +45,35 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 w-full sm:w-auto"
         >
-          <button className="group relative px-8 py-4 bg-white text-black rounded-full overflow-hidden transition-all hover:bg-gray-200 hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_40px_rgba(255,255,255,0.1)] flex items-center justify-center gap-3">
+          {/* Windows - direct download of .exe from /public */}
+          <a
+            href="/shadowagent.exe"
+            download="ShadowAgent-Setup.exe"
+            className="group relative px-8 py-4 bg-white text-black rounded-full overflow-hidden transition-all hover:bg-gray-200 hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_40px_rgba(255,255,255,0.1)] flex items-center justify-center gap-3 cursor-pointer no-underline"
+          >
             <Download className="w-5 h-5" />
             <span className="font-semibold tracking-wide">Download for Windows</span>
-          </button>
-          
-          <button className="px-8 py-4 rounded-full flex items-center justify-center gap-3 transition-all hover:bg-white/10 active:scale-[0.98] border border-white/10 text-gray-300 hover:text-white bg-white/5 backdrop-blur-md">
+          </a>
+
+          {/* macOS - downloads the zip bundle */}
+          <a
+            href="/shadowagent.zip"
+            download="ShadowAgent-macOS.zip"
+            className="px-8 py-4 rounded-full flex items-center justify-center gap-3 transition-all hover:bg-white/10 active:scale-[0.98] border border-white/10 text-gray-300 hover:text-white bg-white/5 backdrop-blur-md cursor-pointer no-underline"
+          >
             <Apple className="w-5 h-5" />
             <span className="font-medium">macOS</span>
-          </button>
+          </a>
 
-          <button className="px-8 py-4 rounded-full flex items-center justify-center gap-3 transition-all hover:bg-white/10 active:scale-[0.98] border border-white/10 text-gray-300 hover:text-white bg-white/5 backdrop-blur-md">
+          {/* Linux - downloads the zip bundle */}
+          <a
+            href="/shadowagent.zip"
+            download="ShadowAgent-Linux.zip"
+            className="px-8 py-4 rounded-full flex items-center justify-center gap-3 transition-all hover:bg-white/10 active:scale-[0.98] border border-white/10 text-gray-300 hover:text-white bg-white/5 backdrop-blur-md cursor-pointer no-underline"
+          >
             <Terminal className="w-5 h-5" />
             <span className="font-medium">Linux</span>
-          </button>
+          </a>
         </motion.div>
       </div>
       

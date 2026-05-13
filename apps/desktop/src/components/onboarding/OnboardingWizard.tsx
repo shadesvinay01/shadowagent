@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Shield, Zap, MessageSquare, Mail, 
-  Key, ArrowRight, Smartphone, Globe, Lock, Activity, 
-  RefreshCcw, AlertCircle, CheckCircle2, Terminal
+  Key, ArrowRight, Activity, 
+  RefreshCcw, AlertCircle, Terminal
 } from "lucide-react";
 import { validateLicense, checkOllamaStatus, startWhatsappSession } from "../../lib/tauri/commands";
 
@@ -30,7 +30,6 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
   const [email, setEmail] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [ollamaReady, setOllamaReady] = useState(false);
-  const [waSessionPath, setWaSessionPath] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -51,7 +50,7 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
       }
 
       if (currentStep === 3) {
-        await startWhatsappSession().then(setWaSessionPath).catch(() => {});
+        await startWhatsappSession().catch(() => {});
       }
 
       if (currentStep === 5) {

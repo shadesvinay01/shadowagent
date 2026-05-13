@@ -8,8 +8,7 @@ import SettingsPage from "./components/settings/SettingsPage";
 import { checkOllamaStatus } from "./lib/tauri/commands";
 import { 
   MessageSquare, LayoutGrid, History, Library, Settings, 
-  ChevronLeft, ChevronRight, Search, Bell, Plus, 
-  Zap, Shield, User, Activity, Mail, Calendar, FileText, Share2, ArrowRight, X, Upload
+  ChevronLeft, ChevronRight, Search, Zap, Shield, User, Activity, Mail, Calendar, FileText, ArrowRight, X, Upload
 } from "lucide-react";
 
 type Tab = "chat" | "tools" | "history" | "knowledge" | "settings";
@@ -176,6 +175,11 @@ export default function App() {
             </button>
           ))}
         </nav>
+        <div className="p-4 border-t border-white/5">
+          <button onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} className="w-full flex items-center justify-center py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+            {isSidebarCollapsed ? <ChevronRight className="w-4 h-4 text-white/40" /> : <ChevronLeft className="w-4 h-4 text-white/40" />}
+          </button>
+        </div>
       </motion.aside>
 
       <main className="flex-1 flex flex-col overflow-hidden relative">

@@ -3,9 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Send, User, Bot, Sparkles, Paperclip, Mic, 
-  RotateCcw, Copy, Check, Bookmark, Zap, 
-  Command, Terminal, ShieldCheck
+  Send, User, Bot, Sparkles, Paperclip, Mic
 } from "lucide-react";
 import { shadowAgent } from "../../lib/agent/agent";
 

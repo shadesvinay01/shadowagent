@@ -1,11 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { 
-  MessageSquare, Mail, Calendar, FileText, 
-  Send, Search, Plus, CheckCircle2, 
-  Clock, Shield, Zap, Filter, Upload, Database
+  MessageSquare, Mail, FileText, 
+  Shield, Zap, Upload
 } from "lucide-react";
 
 export function WhatsAppTool() {

@@ -276,7 +276,7 @@ export default function DemoSimulator() {
       
       // Path 1: Glide to email input
       setTimeout(() => {
-        setCursorPos({ x: "50%", y: "45%" });
+        setCursorPos({ x: "60%", y: "42%" });
         
         // Path 2: Type email
         setTimeout(() => {
@@ -294,7 +294,7 @@ export default function DemoSimulator() {
               
               // Path 3: Glide to license input
               setTimeout(() => {
-                setCursorPos({ x: "50%", y: "55%" });
+                setCursorPos({ x: "60%", y: "52%" });
                 
                 // Path 4: Type license
                 setTimeout(() => {
@@ -312,7 +312,7 @@ export default function DemoSimulator() {
                       
                       // Path 5: Glide to Finalize button
                       setTimeout(() => {
-                        setCursorPos({ x: "56%", y: "70%" });
+                        setCursorPos({ x: "60%", y: "66%" });
                         
                         // Click action
                         setTimeout(() => {
@@ -346,44 +346,59 @@ export default function DemoSimulator() {
       setShowCursor(true);
       setSelectedSubTool(null);
       
-      // Path 1: Glide to document area
+      // Move to Memory Bank tab on sidebar
+      setCursorPos({ x: "50%", y: "50%" });
       setTimeout(() => {
-        setCursorPos({ x: "72%", y: "40%" });
+        setCursorPos({ x: "10%", y: "44%" });
         
-        // Path 2: Trigger PDF indexing
         setTimeout(() => {
           setCursorClicking(true);
           playChirp();
           setTimeout(() => {
             setCursorClicking(false);
-            setRagLogs(["[system] Selected: Q3_Financial_Projections.pdf", "[system] Size: 1.2 MB"]);
-            playToolHum();
+            setActiveView("knowledge");
             
+            // Glide to dropzone area
             setTimeout(() => {
-              setRagLogs(prev => [...prev, "[system] Parsing document tokens...", "[system] Splitting into 1000-character blocks..."]);
+              setCursorPos({ x: "72%", y: "38%" });
               
-              let progress = 0;
-              const progressTimer = setInterval(() => {
-                progress += 10;
-                setRagProgress(progress);
-                playTick();
-                
-                if (progress === 30) {
-                  setRagLogs(prev => [...prev, "[neural] Initializing Ollama local vector embeddings...", "[neural] Model: nomic-embed-text loaded."]);
-                }
-                if (progress === 60) {
-                  setRagLogs(prev => [...prev, "[neural] Encoding blocks 1 to 24...", "[neural] Encoding blocks 25 to 48..."]);
-                }
-                if (progress === 90) {
-                  setRagLogs(prev => [...prev, "[database] Storing vector points in HNSW indices...", "[database] Writing local database nodes..."]);
-                }
-                if (progress >= 100) {
-                  clearInterval(progressTimer);
-                  setRagSuccess(true);
-                  setRagLogs(prev => [...prev, "✓ SUCCESS: Ingestion complete. Index refreshed."]);
-                  playSuccessChirp();
-                }
-              }, 250);
+              // Trigger PDF indexing
+              setTimeout(() => {
+                setCursorClicking(true);
+                playChirp();
+                setTimeout(() => {
+                  setCursorClicking(false);
+                  setRagLogs(["[system] Selected: Q3_Financial_Projections.pdf", "[system] Size: 1.2 MB", "[system] Parsing local document tokens..."]);
+                  playToolHum();
+                  
+                  setTimeout(() => {
+                    setRagLogs(prev => [...prev, "[system] File read success: 14,204 chars found", "[system] Splitting into 1000-character blocks (500 tokens)..."]);
+                    
+                    let progress = 0;
+                    const progressTimer = setInterval(() => {
+                      progress += 10;
+                      setRagProgress(progress);
+                      playTick();
+                      
+                      if (progress === 20) {
+                        setRagLogs(prev => [...prev, "[neural] Initializing Ollama local LLM instance...", "[neural] Model config: nomic-embed-text (384 dimensions)"]);
+                      }
+                      if (progress === 50) {
+                        setRagLogs(prev => [...prev, "[neural] Generating vector embeddings offline...", "[neural] Mapped chunks 1 to 6/12..."]);
+                      }
+                      if (progress === 80) {
+                        setRagLogs(prev => [...prev, "[neural] Chunks 7 to 12/12 mapped successfully.", "[database] Storing points in HNSW index map..."]);
+                      }
+                      if (progress >= 100) {
+                        clearInterval(progressTimer);
+                        setRagSuccess(true);
+                        setRagLogs(prev => [...prev, "✓ SUCCESS: Ingestion complete. Index refreshed locally."]);
+                        playSuccessChirp();
+                      }
+                    }, 250);
+                  }, 800);
+                }, 150);
+              }, 800);
             }, 800);
           }, 150);
         }, 800);
@@ -395,81 +410,95 @@ export default function DemoSimulator() {
       setWaSessionStatus("disconnected");
       setShowCursor(true);
       
-      // Glide to WhatsApp Card
+      // Move to Tools Hub tab in sidebar
       setTimeout(() => {
-        setCursorPos({ x: "42%", y: "30%" });
+        setCursorPos({ x: "10%", y: "28%" });
         
-        // Click WhatsApp Card
         setTimeout(() => {
           setCursorClicking(true);
           playChirp();
           setTimeout(() => {
             setCursorClicking(false);
-            setSelectedSubTool("whatsapp");
+            setActiveView("tools");
             
-            // Glide to "Generate QR & Pair" button
+            // Glide to WhatsApp Card
             setTimeout(() => {
-              setCursorPos({ x: "57%", y: "66%" });
+              setCursorPos({ x: "40%", y: "32%" });
               
-              // Click Pair
+              // Click WhatsApp Card
               setTimeout(() => {
                 setCursorClicking(true);
                 playChirp();
                 setTimeout(() => {
                   setCursorClicking(false);
-                  setWaSessionStatus("pairing");
-                  playToolHum();
+                  setSelectedSubTool("whatsapp");
                   
-                  // Scanning finished
+                  // Glide to "Generate QR & Pair" button
                   setTimeout(() => {
-                    setWaSessionStatus("connected");
-                    setWaInboxData([
-                      { name: "Investor Update", lastMsg: "When can we see the live demo?", unread: 2 },
-                      { name: "Dev Team", lastMsg: "Local RAG is 2x faster now.", unread: 0 },
-                      { name: "Sarah (Ops)", lastMsg: "Can you check the calendar?", unread: 1 }
-                    ]);
-                    playSuccessChirp();
+                    setCursorPos({ x: "60%", y: "65%" });
                     
-                    // Glide to "Back to Tools" button
+                    // Click Pair
                     setTimeout(() => {
-                      setCursorPos({ x: "28%", y: "20%" });
-                      
-                      // Click Back
+                      setCursorClicking(true);
+                      playChirp();
                       setTimeout(() => {
-                        setCursorClicking(true);
-                        playChirp();
+                        setCursorClicking(false);
+                        setWaSessionStatus("pairing");
+                        playToolHum();
+                        
+                        // Scanning finished
                         setTimeout(() => {
-                          setCursorClicking(false);
-                          setSelectedSubTool(null);
+                          setWaSessionStatus("connected");
+                          setWaInboxData([
+                            { name: "Investor Update", lastMsg: "When can we see the live demo?", unread: 2, initials: "IU", time: "10:14 AM" },
+                            { name: "Dev Team", lastMsg: "Local RAG is 2x faster now.", unread: 0, initials: "DT", time: "09:45 AM" },
+                            { name: "Sarah (Ops)", lastMsg: "Can you check the calendar?", unread: 1, initials: "SO", time: "09:15 AM" }
+                          ]);
+                          playSuccessChirp();
                           
-                          // Glide to Email Card
+                          // Glide to "Back to Tools" button
                           setTimeout(() => {
-                            setCursorPos({ x: "72%", y: "30%" });
+                            setCursorPos({ x: "28%", y: "15%" });
                             
-                            // Click Email
+                            // Click Back
                             setTimeout(() => {
                               setCursorClicking(true);
                               playChirp();
                               setTimeout(() => {
                                 setCursorClicking(false);
-                                setSelectedSubTool("email");
+                                setSelectedSubTool(null);
+                                
+                                // Glide to Email Card
+                                setTimeout(() => {
+                                  setCursorPos({ x: "75%", y: "32%" });
+                                  
+                                  // Click Email
+                                  setTimeout(() => {
+                                    setCursorClicking(true);
+                                    playChirp();
+                                    setTimeout(() => {
+                                      setCursorClicking(false);
+                                      setSelectedSubTool("email");
+                                    }, 150);
+                                  }, 500);
+                                }, 500);
                               }, 150);
                             }, 500);
-                          }, 500);
-                        }, 150);
-                      }, 500);
-                    }, 1200);
-                  }, 1800);
+                          }, 1500);
+                        }, 2200); // 2.2s pairing scan
+                      }, 150);
+                    }, 800);
+                  }, 600);
                 }, 150);
               }, 800);
-            }, 600);
+            }, 800);
           }, 150);
         }, 800);
       }, 500);
       
     } else if (step === 4) {
       setChatMessages([
-        { role: "bot", content: "Neural core online. Custom tools linked. How can I assist you?" }
+        { role: "bot", content: "Neural core online. Local tool nodes connected. How can I assist you today?" }
       ]);
       setChatInput("");
       setChatTyping(false);
@@ -478,90 +507,114 @@ export default function DemoSimulator() {
       setShowCursor(true);
       setSelectedSubTool(null);
       
-      // Auto type chat command
+      // Move to Neural Chat tab in sidebar
       setTimeout(() => {
-        setCursorPos({ x: "55%", y: "88%" });
+        setCursorPos({ x: "10%", y: "20%" });
         
         setTimeout(() => {
-          let msg = "Check email and WhatsApp for new updates, and consolidate tasks.";
-          let typed = "";
-          let i = 0;
-          const msgTimer = setInterval(() => {
-            if (i < msg.length) {
-              typed += msg[i];
-              setChatInput(typed);
-              playTick();
-              i++;
-            } else {
-              clearInterval(msgTimer);
+          setCursorClicking(true);
+          playChirp();
+          setTimeout(() => {
+            setCursorClicking(false);
+            setActiveView("chat");
+            
+            // Auto type chat command
+            setTimeout(() => {
+              setCursorPos({ x: "60%", y: "90%" });
               
-              // Glide to Send button
               setTimeout(() => {
-                setCursorPos({ x: "85%", y: "88%" });
-                
-                // Click Send
-                setTimeout(() => {
-                  setCursorClicking(true);
-                  playChirp();
-                  setTimeout(() => {
-                    setCursorClicking(false);
-                    setChatMessages(prev => [...prev, { role: "user", content: msg }]);
-                    setChatInput("");
-                    setChatTyping(true);
+                let msg = "Check email and WhatsApp for new updates, and consolidate tasks.";
+                let typed = "";
+                let i = 0;
+                const msgTimer = setInterval(() => {
+                  if (i < msg.length) {
+                    typed += msg[i];
+                    setChatInput(typed);
+                    playTick();
+                    i++;
+                  } else {
+                    clearInterval(msgTimer);
                     
-                    // Activate tools simulation
+                    // Glide to Send button
                     setTimeout(() => {
-                      setChatToolActive("WhatsApp Node");
-                      playToolHum();
+                      setCursorPos({ x: "93%", y: "90%" });
                       
+                      // Click Send
                       setTimeout(() => {
-                        setChatToolActive("Email Intelligence");
-                        playToolHum();
-                        
+                        setCursorClicking(true);
+                        playChirp();
                         setTimeout(() => {
-                          setChatTyping(false);
-                          setChatToolActive(null);
-                          setChatMessages(prev => [...prev, { 
-                            role: "bot", 
-                            content: "Local sync complete. Found details:\n\n1. Email from Sarah (Sarah Ops): Suggested a Q3 Project review meeting.\n2. WhatsApp (Investor Update): Unread messages asking for a live demo.\n\nI have created suggested actions in your Autonomous Hub." 
-                          }]);
-                          playSuccessChirp();
+                          setCursorClicking(false);
+                          setChatMessages(prev => [...prev, { role: "user", content: msg }]);
+                          setChatInput("");
+                          setChatTyping(true);
                           
-                          // SWITCH VIEW TO AUTONOMOUS HUB
+                          // Activate tools simulation
                           setTimeout(() => {
-                            setActiveView("hub");
-                            playTick();
+                            setChatToolActive("WhatsApp Node");
+                            playToolHum();
                             
-                            // Glide to "Approve & Run" on hub card
                             setTimeout(() => {
-                              setCursorPos({ x: "85%", y: "30%" });
+                              setChatToolActive("Email Intelligence");
+                              playToolHum();
                               
-                              // Click Approve
                               setTimeout(() => {
-                                setCursorClicking(true);
-                                playChirp();
+                                setChatTyping(false);
+                                setChatToolActive(null);
+                                setChatMessages(prev => [...prev, { 
+                                  role: "bot", 
+                                  content: "Local sync complete. Identified new scheduling suggestions:\n\n1. Email from Sarah (Sarah Ops): Suggested a Q3 Project Review Meeting tomorrow.\n2. WhatsApp (Investor Update): Unread messages asking for a live demo.\n\nI have generated task recommendations inside your Autonomous Hub.",
+                                  showLogs: true
+                                }]);
+                                playSuccessChirp();
+                                
+                                // SWITCH VIEW TO AUTONOMOUS HUB
                                 setTimeout(() => {
-                                  setCursorClicking(false);
-                                  setHubActionStatus("approving");
-                                  playToolHum();
+                                  // Glide to Autonomous Hub tab
+                                  setCursorPos({ x: "10%", y: "36%" });
                                   
                                   setTimeout(() => {
-                                    setHubActionStatus("approved");
-                                    playSuccessChirp();
-                                  }, 1200);
-                                }, 150);
-                              }, 600);
-                            }, 500);
-                          }, 1500);
-                        }, 1200);
-                      }, 800);
-                    }, 600);
-                  }, 150);
-                }, 500);
+                                    setCursorClicking(true);
+                                    playChirp();
+                                    setTimeout(() => {
+                                      setCursorClicking(false);
+                                      setActiveView("hub");
+                                      
+                                      // Glide to "Approve & Run" on hub card
+                                      setTimeout(() => {
+                                        setCursorPos({ x: "82%", y: "32%" });
+                                        
+                                        // Click Approve
+                                        setTimeout(() => {
+                                          setCursorClicking(true);
+                                          playChirp();
+                                          setTimeout(() => {
+                                            setCursorClicking(false);
+                                            setHubActionStatus("approving");
+                                            playToolHum();
+                                            
+                                            setTimeout(() => {
+                                              setHubActionStatus("approved");
+                                              playSuccessChirp();
+                                            }, 1200);
+                                          }, 150);
+                                        }, 600);
+                                      }, 800);
+                                    }, 150);
+                                  }, 800);
+                                }, 2200);
+                              }, 1200);
+                            }, 800);
+                          }, 600);
+                        }, 150);
+                      }, 500);
+                    }, 500);
+                  }
+                }, 20);
               }, 500);
-            }
-          }, 20);
-        }, 500);
+            }, 800);
+          }, 150);
+        }, 800);
       }, 500);
       
     } else if (step === 5) {
@@ -569,39 +622,53 @@ export default function DemoSimulator() {
       setShowNewCalendarEvent(false);
       setShowCursor(true);
       
-      // Glide to Calendar Card
+      // Move to Tools Hub tab in sidebar
       setTimeout(() => {
-        setCursorPos({ x: "42%", y: "58%" });
+        setCursorPos({ x: "10%", y: "28%" });
         
-        // Click Calendar Card
         setTimeout(() => {
           setCursorClicking(true);
           playChirp();
           setTimeout(() => {
             setCursorClicking(false);
-            setSelectedSubTool("calendar");
+            setActiveView("tools");
             
-            // Highlight calendar schedule fading in
+            // Glide to Calendar Card
             setTimeout(() => {
-              setShowNewCalendarEvent(true);
-              playSuccessChirp();
+              setCursorPos({ x: "40%", y: "62%" });
               
-              // Glide to System Preferences tab
+              // Click Calendar Card
               setTimeout(() => {
-                setCursorPos({ x: "12%", y: "38%" });
-                
-                // Click preferences tab
+                setCursorClicking(true);
+                playChirp();
                 setTimeout(() => {
-                  setCursorClicking(true);
-                  playChirp();
+                  setCursorClicking(false);
+                  setSelectedSubTool("calendar");
+                  
+                  // Highlight calendar schedule fading in
                   setTimeout(() => {
-                    setCursorClicking(false);
-                    setActiveView("general");
-                    setShowCursor(false);
-                  }, 150);
-                }, 500);
-              }, 2000);
-            }, 1000);
+                    setShowNewCalendarEvent(true);
+                    playSuccessChirp();
+                    
+                    // Glide to System Preferences tab
+                    setTimeout(() => {
+                      setCursorPos({ x: "10%", y: "52%" });
+                      
+                      // Click preferences tab
+                      setTimeout(() => {
+                        setCursorClicking(true);
+                        playChirp();
+                        setTimeout(() => {
+                          setCursorClicking(false);
+                          setActiveView("general");
+                          setShowCursor(false);
+                        }, 150);
+                      }, 500);
+                    }, 2500);
+                  }, 1200);
+                }, 150);
+              }, 800);
+            }, 800);
           }, 150);
         }, 800);
       }, 500);
@@ -787,18 +854,16 @@ export default function DemoSimulator() {
               <>
                 {/* Secondary trail dot */}
                 <motion.div 
-                  animate={{ x: cursorPos.x, y: cursorPos.y }}
+                  animate={{ left: cursorPos.x, top: cursorPos.y }}
                   transition={{ type: "tween", ease: "easeInOut", duration: 0.95 }}
                   className="absolute pointer-events-none z-[9998] -ml-1.5 -mt-1.5 w-3 h-3 rounded-full bg-cyan-400/40 blur-[2px]"
-                  style={{ left: 0, top: 0 }}
                 />
                 
                 {/* Main glowing cursor */}
                 <motion.div 
-                  animate={{ x: cursorPos.x, y: cursorPos.y }}
+                  animate={{ left: cursorPos.x, top: cursorPos.y }}
                   transition={{ type: "tween", ease: "easeInOut", duration: 0.8 }}
                   className="absolute pointer-events-none z-[9999] -ml-3.5 -mt-3.5 select-none"
-                  style={{ left: 0, top: 0 }}
                 >
                   <div className="relative">
                     <div className={`absolute inset-[-8px] rounded-full bg-cyan-400/10 blur-[4px] transition-all duration-300 ${
@@ -872,54 +937,105 @@ export default function DemoSimulator() {
               <div className="flex-1 bg-black/10 relative overflow-hidden flex flex-col min-h-0">
                 <AnimatePresence mode="wait">
                   
-                  {/* PREFERENCES VIEW: ONBOARDING WIZARD */}
+                  {/* ONBOARDING WIZARD VIEW */}
                   {activeView === "settings" && (
                     <motion.div 
                       key="step-settings" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                      className="h-full flex items-center justify-center p-10 relative overflow-y-auto"
+                      className="h-full flex items-stretch p-8 gap-6 min-h-0 overflow-y-auto"
                     >
-                      <div className="w-full max-w-md p-8 glass-panel border-white/10 rounded-[2.5rem] space-y-6 text-center">
-                        <div className="w-16 h-16 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                          <Key className="w-8 h-8 animate-pulse" />
+                      {/* Left Pane: Diagnostic Info */}
+                      <div className="flex-1 border border-white/5 bg-black/30 rounded-3xl p-6 flex flex-col justify-between">
+                        <div className="space-y-4">
+                          <h4 className="text-[10px] font-black uppercase text-white/20 tracking-wider">Device Node Diagnostics</h4>
+                          <div className="space-y-2.5 font-mono text-[10px] text-white/60">
+                            <div className="flex justify-between border-b border-white/5 pb-1.5">
+                              <span>🖥️ CPU HARDWARE</span>
+                              <span className="text-cyan-400 font-bold">24-Core Local Node</span>
+                            </div>
+                            <div className="flex justify-between border-b border-white/5 pb-1.5">
+                              <span>📟 GPU CORE ACCEL</span>
+                              <span className="text-cyan-400 font-bold">NVIDIA CUDA Enabled</span>
+                            </div>
+                            <div className="flex justify-between border-b border-white/5 pb-1.5">
+                              <span>🧠 LOCAL LLM ENGINE</span>
+                              <span className="text-cyan-400 font-bold">Ollama (v0.1.48)</span>
+                            </div>
+                            <div className="flex justify-between border-b border-white/5 pb-1.5">
+                              <span>📂 DATABASE INDEX</span>
+                              <span className="text-cyan-400 font-bold">HNSW Vector SQLite</span>
+                            </div>
+                            <div className="flex justify-between border-b border-white/5 pb-1.5">
+                              <span>🔒 SECURITY STATE</span>
+                              <span className="text-emerald-400 font-bold flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                                100% Air-Gapped
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                        <div className="space-y-1">
-                          <h3 className="text-xl font-bold uppercase tracking-tight">Activate Sovereign Core</h3>
-                          <p className="text-xs text-white/30 font-medium">Verify your offline authorization key.</p>
+
+                        <div className="border border-white/5 bg-black/40 rounded-2xl p-4 font-mono text-[9px] text-white/35 space-y-1 max-h-[140px] overflow-y-auto">
+                          <div>[system] Listening on port 11434...</div>
+                          <div>[system] Handshake token generated...</div>
+                          {activationState !== "typing" && (
+                            <>
+                              <div>[system] SHA-256 validation initiated...</div>
+                              <div>[system] key matched: ce57f00...</div>
+                              <div>[system] sovereign handshake established.</div>
+                            </>
+                          )}
                         </div>
+                      </div>
+
+                      {/* Right Pane: Key Validation */}
+                      <div className="w-[360px] border border-white/10 bg-white/[0.01] rounded-3xl p-6 flex flex-col justify-between">
+                        <div className="space-y-5 text-center">
+                          <div className="w-12 h-12 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 rounded-2xl flex items-center justify-center mx-auto">
+                            <Key className="w-6 h-6 animate-pulse" />
+                          </div>
+                          <div className="space-y-1">
+                            <h3 className="text-base font-extrabold uppercase tracking-tight">Activate Sovereign Core</h3>
+                            <p className="text-[10px] text-white/30 font-medium">Verify your offline authorization key.</p>
+                          </div>
+                          <div className="space-y-3 text-left">
+                            <div className="space-y-1">
+                              <span className="text-[8px] font-mono text-white/30 uppercase tracking-widest">OWNER EMAIL</span>
+                              <input 
+                                readOnly value={emailInput}
+                                placeholder="USER@SOVEREIGN.AI"
+                                className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3 text-xs font-mono text-white placeholder-white/5 focus:outline-none uppercase"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <span className="text-[8px] font-mono text-white/30 uppercase tracking-widest">LICENSE KEY</span>
+                              <input 
+                                readOnly value={licenseInput}
+                                placeholder="SHADOW-XXXX-XXXX"
+                                className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3 text-xs font-mono text-white placeholder-white/5 focus:outline-none uppercase"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
                         <div className="space-y-3">
-                          <div className="relative">
-                            <input 
-                              readOnly value={emailInput}
-                              placeholder="USER@SOVEREIGN.AI"
-                              className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3.5 text-xs font-mono text-center text-white placeholder-white/5 focus:outline-none uppercase"
-                            />
-                          </div>
-                          <div className="relative">
-                            <input 
-                              readOnly value={licenseInput}
-                              placeholder="SHADOW-XXXX-XXXX"
-                              className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3.5 text-xs font-mono text-center text-white placeholder-white/5 focus:outline-none uppercase"
-                            />
-                          </div>
+                          {activationState === "verifying" && (
+                            <div className="flex items-center justify-center gap-2 text-cyan-400 text-[10px] font-mono animate-pulse">
+                              <Activity className="w-3.5 h-3.5 animate-spin" /> RUNNING SECURE SHA-256 SIGNATURE CHECK...
+                            </div>
+                          )}
+
+                          {activationState === "activated" && (
+                            <div className="flex items-center justify-center gap-2 text-green-400 text-[10px] font-bold uppercase tracking-widest bg-green-500/10 border border-green-500/20 py-2 rounded-xl">
+                              <Check className="w-3.5 h-3.5" /> Node Handshake Successful
+                            </div>
+                          )}
+
+                          <button disabled className={`w-full py-3.5 rounded-xl font-extrabold text-[10px] uppercase tracking-widest transition-all ${
+                            activationState === "activated" ? "bg-green-600 text-white" : "bg-white text-black"
+                          }`}>
+                            {activationState === "activated" ? "Finalized" : "Finalize Core"}
+                          </button>
                         </div>
-
-                        {activationState === "verifying" && (
-                          <div className="flex items-center justify-center gap-2 text-cyan-400 text-xs font-mono animate-pulse">
-                            <Activity className="w-4 h-4 animate-spin" /> VERIFYING LOCAL SHA-256 SIGNATURE...
-                          </div>
-                        )}
-
-                        {activationState === "activated" && (
-                          <div className="flex items-center justify-center gap-2 text-green-400 text-xs font-bold uppercase tracking-widest bg-green-500/10 border border-green-500/20 py-2 rounded-xl">
-                            <Check className="w-4 h-4" /> Activated // Node Sync Stable
-                          </div>
-                        )}
-
-                        <button disabled className={`w-full py-4 rounded-xl font-extrabold text-xs uppercase tracking-widest transition-all ${
-                          activationState === "activated" ? "bg-green-600 text-white" : "bg-white text-black"
-                        }`}>
-                          {activationState === "activated" ? "Finalized" : "Finalize Core"}
-                        </button>
                       </div>
                     </motion.div>
                   )}
@@ -928,76 +1044,103 @@ export default function DemoSimulator() {
                   {activeView === "knowledge" && (
                     <motion.div 
                       key="step-knowledge" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                      className="h-full p-8 flex flex-col space-y-6 overflow-y-auto"
+                      className="h-full p-8 flex flex-col space-y-6 overflow-y-auto min-h-0"
                     >
                       <div className="flex justify-between items-center">
                         <div>
                           <h3 className="text-xl font-extrabold tracking-tight">Memory Bank</h3>
                           <p className="text-[10px] text-white/30 font-black uppercase tracking-widest">RAG Ingestion Database</p>
                         </div>
-                        <div className="px-3 py-1 rounded-full border border-orange-500/20 text-[9px] font-bold text-orange-400 bg-orange-500/5 uppercase">
-                          HNSW Indexer
+                        <div className="flex items-center gap-4 text-xs font-mono text-white/30">
+                          <span>Metric: <strong className="text-orange-400">Cosine Similarity</strong></span>
+                          <span>Dimensions: <strong className="text-cyan-400">384</strong></span>
+                          <span className="px-3 py-1 rounded-full border border-orange-500/20 text-[9px] font-bold text-orange-400 bg-orange-500/5 uppercase">
+                            HNSW INDEXED
+                          </span>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-5 gap-6 flex-1 min-h-0">
-                        <div className="col-span-2 border border-white/5 rounded-2xl bg-black/10 p-5 flex flex-col space-y-4">
-                          <h4 className="text-[10px] font-black uppercase text-white/20 tracking-wider">Indexed Content</h4>
-                          <div className="flex-1 overflow-y-auto space-y-2 pr-2">
-                            <div className="p-3 border border-white/5 bg-white/[0.02] rounded-xl flex items-center justify-between text-xs">
-                              <span className="font-bold flex items-center gap-2"><FileText className="w-4 h-4 text-orange-400" /> company_policy.pdf</span>
-                              <span className="text-[9px] font-mono text-green-400 font-bold">READY</span>
+                        {/* Source corpus list */}
+                        <div className="col-span-2 border border-white/5 rounded-3xl bg-black/10 p-5 flex flex-col space-y-4">
+                          <h4 className="text-[10px] font-black uppercase text-white/20 tracking-wider">Source Knowledge Corpus</h4>
+                          <div className="flex-1 overflow-y-auto space-y-2.5 pr-2">
+                            <div className="p-3.5 border border-white/5 bg-white/[0.02] rounded-2xl flex items-center justify-between text-xs">
+                              <div className="space-y-1">
+                                <span className="font-bold flex items-center gap-2 text-white/80">
+                                  <FileText className="w-4 h-4 text-orange-400" /> company_policy.pdf
+                                </span>
+                                <p className="text-[9px] text-white/30">1.4 MB · 820 chunks indexed</p>
+                              </div>
+                              <span className="text-[9px] font-mono text-green-400 font-bold bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded-full uppercase">INDEXED</span>
                             </div>
                             {ragLogs.length > 0 && (
                               <motion.div 
                                 initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-                                className="p-3 border border-orange-500/20 bg-orange-500/[0.02] rounded-xl flex items-center justify-between text-xs"
+                                className="p-3.5 border border-orange-500/20 bg-orange-500/[0.02] rounded-2xl flex items-center justify-between text-xs"
                               >
-                                <span className="font-bold flex items-center gap-2"><FileText className="w-4 h-4 text-orange-400 animate-bounce" /> projections.pdf</span>
-                                <span className="text-[9px] font-mono text-orange-400 animate-pulse font-bold">{ragSuccess ? "READY" : "PARSING"}</span>
+                                <div className="space-y-1">
+                                  <span className="font-bold flex items-center gap-2 text-orange-300">
+                                    <FileText className="w-4 h-4 text-orange-400 animate-bounce" /> projections.pdf
+                                  </span>
+                                  <p className="text-[9px] text-orange-400/50">1.2 MB · 640 chunks</p>
+                                </div>
+                                <span className="text-[9px] font-mono text-orange-400 animate-pulse font-bold bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded-full uppercase">
+                                  {ragSuccess ? "READY" : "VECTORIZING"}
+                                </span>
                               </motion.div>
                             )}
                           </div>
                         </div>
 
-                        <div className="col-span-3 border border-white/5 rounded-2xl bg-black/20 p-5 flex flex-col justify-between min-h-0">
+                        {/* Operations console and vector map */}
+                        <div className="col-span-3 border border-white/5 rounded-3xl bg-black/20 p-5 flex flex-col justify-between min-h-0">
                           <div className="space-y-4 flex-1 flex flex-col min-h-0">
-                            <h4 className="text-[10px] font-black uppercase text-white/20 tracking-wider">Console Operations</h4>
+                            <h4 className="text-[10px] font-black uppercase text-white/20 tracking-wider">Console & Embedding Space Mapping</h4>
                             
                             {ragProgress === 0 ? (
-                              <div className="border border-dashed border-white/10 hover:border-orange-500/20 rounded-xl p-8 flex flex-col items-center justify-center text-center space-y-3 cursor-pointer group flex-1">
+                              <div className="border border-dashed border-white/10 hover:border-orange-500/20 rounded-2xl p-8 flex flex-col items-center justify-center text-center space-y-3 cursor-pointer group flex-1">
                                 <FileText className="w-8 h-8 text-white/25 group-hover:text-orange-400 transition-colors animate-pulse" />
-                                <span className="text-xs font-bold">Uploading Q3_Financial_Projections.pdf...</span>
-                                <span className="text-[9px] text-white/20">Awaiting local character block split.</span>
+                                <span className="text-xs font-bold">Ingest Q3_Financial_Projections.pdf</span>
+                                <span className="text-[9px] text-white/20">Drop file to split and generate locally.</span>
                               </div>
                             ) : (
-                              <div className="flex-1 flex flex-col justify-between min-h-0">
-                                <div className="bg-black/40 border border-white/5 rounded-xl p-4 font-mono text-[9px] text-white/40 space-y-1.5 overflow-y-auto max-h-[120px] flex-1">
+                              <div className="flex-1 flex flex-col justify-between min-h-0 gap-4">
+                                <div className="h-40 w-full border border-orange-500/10 rounded-2xl bg-black/40 overflow-hidden relative flex items-center justify-center">
+                                  <svg className="w-full h-full text-orange-400/20" viewBox="0 0 300 120">
+                                    <g stroke="currentColor" strokeWidth="0.5">
+                                      <motion.line initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.5 }} x1="50" y1="60" x2="100" y2="40" />
+                                      <motion.line initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2 }} x1="100" y1="40" x2="150" y2="80" />
+                                      <motion.line initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1 }} x1="150" y1="80" x2="200" y2="30" />
+                                      <motion.line initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2.5 }} x1="200" y1="30" x2="250" y2="60" />
+                                      <motion.line initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.8 }} x1="100" y1="40" x2="200" y2="30" strokeDasharray="2 2" className="text-cyan-400/35" />
+                                      <motion.line initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2.2 }} x1="50" y1="60" x2="150" y2="80" strokeDasharray="2 2" className="text-cyan-400/35" />
+                                    </g>
+                                    <circle cx="50" cy="60" r="4" className="fill-orange-400 animate-pulse" />
+                                    <circle cx="100" cy="40" r="5" className="fill-orange-500 animate-pulse" />
+                                    <circle cx="150" cy="80" r="4" className="fill-orange-400" />
+                                    <circle cx="200" cy="30" r="6" className="fill-cyan-400 animate-pulse" />
+                                    <circle cx="250" cy="60" r="4" className="fill-orange-400" />
+                                    
+                                    <text x="50" y="50" fill="currentColor" fontSize="6" className="font-mono text-white/40">Chunk_01</text>
+                                    <text x="100" y="30" fill="currentColor" fontSize="6" className="font-mono text-white/40">Chunk_06</text>
+                                    <text x="200" y="20" fill="currentColor" fontSize="6" className="font-mono text-cyan-400">Active_Query</text>
+                                  </svg>
+                                  <div className="absolute top-2 right-2 px-2 py-0.5 border border-cyan-500/20 bg-cyan-500/5 text-[7px] font-mono text-cyan-400 uppercase rounded">Similarity Mesh View</div>
+                                </div>
+
+                                <div className="bg-black/60 border border-white/5 rounded-xl p-3.5 font-mono text-[9px] text-white/50 space-y-1 overflow-y-auto max-h-[110px] flex-1">
                                   {ragLogs.map((log, index) => (
-                                    <div key={index} className={log.includes("SUCCESS") ? "text-green-400" : ""}>{log}</div>
+                                    <div key={index} className={log.includes("SUCCESS") || log.includes("✓") ? "text-green-400 font-bold" : log.includes("[neural]") ? "text-cyan-400" : ""}>{log}</div>
                                   ))}
                                 </div>
 
-                                <div className="h-[100px] w-full border border-white/5 rounded-xl bg-black/40 overflow-hidden relative mt-4 flex items-center justify-center">
-                                  <svg className="w-full h-full text-orange-400/40 relative z-10" viewBox="0 0 300 100">
-                                    <motion.line initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.5 }} x1="50" y1="50" x2="100" y2="30" stroke="currentColor" strokeWidth="1" />
-                                    <motion.line initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2 }} x1="100" y1="30" x2="150" y2="70" stroke="currentColor" strokeWidth="1" />
-                                    <motion.line initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1 }} x1="150" y1="70" x2="200" y2="20" stroke="currentColor" strokeWidth="1" />
-                                    <motion.line initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2.5 }} x1="200" y1="20" x2="250" y2="50" stroke="currentColor" strokeWidth="1" />
-                                    <circle cx="50" cy="50" r="4" className="fill-orange-400 animate-pulse" />
-                                    <circle cx="100" cy="30" r="5" className="fill-orange-500 animate-pulse" />
-                                    <circle cx="150" cy="70" r="4" className="fill-orange-400 animate-pulse" />
-                                    <circle cx="200" cy="20" r="6" className="fill-orange-500 animate-pulse" />
-                                    <circle cx="250" cy="50" r="4" className="fill-orange-400 animate-pulse" />
-                                  </svg>
-                                </div>
-
-                                <div className="space-y-2 mt-4">
-                                  <div className="flex justify-between text-[9px] font-mono text-white/30 uppercase">
-                                    <span>Embedding Matrix Generation</span>
+                                <div className="space-y-1">
+                                  <div className="flex justify-between text-[8px] font-mono text-white/30 uppercase">
+                                    <span>OFFLINE VECTOR GENERATION</span>
                                     <span>{ragProgress}%</span>
                                   </div>
-                                  <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                  <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
                                     <div className="h-full bg-orange-500 transition-all duration-300" style={{ width: `${ragProgress}%` }} />
                                   </div>
                                 </div>
@@ -1023,12 +1166,39 @@ export default function DemoSimulator() {
                                 <Bot className="w-4.5 h-4.5" />
                               </div>
                             )}
-                            <div className={`max-w-[75%] px-4 py-3 rounded-2xl text-xs whitespace-pre-wrap leading-relaxed ${
-                              msg.role === "user" 
-                                ? "bg-white text-black font-semibold rounded-tr-none shadow-md" 
-                                : "border border-white/5 bg-white/[0.02] text-white/80 rounded-tl-none"
-                            }`}>
-                              {msg.content}
+                            <div className="flex flex-col gap-2 max-w-[80%]">
+                              <div className={`px-4 py-3 rounded-2xl text-xs whitespace-pre-wrap leading-relaxed ${
+                                msg.role === "user" 
+                                  ? "bg-white text-black font-semibold rounded-tr-none shadow-md" 
+                                  : "border border-white/5 bg-white/[0.02] text-white/80 rounded-tl-none"
+                              }`}>
+                                {msg.content}
+                              </div>
+                              
+                              {/* RAG Agent Tool Log Trace */}
+                              {msg.showLogs && (
+                                <motion.div 
+                                  initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}
+                                  className="border border-white/10 bg-black/60 rounded-xl overflow-hidden font-mono text-[9px] w-full text-left self-start"
+                                >
+                                  <div className="px-3 py-1.5 bg-white/5 border-b border-white/5 text-white/30 flex justify-between uppercase tracking-wider font-bold">
+                                    <span>🤖 LOCAL AGENT EXECUTION TRACE</span>
+                                    <span className="text-cyan-400">Offline Secure Enclave</span>
+                                  </div>
+                                  <div className="p-3 space-y-1.5 text-white/60">
+                                    <div>[10:14:02] <span className="text-purple-400 font-bold">INFO</span> Intent classification: Consolidated Task Retrieval</div>
+                                    <div>[10:14:02] <span className="text-cyan-400 font-bold">TOOL</span> CALL: <span className="text-yellow-400 font-bold">email.list_inbox(unread=true)</span></div>
+                                    <div>[10:14:03] <span className="text-green-400 font-bold">RET</span> Result: 1 unread email from <span className="text-cyan-300 font-bold">Sarah (Ops)</span> (ID: eml_892)</div>
+                                    <div>[10:14:03] <span className="text-cyan-400 font-bold">TOOL</span> CALL: <span className="text-yellow-400 font-bold">whatsapp.get_chats(unread=true)</span></div>
+                                    <div>[10:14:04] <span className="text-green-400 font-bold">RET</span> Result: 1 unread message from <span className="text-cyan-300 font-bold">Investor Update</span> (ID: wa_401)</div>
+                                    <div>[10:14:04] <span className="text-purple-400 font-bold">ANALYZER</span> Reading email contents... Request for "Review meeting tomorrow at 2:00 PM"</div>
+                                    <div>[10:14:05] <span className="text-cyan-400 font-bold">TOOL</span> CALL: <span className="text-yellow-400 font-bold">calendar.check_conflicts(start="2026-06-01T14:00", end="2026-06-01T15:00")</span></div>
+                                    <div>[10:14:05] <span className="text-green-400 font-bold">RET</span> Result: 0 conflicts found in calendar.ics</div>
+                                    <div>[10:14:06] <span className="text-purple-400 font-bold">PLANNER</span> Recommendations generated. Queuing Action Cards inside Autonomous Hub.</div>
+                                    <div>[10:14:06] <span className="text-green-400 font-bold">STATUS</span> Completed locally in 4.12s. Zero data transmitted to cloud.</div>
+                                  </div>
+                                </motion.div>
+                              )}
                             </div>
                           </div>
                         ))}
@@ -1045,7 +1215,7 @@ export default function DemoSimulator() {
                                 <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce" />
                               </div>
                               {chatToolActive && (
-                                <div className="px-2.5 py-0.5 border border-cyan-500/20 bg-cyan-500/5 text-cyan-400 text-[8px] font-black uppercase tracking-widest rounded-full">
+                                <div className="px-2.5 py-0.5 border border-cyan-500/20 bg-cyan-500/5 text-cyan-400 text-[8px] font-black uppercase tracking-widest rounded-full animate-pulse">
                                   Accessing: {chatToolActive}
                                 </div>
                               )}
@@ -1073,15 +1243,40 @@ export default function DemoSimulator() {
                   {activeView === "hub" && (
                     <motion.div 
                       key="step-hub" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                      className="h-full p-8 flex flex-col space-y-6 overflow-y-auto"
+                      className="h-full p-8 flex flex-col space-y-6 overflow-y-auto min-h-0"
                     >
                       <div className="flex justify-between items-center">
                         <div>
                           <h3 className="text-xl font-extrabold tracking-tight">Autonomous Hub</h3>
                           <p className="text-[10px] text-white/30 font-black uppercase tracking-widest">Active Action Recommendations</p>
                         </div>
-                        <div className="px-3 py-1 rounded-full border border-pink-500/20 text-[9px] font-bold text-pink-400 bg-pink-500/5 uppercase tracking-wider animate-pulse flex items-center gap-1.5">
-                          <Zap className="w-3 h-3" /> Monitoring Inbox
+                        <div className="px-3 py-1 rounded-full border border-pink-500/20 text-[9px] font-bold text-pink-400 bg-pink-500/5 uppercase tracking-wider animate-pulse flex items-center gap-1.5 font-mono">
+                          <Zap className="w-3 h-3 text-pink-400" /> Monitoring Local Workspace Nodes
+                        </div>
+                      </div>
+
+                      {/* Active Automation Graph Pipeline */}
+                      <div className="p-4.5 border border-white/5 bg-black/40 rounded-2xl flex items-center justify-between text-[8px] font-mono text-white/30 uppercase tracking-wider">
+                        <div className="flex items-center gap-2 text-cyan-400 font-extrabold bg-cyan-500/10 border border-cyan-500/20 px-2 py-1 rounded-lg">
+                          <Mail className="w-3.5 h-3.5" />
+                          <span>Source: Sarah's Email</span>
+                        </div>
+                        <ArrowRight className="w-3 h-3 text-white/20" />
+                        <div className="flex items-center gap-2 text-purple-400 font-extrabold bg-purple-500/10 border border-purple-500/20 px-2 py-1 rounded-lg animate-pulse">
+                          <Bot className="w-3.5 h-3.5 text-purple-400" />
+                          <span>Ollama NLP Parser</span>
+                        </div>
+                        <ArrowRight className="w-3 h-3 text-white/20" />
+                        <div className="flex items-center gap-2 text-yellow-400 font-extrabold bg-yellow-500/10 border border-yellow-500/20 px-2 py-1 rounded-lg">
+                          <Calendar className="w-3.5 h-3.5" />
+                          <span>conflict_scanner</span>
+                        </div>
+                        <ArrowRight className="w-3 h-3 text-white/20" />
+                        <div className={`flex items-center gap-2 font-extrabold px-2 py-1 rounded-lg border ${
+                          hubActionStatus === "approved" ? "bg-green-500/10 border-green-500/20 text-green-400" : "bg-pink-500/10 border-pink-500/20 text-pink-400"
+                        }`}>
+                          <Zap className="w-3.5 h-3.5" />
+                          <span>Task: Sync calendar.ics</span>
                         </div>
                       </div>
 
@@ -1094,7 +1289,7 @@ export default function DemoSimulator() {
                         }`}>
                           <div className="flex items-start gap-4">
                             <div className="w-11 h-11 bg-purple-500/10 border border-purple-500/20 text-purple-400 rounded-xl flex items-center justify-center flex-shrink-0">
-                              <Calendar className="w-5 h-5" />
+                              <Calendar className="w-5 h-5 animate-pulse" />
                             </div>
                             <div className="space-y-1">
                               <div className="flex items-center gap-2.5">
@@ -1102,25 +1297,26 @@ export default function DemoSimulator() {
                                 <span className="text-[8px] font-mono tracking-widest text-white/30 bg-white/5 border border-white/5 px-2 py-0.5 rounded uppercase">Email Sync</span>
                               </div>
                               <p className="text-[11px] text-white/50">Sarah Ops requested a slot for Q3 Project Review. Suggesting calendar sync booking.</p>
-                              <div className="p-2.5 bg-black/40 border border-white/5 rounded-lg text-[9px] font-mono text-white/30">
-                                Proposed: Tomorrow, 2:00 PM - 3:00 PM @ Calendar.ics
+                              <div className="p-2.5 bg-black/40 border border-white/5 rounded-lg text-[9px] font-mono text-white/35 space-y-0.5">
+                                <div>Event Target: Tomorrow, 2:00 PM - 3:00 PM</div>
+                                <div>Destination: apps/integrations/calendar.ics</div>
                               </div>
                             </div>
                           </div>
                           <div className="flex-shrink-0">
                             {hubActionStatus === "pending" && (
-                              <button className="px-5 py-2.5 bg-cyan-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-lg shadow-cyan-500/5">
+                              <button className="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-lg shadow-cyan-500/5">
                                 Approve & Run
                               </button>
                             )}
                             {hubActionStatus === "approving" && (
                               <button className="px-5 py-2.5 bg-cyan-600/40 text-cyan-200 rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 animate-pulse">
-                                <Activity className="w-3.5 h-3.5 animate-spin" /> Executing
+                                <Activity className="w-3.5 h-3.5 animate-spin" /> ICS Syncing...
                               </button>
                             )}
                             {hubActionStatus === "approved" && (
                               <span className="text-green-500 text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 bg-green-500/10 border border-green-500/20 px-4 py-2 rounded-xl">
-                                <Check className="w-4 h-4" /> Executed
+                                <Check className="w-4 h-4" /> Sync Complete
                               </span>
                             )}
                           </div>
@@ -1138,7 +1334,7 @@ export default function DemoSimulator() {
                                 <span className="text-[8px] font-mono tracking-widest text-white/30 bg-white/5 border border-white/5 px-2 py-0.5 rounded uppercase">WhatsApp Sync</span>
                               </div>
                               <p className="text-[11px] text-white/50">Send automated response to Investor Update inquiry regarding the live demo.</p>
-                              <div className="p-2.5 bg-black/40 border border-white/5 rounded-lg text-[9px] font-mono text-white/30">
+                              <div className="p-2.5 bg-black/40 border border-white/5 rounded-lg text-[9px] font-mono text-white/35">
                                 Draft: "Hi, the live demo is ready for review."
                               </div>
                             </div>
@@ -1157,17 +1353,25 @@ export default function DemoSimulator() {
                   {activeView === "tools" && (
                     <motion.div 
                       key="step-tools" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                      className="h-full p-8 flex flex-col space-y-6 overflow-y-auto"
+                      className="h-full p-8 flex flex-col space-y-6 overflow-y-auto min-h-0"
                     >
-                      <h3 className="text-xl font-extrabold tracking-tight">Tools Hub</h3>
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <h3 className="text-xl font-extrabold tracking-tight">Tools Hub</h3>
+                          <p className="text-[10px] text-white/30 font-black uppercase tracking-widest">Sovereign Integration Manager</p>
+                        </div>
+                        <span className="px-3 py-1 rounded-full border border-white/10 text-[9px] font-mono text-white/40 uppercase bg-white/5">
+                          Offline Handshakes: 3 Active
+                        </span>
+                      </div>
                       
                       {!selectedSubTool ? (
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-5">
                           {[
-                            { id: "whatsapp", label: "WhatsApp Node", desc: "Local session message mirroring.", color: "text-green-400", bg: "bg-green-500/10 border-green-500/20", icon: <MessageSquare className="w-8 h-8" /> },
-                            { id: "email", label: "Email Intelligence", desc: "Local IMAP reader & SMTP sender.", color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/20", icon: <Mail className="w-8 h-8" /> },
-                            { id: "calendar", label: "Local Schedule", desc: "Write directly to calendar.ics format.", color: "text-purple-400", bg: "bg-purple-500/10 border-purple-500/20", icon: <Calendar className="w-8 h-8" /> },
-                            { id: "rag", label: "Memory Bank RAG", desc: "Index PDF documents locally.", color: "text-orange-400", bg: "bg-orange-500/10 border-orange-500/20", icon: <FileText className="w-8 h-8" /> }
+                            { id: "whatsapp", label: "WhatsApp Node", desc: "Local session message mirroring. Status: pairing ready.", color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20", icon: <MessageSquare className="w-8 h-8" />, status: waSessionStatus === "connected" ? "✓ Sync Active" : "● Offline" },
+                            { id: "email", label: "Email Intelligence", desc: "Local IMAP reader & SMTP sender logs.", color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/20", icon: <Mail className="w-8 h-8" />, status: "✓ Connected" },
+                            { id: "calendar", label: "Local Schedule", desc: "Sync direct schedule write to calendar.ics.", color: "text-purple-400", bg: "bg-purple-500/10 border-purple-500/20", icon: <Calendar className="w-8 h-8" />, status: "✓ Linked" },
+                            { id: "rag", label: "Memory Bank RAG", desc: "Index documents and database points.", color: "text-orange-400", bg: "bg-orange-500/10 border-orange-500/20", icon: <FileText className="w-8 h-8" />, status: "✓ Active" }
                           ].map(t => (
                             <div 
                               key={t.id} 
@@ -1175,139 +1379,280 @@ export default function DemoSimulator() {
                                 setSelectedSubTool(t.id);
                                 playChirp();
                               }}
-                              className="p-6 border border-white/5 bg-white/[0.01] hover:border-cyan-500/20 rounded-2xl flex items-center gap-4 cursor-pointer transition-all group animate-pulse"
+                              className="p-5.5 border border-white/5 bg-white/[0.01] hover:border-cyan-500/20 rounded-2xl flex items-center justify-between cursor-pointer transition-all group hover:bg-white/[0.02]"
                             >
-                              <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${t.bg} ${t.color}`}>{t.icon}</div>
-                              <div>
-                                <h4 className="text-sm font-bold text-white group-hover:text-cyan-400 transition-colors">{t.label}</h4>
-                                <p className="text-[11px] text-white/35">{t.desc}</p>
+                              <div className="flex items-center gap-4">
+                                <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${t.bg} ${t.color}`}>{t.icon}</div>
+                                <div className="space-y-0.5">
+                                  <h4 className="text-sm font-bold text-white group-hover:text-cyan-400 transition-colors">{t.label}</h4>
+                                  <p className="text-[10px] text-white/35 max-w-[220px]">{t.desc}</p>
+                                </div>
                               </div>
+                              <span className={`text-[8px] font-mono font-bold px-2 py-0.5 rounded ${
+                                t.status.includes("✓") ? "bg-green-500/10 text-green-400 border border-green-500/25" : "bg-white/5 text-white/30"
+                              }`}>{t.status}</span>
                             </div>
                           ))}
                         </div>
                       ) : (
-                        <div className="flex-1 flex flex-col justify-between border border-white/5 rounded-2xl bg-black/20 p-6 min-h-0">
-                          {/* Subtool Details */}
-                          <div className="flex-1 overflow-y-auto pr-2">
+                        <div className="flex-1 flex flex-col border border-white/5 rounded-3xl bg-black/20 overflow-hidden min-h-0">
+                          {/* Header of Detail Sub-View */}
+                          <div className="px-5 py-3.5 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
                             <button 
                               onClick={() => {
                                 setSelectedSubTool(null);
                                 playTick();
                               }}
-                              className="text-[10px] font-black text-white/40 uppercase tracking-widest hover:text-white mb-4 block"
+                              className="text-[9px] font-black text-white/40 uppercase tracking-widest hover:text-white flex items-center gap-1"
                             >
-                              ← Back to Tools
+                              ← Back to Integrations
                             </button>
-
+                            <span className="text-[8px] font-mono text-white/30 uppercase tracking-wider">Sub-Node Console</span>
+                          </div>
+                          
+                          <div className="flex-1 overflow-y-auto p-6 min-h-0">
+                            {/* WhatsApp Sub-View Detail */}
                             {selectedSubTool === "whatsapp" && (
-                              <div className="space-y-6">
-                                <div className="flex items-center gap-3">
-                                  <MessageSquare className="w-6 h-6 text-green-400 animate-bounce" />
-                                  <h4 className="text-base font-bold">WhatsApp Session Status</h4>
-                                </div>
-
-                                {waSessionStatus === "disconnected" && (
-                                  <div className="p-6 border border-white/5 bg-black/40 rounded-2xl text-center space-y-4">
-                                    <h5 className="text-xs font-bold text-white/40 uppercase tracking-wider">Pair Local Session</h5>
-                                    <div className="w-32 h-32 bg-white/5 border border-dashed border-white/20 rounded-xl flex items-center justify-center mx-auto text-[9px] font-mono text-white/20">
-                                      Awaiting QR Code
+                              <div className="h-full flex flex-col justify-between min-h-0">
+                                {waSessionStatus !== "connected" ? (
+                                  <div className="max-w-md mx-auto w-full p-6 border border-white/5 bg-black/40 rounded-2xl text-center space-y-5">
+                                    <div className="space-y-1">
+                                      <h5 className="text-xs font-bold text-white/80 uppercase tracking-wider">Pair WhatsApp Node Session</h5>
+                                      <p className="text-[10px] text-white/40">Secure local session token pairing. Data remains entirely on-device.</p>
                                     </div>
+                                    
+                                    {waSessionStatus === "disconnected" ? (
+                                      <div className="w-36 h-36 bg-white p-2.5 rounded-xl mx-auto relative overflow-hidden flex items-center justify-center shadow-lg">
+                                        {/* Mock QR details using Grid */}
+                                        <div className="grid grid-cols-6 grid-rows-6 gap-1 w-full h-full text-black">
+                                          <div className="bg-black rounded-sm" /><div className="bg-black rounded-sm" /><div className="bg-black rounded-sm" /><div className="bg-white" /><div className="bg-black rounded-sm" /><div className="bg-black rounded-sm" />
+                                          <div className="bg-black rounded-sm" /><div className="bg-white" /><div className="bg-white" /><div className="bg-black rounded-sm" /><div className="bg-white" /><div className="bg-black rounded-sm" />
+                                          <div className="bg-black rounded-sm" /><div className="bg-white" /><div className="bg-black rounded-sm" /><div className="bg-black rounded-sm" /><div className="bg-white" /><div className="bg-black rounded-sm" />
+                                          <div className="bg-white" /><div className="bg-black rounded-sm" /><div className="bg-white" /><div className="bg-white" /><div className="bg-black rounded-sm" /><div className="bg-white" />
+                                          <div className="bg-black rounded-sm" /><div className="bg-white" /><div className="bg-black rounded-sm" /><div className="bg-black rounded-sm" /><div className="bg-white" /><div className="bg-black rounded-sm" />
+                                          <div className="bg-black rounded-sm" /><div className="bg-black rounded-sm" /><div className="bg-black rounded-sm" /><div className="bg-white" /><div className="bg-black rounded-sm" /><div className="bg-black rounded-sm" />
+                                        </div>
+                                        <motion.div 
+                                          animate={{ top: ["0%", "100%", "0%"] }}
+                                          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                                          className="absolute left-0 w-full h-[3px] bg-emerald-400 shadow-[0_0_12px_#34d399]"
+                                        />
+                                      </div>
+                                    ) : (
+                                      <div className="w-36 h-36 bg-black/20 border border-white/5 rounded-xl flex flex-col items-center justify-center mx-auto text-green-400">
+                                        <RefreshCw className="w-8 h-8 animate-spin" />
+                                        <span className="text-[8px] font-mono mt-3 uppercase tracking-wider animate-pulse text-green-400">Pairing Handshake...</span>
+                                      </div>
+                                    )}
+
                                     <button 
                                       onClick={triggerWhatsAppPairingManual}
-                                      className="px-6 py-2.5 bg-green-600 hover:bg-green-500 text-white font-extrabold text-[10px] uppercase tracking-widest rounded-xl shadow-lg shadow-green-500/10 transition-colors"
+                                      className="px-6 py-2.5 bg-green-600 hover:bg-green-500 text-white font-extrabold text-[10px] uppercase tracking-widest rounded-xl shadow-lg shadow-green-500/10 transition-all hover:scale-[1.02]"
                                     >
                                       Generate QR & Pair
                                     </button>
                                   </div>
-                                )}
-
-                                {waSessionStatus === "pairing" && (
-                                  <div className="p-6 border border-white/5 bg-black/40 rounded-2xl text-center space-y-4">
-                                    <RefreshCw className="w-10 h-10 text-green-400 animate-spin mx-auto" />
-                                    <p className="text-xs font-mono text-green-400 animate-pulse uppercase tracking-wider">Generating Web QR Token...</p>
-                                  </div>
-                                )}
-
-                                {waSessionStatus === "connected" && (
-                                  <div className="space-y-4">
-                                    <div className="px-4 py-2 bg-green-500/10 border border-green-500/20 text-green-400 rounded-xl text-xs font-bold uppercase tracking-widest inline-block animate-pulse">
-                                      ✓ Session Connected // Mirror Active
-                                    </div>
-                                    <div className="space-y-2">
-                                      {waInboxData.map((chat, idx) => (
-                                        <div key={idx} className="p-3 bg-white/[0.02] border border-white/5 rounded-xl flex justify-between items-center text-xs">
-                                          <div>
-                                            <span className="font-bold text-cyan-400">{chat.name}</span>
-                                            <p className="text-[10px] text-white/40 line-clamp-1">{chat.lastMsg}</p>
+                                ) : (
+                                  <div className="flex-1 flex gap-5 min-h-0 h-full border border-white/5 bg-black/40 rounded-2xl overflow-hidden">
+                                    {/* Sidebar Inbox List */}
+                                    <div className="w-[180px] border-r border-white/5 flex flex-col bg-black/20">
+                                      <div className="px-3.5 py-3 border-b border-white/5 font-bold text-[9px] tracking-wider text-white/30 uppercase">Conversations</div>
+                                      <div className="flex-1 overflow-y-auto">
+                                        {waInboxData.map((chat, idx) => (
+                                          <div key={idx} className="p-3 border-b border-white/[0.02] flex items-center justify-between cursor-pointer hover:bg-white/[0.02]">
+                                            <div className="flex items-center gap-2 min-w-0">
+                                              <div className="w-7 h-7 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-[10px] flex-shrink-0">{chat.initials}</div>
+                                              <div className="min-w-0">
+                                                <h5 className="font-bold text-[10px] text-white/80 line-clamp-1">{chat.name}</h5>
+                                                <p className="text-[8px] text-white/30 line-clamp-1">{chat.lastMsg}</p>
+                                              </div>
+                                            </div>
+                                            {chat.unread > 0 && <span className="w-4 h-4 bg-green-500 text-black text-[8px] font-black rounded-full flex items-center justify-center flex-shrink-0">{chat.unread}</span>}
                                           </div>
-                                          {chat.unread > 0 && <span className="w-5 h-5 bg-green-500 text-black text-[9px] font-black rounded-full flex items-center justify-center">{chat.unread}</span>}
+                                        ))}
+                                      </div>
+                                    </div>
+                                    {/* Conversation Window */}
+                                    <div className="flex-1 flex flex-col justify-between bg-black/10">
+                                      <div className="px-4 py-3 border-b border-white/5 flex items-center gap-2 bg-black/20">
+                                        <div className="w-6 h-6 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-[9px]">SO</div>
+                                        <div>
+                                          <h5 className="font-bold text-[10px] text-white/80">Sarah (Ops)</h5>
+                                          <p className="text-[7px] font-mono text-green-400">● SECURE SYNC ACTIVE</p>
                                         </div>
-                                      ))}
+                                      </div>
+                                      <div className="flex-1 p-4 overflow-y-auto space-y-3">
+                                        <div className="flex justify-start">
+                                          <div className="bg-white/5 border border-white/5 text-white/80 rounded-2xl rounded-tl-none p-3 max-w-[80%] text-[10px] space-y-1">
+                                            <p>Hi, can you check the calendar for tomorrow? Need to review Q3 numbers.</p>
+                                            <span className="text-[7px] text-white/20 block text-right font-mono">09:15 AM</span>
+                                          </div>
+                                        </div>
+                                        <div className="flex justify-end">
+                                          <div className="bg-green-600 text-white rounded-2xl rounded-tr-none p-3 max-w-[80%] text-[10px] space-y-1 font-semibold">
+                                            <p>Sure, checking sync logs now. I'll get back to you with a slot.</p>
+                                            <span className="text-[7px] text-white/50 block text-right font-mono">09:17 AM</span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div className="p-2.5 border-t border-white/5 bg-black/20 flex gap-2">
+                                        <input readOnly placeholder="Type WhatsApp response securely..." className="flex-1 bg-white/[0.02] border border-white/10 rounded-xl px-3 py-2 text-[10px] text-white focus:outline-none" />
+                                        <button className="px-3 bg-white text-black rounded-xl text-[9px] font-bold">Send</button>
+                                      </div>
                                     </div>
                                   </div>
                                 )}
                               </div>
                             )}
 
+                            {/* Email Sub-View Detail */}
                             {selectedSubTool === "email" && (
-                              <div className="space-y-6">
-                                <div className="flex items-center gap-3">
-                                  <Mail className="w-6 h-6 text-blue-400" />
-                                  <h4 className="text-base font-bold font-syne">Email Inbox Config</h4>
-                                </div>
-                                <div className="space-y-3 max-w-sm">
-                                  <div className="space-y-1">
-                                    <span className="text-[9px] font-mono text-white/30 uppercase tracking-widest">IMAP USER</span>
-                                    <input readOnly value="ceo@sovereign.ai" className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white/60 focus:outline-none font-mono" />
+                              <div className="h-full flex gap-5 min-h-0 h-full border border-white/5 bg-black/40 rounded-2xl overflow-hidden">
+                                {/* Email List Pane */}
+                                <div className="w-[200px] border-r border-white/5 flex flex-col bg-black/20">
+                                  <div className="px-3.5 py-3 border-b border-white/5 font-bold text-[9px] tracking-wider text-white/30 uppercase">Inbox</div>
+                                  <div className="flex-1 overflow-y-auto">
+                                    <div className="p-3 border-b border-white/5 bg-white/[0.02] cursor-pointer hover:bg-white/[0.04]">
+                                      <div className="flex justify-between items-center">
+                                        <span className="font-extrabold text-[10px] text-cyan-300">Sarah (Ops)</span>
+                                        <span className="text-[7px] text-white/30">09:15 AM</span>
+                                      </div>
+                                      <h6 className="font-bold text-[9px] text-white/80 mt-1 line-clamp-1">Q3 Project Review Meeting</h6>
+                                      <p className="text-[8px] text-white/30 mt-0.5 line-clamp-1">Hi, I looked over the latest Q3 projections...</p>
+                                    </div>
+                                    <div className="p-3 border-b border-white/5 cursor-pointer hover:bg-white/[0.02] opacity-50">
+                                      <div className="flex justify-between items-center">
+                                        <span className="font-bold text-[10px]">Vercel Team</span>
+                                        <span className="text-[7px] text-white/30">Yesterday</span>
+                                      </div>
+                                      <h6 className="font-bold text-[9px] text-white/80 mt-1 line-clamp-1">Deploy Successful</h6>
+                                      <p className="text-[8px] text-white/30 mt-0.5 line-clamp-1">Your website demo is now online...</p>
+                                    </div>
                                   </div>
-                                  <div className="space-y-1">
-                                    <span className="text-[9px] font-mono text-white/30 uppercase tracking-widest">IMAP HOST</span>
-                                    <input readOnly value="imap.gmail.com" className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white/60 focus:outline-none font-mono" />
-                                  </div>
                                 </div>
-                                <div className="p-4 border border-blue-500/20 bg-blue-500/[0.02] text-blue-300 text-xs rounded-xl flex items-center gap-2">
-                                  <Lock className="w-4 h-4" /> Credentials encrypted via OS Keychain.
+
+                                {/* Reading Pane */}
+                                <div className="flex-1 flex flex-col justify-between bg-black/10 p-5">
+                                  <div className="space-y-4 flex-1">
+                                    <div className="border-b border-white/5 pb-4 space-y-2.5">
+                                      <div className="flex justify-between">
+                                        <div>
+                                          <h4 className="font-extrabold text-sm text-white/90">Q3 Project Review Meeting</h4>
+                                          <p className="text-[9px] text-white/40 mt-1 font-mono">From: Sarah Ops &lt;sarah@sovereign.ai&gt;</p>
+                                        </div>
+                                        <span className="text-[8px] font-mono text-white/30">TODAY, 9:15 AM</span>
+                                      </div>
+                                      <div className="flex gap-2">
+                                        <span className="text-[8px] bg-blue-500/10 border border-blue-500/20 text-blue-400 px-2 py-0.5 rounded font-mono">IMAP ROUTE</span>
+                                        <span className="text-[8px] bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-2 py-0.5 rounded font-mono">ENCRYPTED</span>
+                                      </div>
+                                    </div>
+                                    <div className="text-[10px] text-white/70 leading-relaxed space-y-3 font-medium">
+                                      <p>Hi,</p>
+                                      <p>I looked over the latest Q3 projections and need to align on the final figures.</p>
+                                      <p>Can we schedule a 1-hour review meeting tomorrow at 2:00 PM?</p>
+                                      <p>Let me know if this works. I can send a calendar block if you are free.</p>
+                                      <p>Best,<br />Sarah</p>
+                                    </div>
+                                  </div>
+                                  <div className="p-3 border border-blue-500/10 bg-blue-500/[0.02] text-blue-300 text-[9px] rounded-xl flex items-center gap-2 font-mono">
+                                    <Lock className="w-3.5 h-3.5" /> Credentials and tokens securely encrypted via local OS parameters.
+                                  </div>
                                 </div>
                               </div>
                             )}
 
+                            {/* Calendar Sub-View Detail */}
                             {selectedSubTool === "calendar" && (
-                              <div className="space-y-6">
-                                <div className="flex items-center gap-3">
-                                  <Calendar className="w-6 h-6 text-purple-400" />
-                                  <h4 className="text-base font-bold">Calendar Agenda Sync</h4>
+                              <div className="h-full flex gap-5 min-h-0 h-full border border-white/5 bg-black/40 rounded-2xl overflow-hidden">
+                                <div className="w-[180px] border-r border-white/5 bg-black/20 p-4 space-y-4">
+                                  <div className="space-y-1">
+                                    <h5 className="font-bold text-[10px] text-white/80 uppercase tracking-wide">Calendar Sync</h5>
+                                    <p className="text-[8px] text-white/40">File system direct access mode.</p>
+                                  </div>
+                                  <div className="p-3 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-300 text-[9px] flex items-center gap-2 font-mono">
+                                    <FileText className="w-3.5 h-3.5 text-purple-400" /> integrations/calendar.ics
+                                  </div>
+                                  <div className="space-y-1 text-[8px] font-mono text-white/30">
+                                    <div>LAST SYNC: Just Now</div>
+                                    <div>SYNC POLICY: 100% Offline</div>
+                                  </div>
                                 </div>
-                                <div className="p-4 border border-purple-500/20 bg-purple-500/[0.02] text-purple-300 text-xs rounded-xl flex items-center gap-2">
-                                  <FileText className="w-4 h-4" /> Active File: apps/integrations/calendar.ics
-                                </div>
-                                <div className="border border-white/5 bg-black/40 rounded-2xl p-4 space-y-3">
-                                  <h5 className="text-[9px] font-black uppercase text-white/30 tracking-widest">Schedule Entries</h5>
-                                  <div className="space-y-2">
-                                    
-                                    {/* Sarah Ops Event card - Fades in dynamically with green/purple glow */}
-                                    {showNewCalendarEvent && (
-                                      <motion.div 
-                                        initial={{ opacity: 0, scale: 0.95 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        className="p-3 bg-purple-500/10 border border-purple-500/30 rounded-xl text-xs flex justify-between shadow-[0_0_15px_rgba(168,85,247,0.3)] animate-pulse"
-                                      >
-                                        <span className="font-bold text-cyan-400">Sarah Ops - Q3 Project Review</span>
-                                        <span className="text-purple-300 font-bold">Tomorrow, 2:00 PM</span>
-                                      </motion.div>
-                                    )}
+                                
+                                {/* Calendar Weekly Grid */}
+                                <div className="flex-1 bg-black/10 p-4 flex flex-col min-h-0">
+                                  <div className="grid grid-cols-6 border-b border-white/10 pb-2 text-[9px] font-mono text-white/40 text-center uppercase tracking-widest font-black">
+                                    <span>Time</span>
+                                    <span>Mon</span>
+                                    <span>Tue</span>
+                                    <span>Wed</span>
+                                    <span>Thu</span>
+                                    <span>Fri</span>
+                                  </div>
+                                  <div className="flex-1 overflow-y-auto pr-1 mt-2 relative min-h-[160px] text-[8px] font-mono text-white/30">
+                                    <div className="grid grid-cols-6 h-full min-h-[220px] relative border-l border-white/5">
+                                      {/* Hourly dividers */}
+                                      <div className="col-span-1 border-r border-white/5 flex flex-col justify-between py-1.5 pr-2 text-right">
+                                        <span>09:00 AM</span>
+                                        <span>10:00 AM</span>
+                                        <span>11:00 AM</span>
+                                        <span>12:00 PM</span>
+                                        <span>01:00 PM</span>
+                                        <span>02:00 PM</span>
+                                        <span>03:00 PM</span>
+                                        <span>04:00 PM</span>
+                                      </div>
+                                      
+                                      {/* Monday Grid */}
+                                      <div className="col-span-1 border-r border-white/5 relative">
+                                        <div className="absolute top-[8%] left-1 right-1 p-1 bg-white/5 border border-white/10 rounded-lg text-[7px] text-white/50">Daily Sync</div>
+                                      </div>
+                                      
+                                      {/* Tuesday Grid */}
+                                      <div className="col-span-1 border-r border-white/5 relative">
+                                        <div className="absolute top-[8%] left-1 right-1 p-1 bg-white/5 border border-white/10 rounded-lg text-[7px] text-white/50">Daily Sync</div>
+                                        
+                                        {/* Sarah Ops review Meeting - FADES/PULSES IN */}
+                                        {showNewCalendarEvent && (
+                                          <motion.div 
+                                            initial={{ opacity: 0, scale: 0.95 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            className="absolute top-[65%] bottom-[10%] left-1 right-1 p-2.5 bg-purple-600/35 border border-purple-400 rounded-xl flex flex-col justify-between shadow-[0_0_20px_rgba(168,85,247,0.55)] cursor-pointer text-left animate-pulse"
+                                          >
+                                            <span className="font-extrabold text-[8px] text-cyan-300 line-clamp-2">Q3 Project Review</span>
+                                            <span className="text-[7px] text-purple-300 font-bold">Sarah Ops</span>
+                                            <span className="text-[6px] text-white/40 block mt-0.5">2:00 PM - 3:00 PM</span>
+                                          </motion.div>
+                                        )}
+                                      </div>
 
-                                    <div className="p-3 bg-white/[0.02] border border-white/5 rounded-xl text-xs flex justify-between">
-                                      <span className="font-bold text-white/80">Investor Live Pitch Demo</span>
-                                      <span className="text-white/40">June 5, 10:00 AM</span>
+                                      {/* Wednesday Grid */}
+                                      <div className="col-span-1 border-r border-white/5 relative">
+                                        <div className="absolute top-[8%] left-1 right-1 p-1 bg-white/5 border border-white/10 rounded-lg text-[7px] text-white/50">Daily Sync</div>
+                                        <div className="absolute top-[25%] bottom-[50%] left-1 right-1 p-1 bg-white/5 border border-white/10 rounded-lg text-[7px] text-white/50">Weekly Sync</div>
+                                      </div>
+
+                                      {/* Thursday Grid */}
+                                      <div className="col-span-1 border-r border-white/5 relative">
+                                        <div className="absolute top-[8%] left-1 right-1 p-1 bg-white/5 border border-white/10 rounded-lg text-[7px] text-white/50">Daily Sync</div>
+                                        <div className="absolute top-[75%] left-1 right-1 p-1 bg-white/5 border border-white/10 rounded-lg text-[7px] text-white/50">Review Demo</div>
+                                      </div>
+
+                                      {/* Friday Grid */}
+                                      <div className="col-span-1 relative">
+                                        <div className="absolute top-[8%] left-1 right-1 p-1 bg-white/5 border border-white/10 rounded-lg text-[7px] text-white/50">Daily Sync</div>
+                                        <div className="absolute top-[85%] left-1 right-1 p-1 bg-white/5 border border-white/10 rounded-lg text-[7px] text-white/50">Retro Sync</div>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             )}
 
+                            {/* Memory RAG subtool detail placeholder redirect */}
                             {selectedSubTool === "rag" && (
-                              <div className="space-y-4">
-                                <p className="text-xs text-white/50">For local RAG document uploading, please visit the **Memory Bank** tab directly from the main sidebar.</p>
+                              <div className="p-6 text-center space-y-4">
+                                <p className="text-xs text-white/50">For direct document index corpus and similarity map options, please navigate to the **Memory Bank** sidebar page.</p>
                               </div>
                             )}
                           </div>

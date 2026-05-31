@@ -14,15 +14,15 @@ interface SimulationStep {
   title: string;
   caption: string;
   glowClass: string;
-  view: "settings" | "knowledge" | "chat" | "hub" | "general";
+  view: "settings" | "knowledge" | "chat" | "hub" | "general" | "tools";
 }
 
 const STEPS: SimulationStep[] = [
   { id: 1, title: "Sovereign Activation", caption: "Welcome to Shadow. The app launches offline and validates the sovereign license key locally, verifying the secure node connection.", glowClass: "from-cyan-500/10 via-transparent to-transparent", view: "settings" },
   { id: 2, title: "Memory Bank (Local RAG)", caption: "Private data is ingested entirely offline. The documents are split, embedded via Ollama, and saved directly to the local HNSW vector store.", glowClass: "from-orange-500/10 via-transparent to-transparent", view: "knowledge" },
-  { id: 3, title: "Local Neural Chat", caption: "The user asks the agent to consolidate updates. The agent triggers local tools, mirroring WhatsApp messages and reading secure IMAP e-mail packets.", glowClass: "from-purple-500/10 via-transparent to-transparent", view: "chat" },
-  { id: 4, title: "Autonomous Hub Suggestion", caption: "Shadow's polling engine flags scheduling requests from e-mails. It drafts calendar slots, waiting for a secure one-click user approval.", glowClass: "from-pink-500/10 via-transparent to-transparent", view: "hub" },
-  { id: 5, title: "Zero-Server Policy", caption: "Execution complete. The meeting is written to calendar.ics and synced across local nodes. 100% offline, 100% yours.", glowClass: "from-green-500/10 via-transparent to-transparent", view: "general" }
+  { id: 3, title: "Workspace Node Sync", caption: "Link local communications securely. Scan the mirrored WhatsApp session token and configure encrypted SMTP/IMAP protocol keys on your hard drive.", glowClass: "from-blue-500/10 via-transparent to-transparent", view: "tools" },
+  { id: 4, title: "Intelligent Automation", caption: "Interact with the neural agent. Shadow parses unread mail logs, identifies scheduling conflicts, and queues confirmation cards in the Autonomous Hub.", glowClass: "from-purple-500/10 via-transparent to-transparent", view: "chat" },
+  { id: 5, title: "Sovereign Sync Success", caption: "Approval complete. The agent appends the meeting directly to calendar.ics, showing the live updated schedule. 100% local, 100% offline.", glowClass: "from-green-500/10 via-transparent to-transparent", view: "tools" }
 ];
 
 const SLIDES = [
@@ -49,32 +49,32 @@ const SLIDES = [
     metricLabel: "Local Vector Query Speed"
   },
   {
-    title: "Unified Integration Nodes",
-    subtitle: "Secure Workspace Mirroring",
+    title: "Workspace Node Syncing",
+    subtitle: "Mirroring WhatsApp & Mail",
     bullets: [
       "WhatsApp sessions are mirrored on-device using local Web Session keys.",
-      "IMAP/SMTP credentials stored inside native OS Windows Credential Manager.",
-      "Continuous offline parsing of inbox packages with zero cloud footprint."
+      "SMTP/IMAP server keys are encrypted natively inside Windows Credential Manager.",
+      "Local background workers sync inbox updates with a zero cloud footprint."
     ],
-    metric: "0kb",
-    metricLabel: "Data Leaves Client Device"
+    metric: "100% Local",
+    metricLabel: "Communication Node Pairing"
   },
   {
-    title: "Autonomous Hub Engine",
+    title: "Intelligent Automation",
     subtitle: "Self-Operating Assistance",
     bullets: [
-      "Background worker analyzes inbox schedules and generates recommendation cards.",
-      "Requires one-click approval before performing system edits (Calendar/SMS).",
+      "Local agent parses workspace logs to identify scheduling conflicts.",
+      "Renders suggest boxes waiting for a secure one-click user approval.",
       "Save an average of 12 hours per workspace seat every single week."
     ],
     metric: "+12h",
     metricLabel: "Weekly Time Saved Per Seat"
   },
   {
-    title: "Sovereign AI Economy",
+    title: "Calendar Sync Success",
     subtitle: "Reclaiming Autonomy",
     bullets: [
-      "Sovereign license handshake issues an annual offline JWT token.",
+      "Approved actions write directly to the local calendar.ics file structure.",
       "Enables secure offline operation without continuous API billing.",
       "Ideal for legal, financial, defense, and high-confidentiality operations."
     ],
@@ -95,6 +95,9 @@ export default function DemoSimulator() {
   const [waSessionStatus, setWaSessionStatus] = useState<"disconnected" | "pairing" | "connected">("disconnected");
   const [waQrCodeVal, setWaQrCodeVal] = useState("SHADOW-MOCK-AUTHENTICATION-QR");
   const [waInboxData, setWaInboxData] = useState<any[]>([]);
+  
+  // Custom Calendar state simulation
+  const [showNewCalendarEvent, setShowNewCalendarEvent] = useState(false);
   
   // Privacy Audit Overlay state
   const [showAuditOverlay, setShowAuditOverlay] = useState(false);
@@ -209,7 +212,7 @@ export default function DemoSimulator() {
     } catch (e) {}
   };
 
-  // Automated cursor pathing states
+  // Automated cursor pathing states - BRIGHTER & LARGER VISIBILITY
   const [cursorPos, setCursorPos] = useState({ x: "50%", y: "50%" });
   const [cursorClicking, setCursorClicking] = useState(false);
   const [showCursor, setShowCursor] = useState(true);
@@ -260,13 +263,16 @@ export default function DemoSimulator() {
       return;
     }
 
-    // Trigger cursor glides & step content loops
+    // TRIGGER STAGED ANIMATIONS IN TIMELINE (10s PER STEP)
     if (step === 1) {
       setEmailInput("");
       setLicenseInput("");
       setActivationState("typing");
       setShowCursor(true);
       setSelectedSubTool(null);
+      
+      // Start cursor at center
+      setCursorPos({ x: "50%", y: "50%" });
       
       // Path 1: Glide to email input
       setTimeout(() => {
@@ -384,20 +390,98 @@ export default function DemoSimulator() {
       }, 500);
       
     } else if (step === 3) {
+      // WALKTHROUGH STAGE 3: TOOLS HUB (WHATSAPP QR PAIRING & EMAIL CONFIG)
+      setSelectedSubTool(null);
+      setWaSessionStatus("disconnected");
+      setShowCursor(true);
+      
+      // Glide to WhatsApp Card
+      setTimeout(() => {
+        setCursorPos({ x: "42%", y: "30%" });
+        
+        // Click WhatsApp Card
+        setTimeout(() => {
+          setCursorClicking(true);
+          playChirp();
+          setTimeout(() => {
+            setCursorClicking(false);
+            setSelectedSubTool("whatsapp");
+            
+            // Glide to "Generate QR & Pair" button
+            setTimeout(() => {
+              setCursorPos({ x: "57%", y: "66%" });
+              
+              // Click Pair
+              setTimeout(() => {
+                setCursorClicking(true);
+                playChirp();
+                setTimeout(() => {
+                  setCursorClicking(false);
+                  setWaSessionStatus("pairing");
+                  playToolHum();
+                  
+                  // Scanning finished
+                  setTimeout(() => {
+                    setWaSessionStatus("connected");
+                    setWaInboxData([
+                      { name: "Investor Update", lastMsg: "When can we see the live demo?", unread: 2 },
+                      { name: "Dev Team", lastMsg: "Local RAG is 2x faster now.", unread: 0 },
+                      { name: "Sarah (Ops)", lastMsg: "Can you check the calendar?", unread: 1 }
+                    ]);
+                    playSuccessChirp();
+                    
+                    // Glide to "Back to Tools" button
+                    setTimeout(() => {
+                      setCursorPos({ x: "28%", y: "20%" });
+                      
+                      // Click Back
+                      setTimeout(() => {
+                        setCursorClicking(true);
+                        playChirp();
+                        setTimeout(() => {
+                          setCursorClicking(false);
+                          setSelectedSubTool(null);
+                          
+                          // Glide to Email Card
+                          setTimeout(() => {
+                            setCursorPos({ x: "72%", y: "30%" });
+                            
+                            // Click Email
+                            setTimeout(() => {
+                              setCursorClicking(true);
+                              playChirp();
+                              setTimeout(() => {
+                                setCursorClicking(false);
+                                setSelectedSubTool("email");
+                              }, 150);
+                            }, 500);
+                          }, 500);
+                        }, 150);
+                      }, 500);
+                    }, 1200);
+                  }, 1800);
+                }, 150);
+              }, 800);
+            }, 600);
+          }, 150);
+        }, 800);
+      }, 500);
+      
+    } else if (step === 4) {
       setChatMessages([
         { role: "bot", content: "Neural core online. Custom tools linked. How can I assist you?" }
       ]);
       setChatInput("");
       setChatTyping(false);
       setChatToolActive(null);
+      setHubActionStatus("pending");
       setShowCursor(true);
       setSelectedSubTool(null);
       
-      // Path 1: Glide to Chat input
+      // Auto type chat command
       setTimeout(() => {
         setCursorPos({ x: "55%", y: "88%" });
         
-        // Path 2: Auto type command
         setTimeout(() => {
           let msg = "Check email and WhatsApp for new updates, and consolidate tasks.";
           let typed = "";
@@ -411,7 +495,7 @@ export default function DemoSimulator() {
             } else {
               clearInterval(msgTimer);
               
-              // Path 3: Glide to Send button
+              // Glide to Send button
               setTimeout(() => {
                 setCursorPos({ x: "85%", y: "88%" });
                 
@@ -425,17 +509,15 @@ export default function DemoSimulator() {
                     setChatInput("");
                     setChatTyping(true);
                     
-                    // Activate WhatsApp tool
+                    // Activate tools simulation
                     setTimeout(() => {
                       setChatToolActive("WhatsApp Node");
                       playToolHum();
                       
-                      // Activate Email tool
                       setTimeout(() => {
                         setChatToolActive("Email Intelligence");
                         playToolHum();
                         
-                        // Bot Response
                         setTimeout(() => {
                           setChatTyping(false);
                           setChatToolActive(null);
@@ -444,52 +526,92 @@ export default function DemoSimulator() {
                             content: "Local sync complete. Found details:\n\n1. Email from Sarah (Sarah Ops): Suggested a Q3 Project review meeting.\n2. WhatsApp (Investor Update): Unread messages asking for a live demo.\n\nI have created suggested actions in your Autonomous Hub." 
                           }]);
                           playSuccessChirp();
-                        }, 1800);
-                      }, 1200);
-                    }, 800);
+                          
+                          // SWITCH VIEW TO AUTONOMOUS HUB
+                          setTimeout(() => {
+                            setActiveView("hub");
+                            playTick();
+                            
+                            // Glide to "Approve & Run" on hub card
+                            setTimeout(() => {
+                              setCursorPos({ x: "85%", y: "30%" });
+                              
+                              // Click Approve
+                              setTimeout(() => {
+                                setCursorClicking(true);
+                                playChirp();
+                                setTimeout(() => {
+                                  setCursorClicking(false);
+                                  setHubActionStatus("approving");
+                                  playToolHum();
+                                  
+                                  setTimeout(() => {
+                                    setHubActionStatus("approved");
+                                    playSuccessChirp();
+                                  }, 1200);
+                                }, 150);
+                              }, 600);
+                            }, 500);
+                          }, 1500);
+                        }, 1200);
+                      }, 800);
+                    }, 600);
                   }, 150);
                 }, 500);
               }, 500);
             }
-          }, 30);
-        }, 800);
+          }, 20);
+        }, 500);
       }, 500);
       
-    } else if (step === 4) {
-      setHubActionStatus("pending");
-      setShowCursor(true);
+    } else if (step === 5) {
       setSelectedSubTool(null);
+      setShowNewCalendarEvent(false);
+      setShowCursor(true);
       
-      // Path 1: Glide to suggestion Approve & Run button
+      // Glide to Calendar Card
       setTimeout(() => {
-        setCursorPos({ x: "85%", y: "30%" });
+        setCursorPos({ x: "42%", y: "58%" });
         
-        // Click Approve
+        // Click Calendar Card
         setTimeout(() => {
           setCursorClicking(true);
           playChirp();
           setTimeout(() => {
             setCursorClicking(false);
-            setHubActionStatus("approving");
-            playToolHum();
+            setSelectedSubTool("calendar");
             
+            // Highlight calendar schedule fading in
             setTimeout(() => {
-              setHubActionStatus("approved");
+              setShowNewCalendarEvent(true);
               playSuccessChirp();
-            }, 1800);
+              
+              // Glide to System Preferences tab
+              setTimeout(() => {
+                setCursorPos({ x: "12%", y: "38%" });
+                
+                // Click preferences tab
+                setTimeout(() => {
+                  setCursorClicking(true);
+                  playChirp();
+                  setTimeout(() => {
+                    setCursorClicking(false);
+                    setActiveView("general");
+                    setShowCursor(false);
+                  }, 150);
+                }, 500);
+              }, 2000);
+            }, 1000);
           }, 150);
         }, 800);
       }, 500);
-    } else if (step === 5) {
-      setShowCursor(false);
-      setSelectedSubTool(null);
     }
     
     return () => clearInterval(textTimer);
   }, [currentStep, isPlaying]);
 
-  // Simulate WhatsApp Pairing Scan
-  const triggerWhatsAppPairing = () => {
+  // Handle WhatsApp scan trigger manually
+  const triggerWhatsAppPairingManual = () => {
     if (waSessionStatus !== "disconnected") return;
     setWaSessionStatus("pairing");
     playToolHum();
@@ -501,7 +623,7 @@ export default function DemoSimulator() {
         { name: "Sarah (Ops)", lastMsg: "Can you check the calendar?", unread: 1 }
       ]);
       playSuccessChirp();
-    }, 2000);
+    }, 1800);
   };
 
   return (
@@ -562,6 +684,7 @@ export default function DemoSimulator() {
                 onClick={() => {
                   setCurrentStep(s.id);
                   setIsPlaying(false);
+                  playTick();
                 }}
                 className={`px-4 py-2 rounded-full border text-[11px] font-bold transition-all flex items-center gap-2 ${
                   currentStep === s.id 
@@ -645,7 +768,6 @@ export default function DemoSimulator() {
               </motion.div>
             </AnimatePresence>
 
-            {/* Slide Metrics Card */}
             <AnimatePresence mode="wait">
               <motion.div 
                 key={`metric-${currentStep}`} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
@@ -660,25 +782,39 @@ export default function DemoSimulator() {
           {/* RIGHT: DESKTOP CONTAINER (TAURI CLIENT UI) */}
           <div className="flex-1 bg-black/40 border border-white/10 rounded-[2.5rem] overflow-hidden flex flex-col relative shadow-[0_0_100px_rgba(0,0,0,0.7)]">
             
-            {/* Simulated Floating Cursor overlay */}
+            {/* Simulated Floating Cursor overlay - ENHANCED VISIBILITY */}
             {showCursor && (
-              <motion.div 
-                animate={{ x: cursorPos.x, y: cursorPos.y }}
-                transition={{ type: "tween", ease: "easeInOut", duration: 0.8 }}
-                className="absolute pointer-events-none z-[999] -ml-2.5 -mt-2.5 select-none"
-                style={{ left: 0, top: 0 }}
-              >
-                <div className="relative">
-                  <div className={`w-5 h-5 rounded-full bg-cyan-400/80 shadow-[0_0_10px_#22d3ee] border border-white flex items-center justify-center transition-all ${
-                    cursorClicking ? "scale-75 bg-cyan-600" : ""
-                  }`}>
-                    <Sparkles className="w-2.5 h-2.5 text-black" />
+              <>
+                {/* Secondary trail dot */}
+                <motion.div 
+                  animate={{ x: cursorPos.x, y: cursorPos.y }}
+                  transition={{ type: "tween", ease: "easeInOut", duration: 0.95 }}
+                  className="absolute pointer-events-none z-[9998] -ml-1.5 -mt-1.5 w-3 h-3 rounded-full bg-cyan-400/40 blur-[2px]"
+                  style={{ left: 0, top: 0 }}
+                />
+                
+                {/* Main glowing cursor */}
+                <motion.div 
+                  animate={{ x: cursorPos.x, y: cursorPos.y }}
+                  transition={{ type: "tween", ease: "easeInOut", duration: 0.8 }}
+                  className="absolute pointer-events-none z-[9999] -ml-3.5 -mt-3.5 select-none"
+                  style={{ left: 0, top: 0 }}
+                >
+                  <div className="relative">
+                    <div className={`absolute inset-[-8px] rounded-full bg-cyan-400/10 blur-[4px] transition-all duration-300 ${
+                      cursorClicking ? "scale-150 bg-cyan-400/30" : ""
+                    }`} />
+                    <div className={`w-7 h-7 rounded-full bg-cyan-400/90 shadow-[0_0_20px_#06b6d4] border-2 border-white flex items-center justify-center transition-all duration-150 ${
+                      cursorClicking ? "scale-75 bg-cyan-600 shadow-[0_0_30px_#0891b2]" : ""
+                    }`}>
+                      <Sparkles className="w-3 h-3 text-black" />
+                    </div>
+                    <div className={`absolute inset-[-12px] rounded-full border-2 border-cyan-400/30 scale-75 animate-ping duration-1000 ${
+                      cursorClicking ? "border-cyan-600 scale-125" : ""
+                    }`} />
                   </div>
-                  <div className={`absolute inset-[-10px] rounded-full border border-cyan-400/30 scale-75 animate-ping duration-1000 ${
-                    cursorClicking ? "border-cyan-600 scale-110" : ""
-                  }`} />
-                </div>
-              </motion.div>
+                </motion.div>
+              </>
             )}
 
             {/* Window Header */}
@@ -689,7 +825,7 @@ export default function DemoSimulator() {
                   <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/40" />
                   <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/40" />
                 </div>
-                <span className="text-[10px] font-mono tracking-widest text-white/30 uppercase ml-2 flex items-center gap-1.5">
+                <span className="text-[10px] font-mono tracking-widest text-white/30 uppercase ml-2 flex items-center gap-1.5 font-bold">
                   <Terminal className="w-3.5 h-3.5" /> ShadowAgent_Client_Shell.app
                 </span>
               </div>
@@ -705,7 +841,7 @@ export default function DemoSimulator() {
               {/* Sidebar Mock */}
               <div className="w-[200px] border-r border-white/5 bg-black/20 p-4 space-y-2 select-none">
                 <div className="h-10 flex items-center px-4 mb-4">
-                  <Shield className="w-5 h-5 text-cyan-400 mr-2" />
+                  <Shield className="w-5 h-5 text-cyan-400 mr-2 animate-pulse" />
                   <span className="font-syne font-bold text-sm tracking-tight">Shadow</span>
                 </div>
                 {[
@@ -1039,7 +1175,7 @@ export default function DemoSimulator() {
                                 setSelectedSubTool(t.id);
                                 playChirp();
                               }}
-                              className="p-6 border border-white/5 bg-white/[0.01] hover:border-cyan-500/20 rounded-2xl flex items-center gap-4 cursor-pointer transition-all group"
+                              className="p-6 border border-white/5 bg-white/[0.01] hover:border-cyan-500/20 rounded-2xl flex items-center gap-4 cursor-pointer transition-all group animate-pulse"
                             >
                               <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${t.bg} ${t.color}`}>{t.icon}</div>
                               <div>
@@ -1066,7 +1202,7 @@ export default function DemoSimulator() {
                             {selectedSubTool === "whatsapp" && (
                               <div className="space-y-6">
                                 <div className="flex items-center gap-3">
-                                  <MessageSquare className="w-6 h-6 text-green-400" />
+                                  <MessageSquare className="w-6 h-6 text-green-400 animate-bounce" />
                                   <h4 className="text-base font-bold">WhatsApp Session Status</h4>
                                 </div>
 
@@ -1077,7 +1213,7 @@ export default function DemoSimulator() {
                                       Awaiting QR Code
                                     </div>
                                     <button 
-                                      onClick={triggerWhatsAppPairing}
+                                      onClick={triggerWhatsAppPairingManual}
                                       className="px-6 py-2.5 bg-green-600 hover:bg-green-500 text-white font-extrabold text-[10px] uppercase tracking-widest rounded-xl shadow-lg shadow-green-500/10 transition-colors"
                                     >
                                       Generate QR & Pair
@@ -1094,7 +1230,7 @@ export default function DemoSimulator() {
 
                                 {waSessionStatus === "connected" && (
                                   <div className="space-y-4">
-                                    <div className="px-4 py-2 bg-green-500/10 border border-green-500/20 text-green-400 rounded-xl text-xs font-bold uppercase tracking-widest inline-block">
+                                    <div className="px-4 py-2 bg-green-500/10 border border-green-500/20 text-green-400 rounded-xl text-xs font-bold uppercase tracking-widest inline-block animate-pulse">
                                       ✓ Session Connected // Mirror Active
                                     </div>
                                     <div className="space-y-2">
@@ -1117,7 +1253,7 @@ export default function DemoSimulator() {
                               <div className="space-y-6">
                                 <div className="flex items-center gap-3">
                                   <Mail className="w-6 h-6 text-blue-400" />
-                                  <h4 className="text-base font-bold">Email Inbox Config</h4>
+                                  <h4 className="text-base font-bold font-syne">Email Inbox Config</h4>
                                 </div>
                                 <div className="space-y-3 max-w-sm">
                                   <div className="space-y-1">
@@ -1139,20 +1275,29 @@ export default function DemoSimulator() {
                               <div className="space-y-6">
                                 <div className="flex items-center gap-3">
                                   <Calendar className="w-6 h-6 text-purple-400" />
-                                  <h4 className="text-base font-bold">Calendar Synchronizer</h4>
+                                  <h4 className="text-base font-bold">Calendar Agenda Sync</h4>
                                 </div>
                                 <div className="p-4 border border-purple-500/20 bg-purple-500/[0.02] text-purple-300 text-xs rounded-xl flex items-center gap-2">
-                                  <FileText className="w-4 h-4 animate-pulse" /> Active Node Path: apps/integrations/calendar.ics
+                                  <FileText className="w-4 h-4" /> Active File: apps/integrations/calendar.ics
                                 </div>
                                 <div className="border border-white/5 bg-black/40 rounded-2xl p-4 space-y-3">
-                                  <h5 className="text-[9px] font-black uppercase text-white/30 tracking-widest">Upcoming Slots</h5>
+                                  <h5 className="text-[9px] font-black uppercase text-white/30 tracking-widest">Schedule Entries</h5>
                                   <div className="space-y-2">
+                                    
+                                    {/* Sarah Ops Event card - Fades in dynamically with green/purple glow */}
+                                    {showNewCalendarEvent && (
+                                      <motion.div 
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        className="p-3 bg-purple-500/10 border border-purple-500/30 rounded-xl text-xs flex justify-between shadow-[0_0_15px_rgba(168,85,247,0.3)] animate-pulse"
+                                      >
+                                        <span className="font-bold text-cyan-400">Sarah Ops - Q3 Project Review</span>
+                                        <span className="text-purple-300 font-bold">Tomorrow, 2:00 PM</span>
+                                      </motion.div>
+                                    )}
+
                                     <div className="p-3 bg-white/[0.02] border border-white/5 rounded-xl text-xs flex justify-between">
-                                      <span className="font-bold">Project Q3 Status Review</span>
-                                      <span className="text-white/40">Tomorrow, 2:00 PM</span>
-                                    </div>
-                                    <div className="p-3 bg-white/[0.02] border border-white/5 rounded-xl text-xs flex justify-between">
-                                      <span className="font-bold">Investor Live Pitch Demo</span>
+                                      <span className="font-bold text-white/80">Investor Live Pitch Demo</span>
                                       <span className="text-white/40">June 5, 10:00 AM</span>
                                     </div>
                                   </div>

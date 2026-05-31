@@ -1,0 +1,195 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cyan-500: #00F0FF;
+  --color-purple-500: #A020F0;
+  --color-mint-500: #00FF9F;
+  --font-syne: var(--font-syne), sans-serif;
+  --font-manrope: var(--font-manrope), sans-serif;
+}
+
+::selection {
+  background: rgba(0, 240, 255, 0.2);
+  color: #fff;
+}
+
+body {
+  background: #050508;
+  color: #ffffff;
+  overflow-x: hidden;
+  font-family: var(--font-manrope), sans-serif;
+  cursor: none;
+}
+
+/* Cinematic Vignette */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  box-shadow: inset 0 0 150px rgba(0,0,0,0.8);
+  pointer-events: none;
+  z-index: 99;
+}
+
+/* Premium Headings — Syne for that distinct editorial feel */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-syne), sans-serif;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+}
+
+@layer utilities {
+  /* Solid dark panels — fully opaque so content is always readable over the glass prism */
+  .section-panel {
+    background: rgb(5, 5, 10);
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* Cards with solid visible backgrounds */
+  .card-solid {
+    background: linear-gradient(145deg, rgba(18,18,32,0.95) 0%, rgba(12,12,24,0.9) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .card-solid:hover {
+    border-color: rgba(255,255,255,0.15);
+    background: linear-gradient(145deg, rgba(25,25,45,0.97) 0%, rgba(18,18,36,0.95) 100%);
+  }
+
+  .glass {
+    background-color: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .glass-dark {
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Performance optimization for mobile and touch devices: disable expensive filters */
+  @media (max-width: 1024px), (pointer: coarse) {
+    .card-solid, .glass, .glass-dark {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      background-color: rgba(12, 12, 24, 0.98) !important;
+    }
+  }
+
+  .text-gradient {
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(to right, #00F0FF, #A020F0, #00FF9F);
+  }
+}
+
+/* Hardcore performance fixes for mobile and touch devices scrolling */
+@media (max-width: 1024px), (pointer: coarse) {
+  html, body {
+    scroll-behavior: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  section {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 500px;
+    will-change: transform;
+  }
+
+  /* Disable expensive effects */
+  .grid-background {
+    background-image: none !important;
+  }
+}
+
+/* HUD Design Elements */
+.hud-bracket {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-color: rgba(0, 240, 255, 0.4);
+  pointer-events: none;
+}
+.hud-bracket-tl { top: 0; left: 0; border-top-width: 2px; border-left-width: 2px; }
+.hud-bracket-tr { top: 0; right: 0; border-top-width: 2px; border-right-width: 2px; }
+.hud-bracket-bl { bottom: 0; left: 0; border-bottom-width: 2px; border-left-width: 2px; }
+.hud-bracket-br { bottom: 0; right: 0; border-bottom-width: 2px; border-right-width: 2px; }
+
+.glass-premium {
+  background: rgba(5, 5, 8, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.02);
+}
+
+.text-glow-cyan {
+  text-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.scanline-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent, rgba(0, 240, 255, 0.05), transparent);
+  height: 100%;
+  width: 100%;
+  animation: scanline 8s linear infinite;
+  pointer-events: none;
+  z-index: 98;
+}
+
+/* Fix broken noise asset with CSS noise fallback */
+.noise-fallback {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.05;
+}
+
+/* Lenis Scroll Tweaks */
+html.lenis {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Custom UI Elements */
+.scanline {
+  width: 100%;
+  height: 100px;
+  z-index: 10;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 240, 255, 0.05) 50%, rgba(0, 0, 0, 0) 100%);
+  opacity: 0.1;
+  position: absolute;
+  bottom: 100%;
+  animation: scanline 6s linear infinite;
+}
+
+@keyframes scanline {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(100vh); }
+}
+
+.grid-background {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+}

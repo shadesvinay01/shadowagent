@@ -1,0 +1,13 @@
+{
+  "name": "shadowagent-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:website": "npm run dev -w website",
+    "dev:desktop": "npm run tauri dev -w desktop",
+    "build:website": "npm run build -w website",
+    "build:desktop": "npm run tauri build -w desktop"
+  }
+}

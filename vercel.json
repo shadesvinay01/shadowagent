@@ -1,0 +1,5 @@
+{
+  "buildCommand": "npm run build --workspace=website",
+  "installCommand": "npm install --workspace=website --legacy-peer-deps",
+  "framework": "nextjs"
+}

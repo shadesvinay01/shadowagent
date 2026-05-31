@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShadowAgent — Investor Pitch Deck 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#050508;font-family:'Exo 2',sans-serif;color:#e8e6f0;overflow:hidden;height:100vh;width:100vw}
+  #deck{width:100%;height:calc(100vh - 56px);overflow:hidden;position:relative}
+  .slide{display:none;width:100%;height:100%;padding:48px 56px;flex-direction:column;justify-content:flex-start;overflow-y:auto;overflow-x:hidden}
+  .slide.active{display:flex}
+  .slide::-webkit-scrollbar{width:4px}.slide::-webkit-scrollbar-track{background:#0d0d18}.slide::-webkit-scrollbar-thumb{background:#2a2a50;border-radius:2px}
+  .tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:16px}
+  .h1{font-size:54px;font-weight:800;line-height:1.08;letter-spacing:-1px}
+  .h2{font-size:30px;font-weight:700;line-height:1.2}
+  .h3{font-size:17px;font-weight:600}
+  .body{font-size:14px;line-height:1.7}
+  .mono{font-family:'JetBrains Mono',monospace}
+  .pill{display:inline-block;padding:3px 10px;border-radius:3px;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+  .divider{height:1px;background:#1e1e30;margin:20px 0}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+  .grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
+  .grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .card{background:#0e0e1a;border:1px solid #1e1e32;border-radius:6px;padding:18px}
+  .metric{background:#0a0a16;border:1px solid #181828;border-radius:6px;padding:14px}
+  .bar-track{background:#1a1a2a;border-radius:2px;height:8px;overflow:hidden}
+  .bar-fill{height:8px;border-radius:2px}
+  table.pt{width:100%;border-collapse:collapse;font-size:11px}
+  table.pt th{background:#0d0d1a;color:#505070;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;padding:9px 11px;text-align:left;border-bottom:1px solid #1e1e30;white-space:nowrap}
+  table.pt td{padding:9px 11px;border-bottom:1px solid #14141e;color:#b0b0c8;font-size:10.5px;white-space:nowrap}
+  table.pt tr:last-child td{border-bottom:none}
+  table.pt tr:hover td{background:#0d0d18}
+  .comp-table{width:100%;border-collapse:collapse;font-size:11px}
+  .comp-table th{background:#0e0e1a;color:#505070;font-family:'JetBrains Mono',monospace;font-size:9px;padding:9px 14px;text-align:center;border-bottom:1px solid #1e1e30}
+  .comp-table th:first-child{text-align:left}
+  .comp-table td{padding:9px 14px;border-bottom:1px solid #131320;text-align:center;font-size:11px}
+  .comp-table td:first-child{text-align:left;color:#b0b0c8}
+  .comp-table tr:hover td{background:#0d0d18}
+  #nav{height:56px;background:#07070f;border-top:1px solid #181828;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:fixed;bottom:0;left:0;right:0;z-index:100}
+  .nav-btn{background:transparent;border:1px solid #252540;color:#505080;font-family:'JetBrains Mono',monospace;font-size:10px;padding:6px 16px;cursor:pointer;border-radius:3px;transition:all .15s}
+  .nav-btn:hover{border-color:#7f5af0;color:#7f5af0}
+  .dot{width:6px;height:6px;border-radius:50%;cursor:pointer;background:#1e1e30;transition:background .2s}
+  .dot.on{background:#7f5af0}
+  #slide-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:#303055}
+  #key-hint{font-family:'JetBrains Mono',monospace;font-size:9px;color:#252540;position:fixed;bottom:20px;right:24px}
+</style>
+</head>
+<body>
+
+<div id="deck">
+
+<!-- S1: COVER -->
+<div class="slide active" id="s1">
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:800px">
+    <span class="tag" style="color:#303060">// THE SOVEREIGNTY STACK · INVESTOR DECK · 2026</span>
+    <div class="h1" style="color:#f0eeff;margin-bottom:6px">SHADOW<span style="color:#7f5af0">AGENT</span></div>
+    <div style="font-size:22px;color:#404070;font-style:italic;margin-bottom:36px;font-weight:300">Autonomous AI. Deeply Local.</div>
+    <div class="divider"></div>
+    <div class="body" style="color:#8080a0;max-width:600px;margin:28px 0 32px">
+      The world's first <strong style="color:#f0eeff">100% on-device AI automation platform</strong> — orchestrating WhatsApp, Email, Slack and Discord with <strong style="color:#7f5af0">zero data egress</strong>, zero cloud dependency, and a business model that scales to $68M ARR.
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <span class="pill" style="background:#130e28;color:#7f5af0;border:1px solid #3d2490">Privacy-First</span>
+      <span class="pill" style="background:#081a10;color:#2cb67d;border:1px solid #145030">100% Local</span>
+      <span class="pill" style="background:#1a1208;color:#f0c040;border:1px solid #705020">Open Model Support</span>
+      <span class="pill" style="background:#1a0808;color:#e06060;border:1px solid #803030">Zero Data Leakage</span>
+      <span class="pill" style="background:#0a1020;color:#4090d0;border:1px solid #204060">GDPR Native</span>
+    </div>
+    <div style="margin-top:48px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:640px">
+      <div style="text-align:center"><div style="font-size:28px;font-weight:800;color:#7f5af0">0</div><div class="mono" style="color:#303060;font-size:9px;letter-spacing:1px;margin-top:2px">BYTES TO CLOUD</div></div>
+      <div style="text-align:center"><div style="font-size:28px;font-weight:800;color:#2cb67d">100%</div><div class="mono" style="color:#303060;font-size:9px;letter-spacing:1px;margin-top:2px">LOCAL PROCESSING</div></div>
+      <div style="text-align:center"><div style="font-size:28px;font-weight:800;color:#f0c040">&lt;100ms</div><div class="mono" style="color:#303060;font-size:9px;letter-spacing:1px;margin-top:2px">AVG RESPONSE</div></div>
+      <div style="text-align:center"><div style="font-size:28px;font-weight:800;color:#e06060">$68M</div><div class="mono" style="color:#303060;font-size:9px;letter-spacing:1px;margin-top:2px">Y5 ARR TARGET</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- S2: PROBLEM -->
+<div class="slide" id="s2">
+  <span class="tag" style="color:#c04040">// 01 — THE PROBLEM</span>
+  <div class="h2" style="color:#f0eeff;margin-bottom:6px">Every AI Assistant Is Selling Your Life.</div>
+  <div class="body" style="color:#606080;margin-bottom:28px">The surveillance economy has weaponized AI productivity. Every chat, every email draft, every sensitive doc — trainable data for Big Tech.</div>
+  <div class="grid2" style="gap:20px;margin-bottom:20px">
+    <div class="card" style="border-left:3px solid #c03030">
+      <div class="mono" style="color:#804040;font-size:9px;margin-bottom:10px">PAIN POINT 01 / DATA SOVEREIGNTY CRISIS</div>
+      <div class="h3" style="color:#f0eeff;margin-bottom:8px">Your Privacy Is the Product</div>
+      <div class="body" style="color:#707090;font-size:13px">ChatGPT, Gemini, Copilot — every cloud AI routes your private communications through external servers for training. Business emails. Medical notes. Financial strategies. All exposed.</div>
+    </div>
+    <div class="card" style="border-left:3px solid #d08020">
+      <div class="mono" style="color:#806030;font-size:9px;margin-bottom:10px">PAIN POINT 02 / WORKFLOW FRAGMENTATION</div>
+      <div class="h3" style="color:#f0eeff;margin-bottom:8px">The App-Switching Tax</div>
+      <div class="body" style="color:#707090;font-size:13px">Knowledge workers switch apps 400+ times per day. WhatsApp, email, Slack, Discord — siloed, unautomated, costing 3.1 hours daily. That's $28,000/year per employee in lost productivity.</div>
+    </div>
+    <div class="card" style="border-left:3px solid #7f5af0">
+      <div class="mono" style="color:#504090;font-size:9px;margin-bottom:10px">PAIN POINT 03 / REGULATORY EXPOSURE</div>
+      <div class="h3" style="color:#f0eeff;margin-bottom:8px">Cloud AI = Legal Liability</div>
+      <div class="body" style="color:#707090;font-size:13px">GDPR (EU), EU AI Act, DPDP (India), CCPA (US) — enforcement is accelerating. GDPR fines hit €4.2B in 2024. Enterprises using cloud AI face existential compliance risk.</div>
+    </div>
+    <div class="card" style="border-left:3px solid #2cb67d">
+      <div class="mono" style="color:#206040;font-size:9px;margin-bottom:10px">PAIN POINT 04 / SUBSCRIPTION FATIGUE</div>
+      <div class="h3" style="color:#f0eeff;margin-bottom:8px">Pay More, Control Less</div>
+      <div class="body" style="color:#707090;font-size:13px">Average professional pays $400+/yr for AI tools that still require cloud API keys, per-seat licensing, and data agreements — with zero data sovereignty in return.</div>
+    </div>
+  </div>
+  <div style="background:#100808;border:1px solid #2a1010;border-radius:6px;padding:16px 20px;display:flex;align-items:flex-start;gap:14px">
+    <div style="font-size:22px;color:#c04040;margin-top:2px">⚠</div>
+    <div class="body" style="color:#a08080;font-size:13px"><strong style="color:#f0eeff">82% of enterprise CISOs</strong> have restricted or banned cloud AI tools due to data security concerns (Gartner, 2025). The market is screaming for a privacy-native solution — and no one has built it. Until now.</div>
+  </div>
+</div>
+
+<!-- S3: SOLUTION -->
+<div class="slide" id="s3">
+  <span class="tag" style="color:#2cb67d">// 02 — THE SOLUTION</span>
+  <div class="h2" style="color:#f0eeff;margin-bottom:6px">ShadowAgent: The AI That Lives On Your Machine.</div>
+  <div class="body" style="color:#606080;margin-bottom:28px">Zero cloud. Zero egress. Zero compromise. Your digital life, automated on your terms — with or without an internet connection.</div>
+  <div class="grid4" style="margin-bottom:24px">
+    <div class="metric" style="text-align:center;padding:20px 12px">
+      <div style="font-size:14px;margin-bottom:8px">💬</div>
+      <div class="mono" style="color:#7f5af0;font-size:9px;margin-bottom:6px">WHATSAPP</div>
+      <div class="body" style="color:#707090;font-size:11px">Read, summarize & automate outreach locally via Baileys bridge</div>
+    </div>
+    <div class="metric" style="text-align:center;padding:20px 12px">
+      <div style="font-size:14px;margin-bottom:8px">📧</div>
+      <div class="mono" style="color:#7f5af0;font-size:9px;margin-bottom:6px">EMAIL</div>
+      <div class="body" style="color:#707090;font-size:11px">Draft, organize & reply. Emails never touch an AI server via local IMAP</div>
+    </div>
+    <div class="metric" style="text-align:center;padding:20px 12px">
+      <div style="font-size:14px;margin-bottom:8px">⚡</div>
+      <div class="mono" style="color:#7f5af0;font-size:9px;margin-bottom:6px">SLACK</div>
+      <div class="body" style="color:#707090;font-size:11px">Smart thread summaries, automated responses, channel monitoring</div>
+    </div>
+    <div class="metric" style="text-align:center;padding:20px 12px">
+      <div style="font-size:14px;margin-bottom:8px">🎮</div>
+      <div class="mono" style="color:#7f5af0;font-size:9px;margin-bottom:6px">DISCORD</div>
+      <div class="body" style="color:#707090;font-size:11px">Community & DM automation running fully locally on your hardware</div>
+    </div>
+  </div>
+  <div class="grid3" style="margin-bottom:24px">
+    <div class="card">
+      <div class="mono" style="color:#404070;font-size:9px;margin-bottom:10px">SHADOW ENGINE</div>
+      <div class="h3" style="color:#f0eeff;font-size:14px;margin-bottom:6px">Quantized Local LLMs</div>
+      <div class="body" style="color:#606080;font-size:12px">GGUF / ExLlamaV2 support. Native acceleration for MLX (Apple Silicon), CUDA (NVIDIA), and CPU. Supports Ollama, Llama 3.3, Phi-4, Mistral, and all leading open models.</div>
+    </div>
+    <div class="card">
+      <div class="mono" style="color:#404070;font-size:9px;margin-bottom:10px">SOVEREIGN RAG</div>
+      <div class="h3" style="color:#f0eeff;font-size:14px;margin-bottom:6px">Local Vector Search</div>
+      <div class="body" style="color:#606080;font-size:12px">Search and index private archives locally with sub-100ms vector lookups. All embeddings stored in AES-256 encrypted local vault. Your data never leaves the machine.</div>
+    </div>
+    <div class="card">
+      <div class="mono" style="color:#404070;font-size:9px;margin-bottom:10px">USER PROFILE ENGINE</div>
+      <div class="h3" style="color:#f0eeff;font-size:14px;margin-bottom:6px">Adaptive Personas</div>
+      <div class="body" style="color:#606080;font-size:12px">AI learns your communication style, tone preferences, and context locally. Personalised automation that gets smarter over time — without ever uploading your profile data.</div>
+    </div>
+  </div>
+  <div style="background:#080c10;border:1px solid #141e28;border-radius:6px;padding:14px 20px;display:flex;gap:24px;flex-wrap:wrap;align-items:center">
+    <div class="body" style="color:#405060;font-size:11px">✓ AES-256 encrypted local keychain</div>
+    <div class="body" style="color:#405060;font-size:11px">✓ Annual-only license ping — otherwise fully offline</div>
+    <div class="body" style="color:#405060;font-size:11px">✓ Windows · macOS · Linux</div>
+    <div class="body" style="color:#405060;font-size:11px">✓ Own API keys or Ollama → completely free</div>
+    <div class="body" style="color:#405060;font-size:11px">✓ Setup in under 3 minutes</div>
+  </div>
+</div>
+
+<!-- S4: MARKET OPPORTUNITY -->
+<div class="slide" id="s4">
+  <span class="tag" style="color:#7f5af0">// 03 — MARKET OPPORTUNITY</span>
+  <div class="h2" style="color:#f0eeff;margin-bottom:6px">A $47B Market at the Inflection Point.</div>
+  <div class="body" style="color:#606080;margin-bottom:28px">Privacy-first AI is not a niche — it's the next regulatory mandate. We are the infrastructure layer for the sovereign computing era.</div>
+  <div class="grid3" style="margin-bottom:28px">
+    <div style="background:#0c0a1e;border:1px solid #281860;border-radius:8px;padding:24px">
+      <div class="mono" style="color:#302060;font-size:9px;margin-bottom:14px;letter-spacing:2px">TOTAL ADDRESSABLE MARKET</div>
+      <div style="font-size:44px;font-weight:800;color:#7f5af0">$47B</div>
+      <div class="body" style="color:#505080;font-size:12px;margin-top:8px">Global AI productivity software (2028 projection, IDC)</div>
+    </div>
+    <div style="background:#081410;border:1px solid #183020;border-radius:8px;padding:24px">
+      <div class="mono" style="color:#183020;font-size:9px;margin-bottom:14px;letter-spacing:2px">SERVICEABLE ADDRESSABLE MARKET</div>
+      <div style="font-size:44px;font-weight:800;color:#2cb67d">$4.2B</div>
+      <div class="body" style="color:#505080;font-size:12px;margin-top:8px">Privacy-first AI automation for prosumers + SMBs globally</div>
+    </div>
+    <div style="background:#14100a;border:1px solid #402c0a;border-radius:8px;padding:24px">
+      <div class="mono" style="color:#402c0a;font-size:9px;margin-bottom:14px;letter-spacing:2px">SERVICEABLE OBTAINABLE MARKET</div>
+      <div style="font-size:44px;font-weight:800;color:#f0c040">$72M</div>
+      <div class="body" style="color:#505080;font-size:12px;margin-top:8px">150K paid users × $480 ARPU — achievable in 36 months</div>
+    </div>
+  </div>
+  <div class="grid2" style="gap:24px">
+    <div>
+      <div class="mono" style="color:#303060;font-size:10px;margin-bottom:14px">REGULATORY TAILWINDS — FREE MARKETING</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="body" style="color:#8080a0;font-size:12px">📜 EU AI Act (2026) mandates on-premise processing for high-risk AI in regulated sectors</div>
+        <div class="body" style="color:#8080a0;font-size:12px">⚖️ GDPR fines hit record €4.2B in 2024 — cloud AI tools are the primary liability</div>
+        <div class="body" style="color:#8080a0;font-size:12px">🇮🇳 India DPDP Act enforcement begins 2025 — 1.4B population mandated to local processing</div>
+        <div class="body" style="color:#8080a0;font-size:12px">💻 Local LLM performance 10x in 18 months — Llama 3.3, Phi-4, DeepSeek R2 all run on-device</div>
+        <div class="body" style="color:#8080a0;font-size:12px">🏢 82% enterprise CISOs restricting cloud AI — supply creates forced demand</div>
+      </div>
+    </div>
+    <div>
+      <div class="mono" style="color:#303060;font-size:10px;margin-bottom:14px">TARGET SEGMENTS (RANKED BY ACQUISITION EASE)</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="body" style="color:#8080a0;font-size:12px">🧑‍💻 <strong style="color:#d0d0e0">Privacy-conscious developers</strong> — 28M globally, high conversion, organic evangelists</div>
+        <div class="body" style="color:#8080a0;font-size:12px">🧑‍💼 <strong style="color:#d0d0e0">Prosumers & freelancers</strong> — 420M globally, high WhatsApp+email usage, price-sensitive</div>
+        <div class="body" style="color:#8080a0;font-size:12px">🏥 <strong style="color:#d0d0e0">SMBs in regulated industries</strong> — legal, health, finance — compliance drives adoption</div>
+        <div class="body" style="color:#8080a0;font-size:12px">🌏 <strong style="color:#d0d0e0">India & LATAM</strong> — highest WhatsApp density globally, Tier B pricing maximises volume</div>
+        <div class="body" style="color:#8080a0;font-size:12px">🏢 <strong style="color:#d0d0e0">Enterprise (air-gap)</strong> — defence, finance, healthcare — highest ARPU, referral flywheel</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S5: BUSINESS MODEL -->
+<div class="slide" id="s5">
+  <span class="tag" style="color:#f0c040">// 04 — BUSINESS MODEL</span>
+  <div class="h2" style="color:#f0eeff;margin-bottom:6px">Three Revenue Engines. Dual Monetization Paths.</div>
+  <div class="body" style="color:#606080;margin-bottom:28px">Free tier fuels virality and zero-cost acquisition. Paid tiers monetise through feature premiums (BYOK) and AI-as-a-Service markup (managed API). Enterprise creates ARPU expansion.</div>
+  <div class="grid3" style="margin-bottom:24px">
+    <div class="card" style="border-top:3px solid #4a40c0">
+      <div class="mono" style="color:#3030a0;font-size:9px;margin-bottom:12px">REVENUE STREAM 01 — BYOK PRO LICENSE</div>
+      <div class="h3" style="color:#f0eeff;font-size:14px;margin-bottom:8px">Bring-Your-Own-Key Premium</div>
+      <div class="body" style="color:#606080;font-size:12px;margin-bottom:14px">User provides their own API keys (Anthropic, OpenAI, Google). We charge for premium UI, advanced workflow depth, profile automation, and priority support.</div>
+      <div style="font-size:28px;font-weight:800;color:#7f5af0">$9–$12<span style="font-size:13px;color:#404070">/mo</span></div>
+      <div class="mono" style="color:#303060;font-size:9px;margin-top:4px">~96% GROSS MARGIN · NO API COST</div>
+    </div>
+    <div class="card" style="border-top:3px solid #2cb67d">
+      <div class="mono" style="color:#156030;font-size:9px;margin-bottom:12px">REVENUE STREAM 02 — SHADOW AI MANAGED</div>
+      <div class="h3" style="color:#f0eeff;font-size:14px;margin-bottom:8px">AI-as-a-Service Markup</div>
+      <div class="body" style="color:#606080;font-size:12px;margin-bottom:14px">We provision Claude, Gemini, GPT-4o. API cost markup covers operations + EBITDA. Token bundles scale revenue non-linearly. No key management for the user.</div>
+      <div style="font-size:28px;font-weight:800;color:#2cb67d">$25–$149<span style="font-size:13px;color:#404070">/mo</span></div>
+      <div class="mono" style="color:#303060;font-size:9px;margin-top:4px">~65–80% GROSS MARGIN · RECURRING USAGE</div>
+    </div>
+    <div class="card" style="border-top:3px solid #d08020">
+      <div class="mono" style="color:#705010;font-size:9px;margin-bottom:12px">REVENUE STREAM 03 — ENTERPRISE SEATS</div>
+      <div class="h3" style="color:#f0eeff;font-size:14px;margin-bottom:8px">Volume Seat Licensing</div>
+      <div class="body" style="color:#606080;font-size:12px;margin-bottom:14px">Volume seat licensing for regulated industries. Custom deployment, SLA guarantees, compliance audit reports, air-gap support, and dedicated customer success.</div>
+      <div style="font-size:28px;font-weight:800;color:#f0a020">$299+<span style="font-size:13px;color:#404070">/mo</span></div>
+      <div class="mono" style="color:#303060;font-size:9px;margin-top:4px">~82% GROSS MARGIN · EXPANSION REVENUE</div>
+    </div>
+  </div>
+  <div class="grid4">
+    <div class="metric" style="text-align:center">
+      <div style="font-size:22px;font-weight:800;color:#7f5af0">$0</div>
+      <div class="mono" style="color:#303060;font-size:9px;margin-top:4px">Organic CAC (PLG)</div>
+    </div>
+    <div class="metric" style="text-align:center">
+      <div style="font-size:22px;font-weight:800;color:#2cb67d">48:1</div>
+      <div class="mono" style="color:#303060;font-size:9px;margin-top:4px">LTV:CAC Target</div>
+    </div>
+    <div class="metric" style="text-align:center">
+      <div style="font-size:22px;font-weight:800;color:#f0c040">8mo</div>
+      <div class="mono" style="color:#303060;font-size:9px;margin-top:4px">CAC Payback Period</div>
+    </div>
+    <div class="metric" style="text-align:center">
+      <div style="font-size:22px;font-weight:800;color:#e06060">20%</div>
+      <div class="mono" style="color:#303060;font-size:9px;margin-top:4px">Target EBITDA</div>
+    </div>
+  </div>
+</div>
+
+<!-- S6: PRICING TIERS -->
+<div class="slide" id="s6">
+  <span class="tag" style="color:#7f5af0">// 05 — PRICING ARCHITECTURE</span>
+  <div class="h2" style="color:#f0eeff;margin-bottom:6px">Five Tiers. Two Paths. 5-Day Trial on All Paid Plans.</div>
+  <div class="body" style="color:#606080;font-size:13px;margin-bottom:22px">Free tier is permanently free. BYOK Pro = own API keys + premium features. Shadow AI tiers = we manage the API. Enterprise = custom deployment.</div>
+  <div class="grid5" style="margin-bottom:16px">
+    <div class="card" style="padding:16px 12px">
+      <div class="mono" style="color:#303060;font-size:8px;margin-bottom:8px">TIER 0</div>
+      <div class="h3" style="color:#f0eeff;font-size:13px;margin-bottom:6px">Shadow Free</div>
+      <div style="font-size:26px;font-weight:800;color:#404070">$0</div>
+      <div class="mono" style="color:#303060;font-size:8px">FOREVER FREE</div>
+      <div class="divider" style="margin:10px 0"></div>
+      <div style="font-size:10px;color:#505080;display:flex;flex-direction:column;gap:4px">
+        <div>✓ Own API or Ollama</div>
+        <div>✓ All 4 integrations</div>
+        <div>✓ Community support</div>
+        <div style="color:#303050">✗ Premium workflows</div>
+        <div style="color:#303050">✗ Priority support</div>
+      </div>
+    </div>
+    <div class="card" style="padding:16px 12px;border-color:#2a2060">
+      <div class="mono" style="color:#4030a0;font-size:8px;margin-bottom:8px">TIER 1 · BYOK</div>
+      <div class="h3" style="color:#f0eeff;font-size:13px;margin-bottom:6px">BYOK Pro</div>
+      <div style="font-size:26px;font-weight:800;color:#7f5af0">$9<span style="font-size:12px">/mo</span></div>
+      <div class="mono" style="color:#303060;font-size:8px">OWN API KEYS</div>
+      <div class="divider" style="margin:10px 0"></div>
+      <div style="font-size:10px;color:#8080c0;display:flex;flex-direction:column;gap:4px">
+        <div>✓ All Free features</div>
+        <div>✓ Advanced workflows</div>
+        <div>✓ Profile automation</div>
+        <div>✓ Priority support</div>
+        <div>✓ Early access</div>
+      </div>
+    </div>
+    <div class="card" style="padding:16px 12px;border-color:#1a4030">
+      <div class="mono" style="color:#1a6040;font-size:8px;margin-bottom:8px">TIER 2 · MANAGED AI</div>
+      <div class="h3" style="color:#f0eeff;font-size:13px;margin-bottom:6px">Shadow AI Core</div>
+      <div style="font-size:26px;font-weight:800;color:#2cb67d">$25<span style="font-size:12px">/mo</span></div>
+      <div class="mono" style="color:#303060;font-size:8px">500K TOKENS INCL.</div>
+      <div class="divider" style="margin:10px 0"></div>
+      <div style="font-size:10px;color:#60c090;display:flex;flex-direction:column;gap:4px">
+        <div>✓ All BYOK features</div>
+        <div>✓ Managed API (no key)</div>
+        <div>✓ Haiku/Flash quality</div>
+        <div>✓ Usage dashboard</div>
+        <div>✓ Token rollover</div>
+      </div>
+    </div>
+    <div class="card" style="padding:16px 12px;border:2px solid #4a30b0">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div class="mono" style="color:#6040c0;font-size:8px">TIER 3 · PREMIUM</div>
+        <span style="background:#1a1040;color:#9080e0;font-size:8px;padding:2px 6px;border-radius:2px;font-family:'JetBrains Mono'">POPULAR</span>
+      </div>
+      <div class="h3" style="color:#f0eeff;font-size:13px;margin-bottom:6px">Shadow AI Pro</div>
+      <div style="font-size:26px;font-weight:800;color:#a080ff">$59<span style="font-size:12px">/mo</span></div>
+      <div class="mono" style="color:#303060;font-size:8px">2M TOKENS INCL.</div>
+      <div class="divider" style="margin:10px 0"></div>
+      <div style="font-size:10px;color:#b0a0f0;display:flex;flex-direction:column;gap:4px">
+        <div>✓ All Core features</div>
+        <div>✓ Sonnet / Pro / GPT-4o</div>
+        <div>✓ Multi-model routing</div>
+        <div>✓ Custom personas</div>
+        <div>✓ API analytics</div>
+      </div>
+    </div>
+    <div class="card" style="padding:16px 12px;border-color:#402010">
+      <div class="mono" style="color:#804020;font-size:8px;margin-bottom:8px">TIER 4 · ENTERPRISE</div>
+      <div class="h3" style="color:#f0eeff;font-size:13px;margin-bottom:6px">Shadow Elite</div>
+      <div style="font-size:26px;font-weight:800;color:#f0a020">$299<span style="font-size:12px">/mo</span></div>
+      <div class="mono" style="color:#303060;font-size:8px">UP TO 10 SEATS</div>
+      <div class="divider" style="margin:10px 0"></div>
+      <div style="font-size:10px;color:#c0a060;display:flex;flex-direction:column;gap:4px">
+        <div>✓ Opus / Ultra models</div>
+        <div>✓ Air-gap deployment</div>
+        <div>✓ SLA + compliance</div>
+        <div>✓ Custom fine-tune</div>
+        <div>✓ Dedicated CSM</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#0a0a14;border:1px solid #181828;border-radius:6px;padding:12px 18px;display:flex;gap:24px;flex-wrap:wrap;align-items:center">
+    <div class="body" style="color:#404070;font-size:11px"><span style="color:#7f5af0">▸</span> Monthly billing: full price</div>
+    <div class="body" style="color:#404070;font-size:11px"><span style="color:#2cb67d">▸</span> Quarterly: save ~14%</div>
+    <div class="body" style="color:#404070;font-size:11px"><span style="color:#f0c040">▸</span> Annual: save up to 35%</div>
+    <div class="body" style="color:#404070;font-size:11px"><span style="color:#e06060">▸</span> 5-day free trial: all paid plans, no credit card required for BYOK tiers</div>
+    <div class="body" style="color:#404070;font-size:11px"><span style="color:#4090d0">▸</span> Overage tokens: $2/M Haiku · $8/M Sonnet · $20/M Opus tier</div>
+  </div>
+</div>
+
+<!-- S7: COUNTRY PRICING -->
+<div class="slide" id="s7">
+  <span class="tag" style="color:#f0c040">// 06 — GLOBAL PRICING MATRIX</span>
+  <div class="h2" style="color:#f0eeff;margin-bottom:6px">PPP-Adjusted Pricing. Maximum Global Conversion.</div>
+  <div class="body" style="color:#606080;font-size:13px;margin-bottom:20px">Purchasing Power Parity tiers ensure conversion across 180+ markets. Same EBITDA margins globally — fair access, not charity. Geo-IP detected automatically at checkout.</div>
+  <table class="pt" style="margin-bottom:14px">
+    <thead>
+      <tr>
+        <th>PLAN</th><th>GEO TIER</th><th>REGIONS</th><th>5-DAY TRIAL</th><th>MONTHLY</th><th>QUARTERLY (SAVE)</th><th>ANNUAL (SAVE)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td style="color:#404060">Shadow Free</td><td><span class="pill" style="background:#0e0e1a;color:#404060;border:1px solid #202030;font-size:8px">ALL</span></td><td style="color:#404060">Worldwide</td><td style="color:#2cb67d">Free forever</td><td style="color:#404060">$0</td><td style="color:#404060">$0</td><td style="color:#404060">$0</td></tr>
+      <tr style="border-top:1px solid #1a1a28"><td style="color:#a0a0c0">BYOK Pro</td><td><span class="pill" style="background:#120e28;color:#7f5af0;border:1px solid #3d2490;font-size:8px">TIER A</span></td><td style="color:#505080">US · UK · EU-27 · AU · CA · JP · SG · CH · NO</td><td style="color:#2cb67d">Free, no card</td><td style="color:#d0d0f0">$12</td><td style="color:#d0d0f0">$30 <span style="color:#2cb67d">(save 17%)</span></td><td style="color:#d0d0f0">$99 <span style="color:#2cb67d">(save 31%)</span></td></tr>
+      <tr><td style="color:#a0a0c0">BYOK Pro</td><td><span class="pill" style="background:#0e1420;color:#4090c0;border:1px solid #204860;font-size:8px">TIER B</span></td><td style="color:#505080">IN · BR · MX · ID · TR · PL · CO · SEA · EEU</td><td style="color:#2cb67d">Free, no card</td><td style="color:#d0d0f0">$6</td><td style="color:#d0d0f0">$15 <span style="color:#2cb67d">(save 17%)</span></td><td style="color:#d0d0f0">$49 <span style="color:#2cb67d">(save 32%)</span></td></tr>
+      <tr><td style="color:#a0a0c0">BYOK Pro</td><td><span class="pill" style="background:#0e1810;color:#40a060;border:1px solid #1e4028;font-size:8px">TIER C</span></td><td style="color:#505080">AF · PK · BD · NG · VN · remaining</td><td style="color:#2cb67d">Free, no card</td><td style="color:#d0d0f0">$3</td><td style="color:#d0d0f0">$7 <span style="color:#2cb67d">(save 22%)</span></td><td style="color:#d0d0f0">$25 <span style="color:#2cb67d">(save 31%)</span></td></tr>
+      <tr style="border-top:1px solid #1a2028"><td style="color:#80c0a0">Shadow AI Core</td><td><span class="pill" style="background:#120e28;color:#7f5af0;border:1px solid #3d2490;font-size:8px">TIER A</span></td><td style="color:#505080">US · UK · EU-27 · AU · CA · JP · SG · CH · NO</td><td style="color:#2cb67d">Free 5 days</td><td style="color:#b0f0d8">$25</td><td style="color:#b0f0d8">$62 <span style="color:#2cb67d">(save 17%)</span></td><td style="color:#b0f0d8">$229 <span style="color:#2cb67d">(save 24%)</span></td></tr>
+      <tr><td style="color:#80c0a0">Shadow AI Core</td><td><span class="pill" style="background:#0e1420;color:#4090c0;border:1px solid #204860;font-size:8px">TIER B</span></td><td style="color:#505080">IN · BR · MX · ID · TR · PL · CO · SEA · EEU</td><td style="color:#2cb67d">Free 5 days</td><td style="color:#b0f0d8">$12</td><td style="color:#b0f0d8">$30 <span style="color:#2cb67d">(save 17%)</span></td><td style="color:#b0f0d8">$109 <span style="color:#2cb67d">(save 24%)</span></td></tr>
+      <tr><td style="color:#80c0a0">Shadow AI Core</td><td><span class="pill" style="background:#0e1810;color:#40a060;border:1px solid #1e4028;font-size:8px">TIER C</span></td><td style="color:#505080">AF · PK · BD · NG · VN · remaining</td><td style="color:#2cb67d">Free 5 days</td><td style="color:#b0f0d8">$6</td><td style="color:#b0f0d8">$15 <span style="color:#2cb67d">(save 17%)</span></td><td style="color:#b0f0d8">$55 <span style="color:#2cb67d">(save 24%)</span></td></tr>
+      <tr style="border-top:1px solid #20182a"><td style="color:#b0a0f0">Shadow AI Pro</td><td><span class="pill" style="background:#120e28;color:#7f5af0;border:1px solid #3d2490;font-size:8px">TIER A</span></td><td style="color:#505080">US · UK · EU-27 · AU · CA · JP · SG · CH · NO</td><td style="color:#2cb67d">Free 5 days</td><td style="color:#d8c8ff">$59</td><td style="color:#d8c8ff">$148 <span style="color:#2cb67d">(save 17%)</span></td><td style="color:#d8c8ff">$549 <span style="color:#2cb67d">(save 22%)</span></td></tr>
+      <tr><td style="color:#b0a0f0">Shadow AI Pro</td><td><span class="pill" style="background:#0e1420;color:#4090c0;border:1px solid #204860;font-size:8px">TIER B</span></td><td style="color:#505080">IN · BR · MX · ID · TR · PL · CO · SEA · EEU</td><td style="color:#2cb67d">Free 5 days</td><td style="color:#d8c8ff">$29</td><td style="color:#d8c8ff">$73 <span style="color:#2cb67d">(save 16%)</span></td><td style="color:#d8c8ff">$269 <span style="color:#2cb67d">(save 23%)</span></td></tr>
+      <tr><td style="color:#b0a0f0">Shadow AI Pro</td><td><span class="pill" style="background:#0e1810;color:#40a060;border:1px solid #1e4028;font-size:8px">TIER C</span></td><td style="color:#505080">AF · PK · BD · NG · VN · remaining</td><td style="color:#2cb67d">Free 5 days</td><td style="color:#d8c8ff">$12</td><td style="color:#d8c8ff">$30 <span style="color:#2cb67d">(save 17%)</span></td><td style="color:#d8c8ff">$109 <span style="color:#2cb67d">(save 24%)</span></td></tr>
+      <tr style="border-top:1px solid #201810"><td style="color:#c0a060">Shadow Elite</td><td><span class="pill" style="background:#1a1006;color:#f0a020;border:1px solid #603010;font-size:8px">TIER A/B</span></td><td style="color:#505080">Global enterprise</td><td style="color:#2cb67d">POC available</td><td style="color:#f0d090">$149 / $79</td><td style="color:#f0d090">$375 / $199</td><td style="color:#f0d090">$1,399 / $749</td></tr>
+      <tr><td style="color:#c0a060">Enterprise</td><td><span class="pill" style="background:#1a1006;color:#f0a020;border:1px solid #603010;font-size:8px">CUSTOM</span></td><td style="color:#505080">Global · 10+ seats</td><td style="color:#2cb67d">POC available</td><td colspan="3" style="color:#a08050">Custom quote — starts $299/mo (10 seats), volume discounts from 25 seats</td></tr>
+    </tbody>
+  </table>
+  <div style="display:flex;gap:20px;flex-wrap:wrap">
+    <div class="body" style="color:#303060;font-size:10px"><span style="color:#7f5af0">■</span> Tier A: ~35 high-income countries · 1.1B population</div>
+    <div class="body" style="color:#303060;font-size:10px"><span style="color:#4090c0">■</span> Tier B: ~45 emerging markets · 3.2B population · India, Brazil, Indonesia, Turkey</div>
+    <div class="body" style="color:#303060;font-size:10px"><span style="color:#40a060">■</span> Tier C: ~100 remaining markets · 2.5B population</div>
+    <div class="body" style="color:#303060;font-size:10px"><span style="color:#e06060">■</span> Geo-IP auto-detection at checkout · Manual override with proof of residency</div>
+  </div>
+</div>
+
+<!-- S8: UNIT ECONOMICS / EBITDA -->
+<div class="slide" id="s8">
+  <span class="tag" style="color:#2cb67d">// 07 — UNIT ECONOMICS</span>
+  <div class="h2" style="color:#f0eeff;margin-bottom:6px">20% EBITDA by Design, Not Luck.</div>
+  <div class="body" style="color:#606080;font-size:13px;margin-bottom:24px">API markup structure + zero on-premise infrastructure = sustainably high margins at every scale. BYOK plans over-earn; AI plans normalize at 20%+ blended.</div>
+  <div class="grid2" style="gap:24px">
+    <div>
+      <div class="mono" style="color:#303060;font-size:10px;margin-bottom:14px">P&amp;L PER USER — SHADOW AI PRO ($59/mo · TIER A)</div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0a0a16;border-radius:4px">
+          <span class="body" style="color:#8080a0;font-size:12px">Monthly Revenue</span>
+          <span class="mono" style="color:#f0eeff;font-size:12px">$59.00</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0e0808;border-radius:4px">
+          <span class="body" style="color:#8080a0;font-size:12px">API Cost COGS (2M tokens blended — Sonnet/Pro mix)</span>
+          <span class="mono" style="color:#e06060;font-size:12px">— $13.00</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0e0808;border-radius:4px">
+          <span class="body" style="color:#8080a0;font-size:12px">Infrastructure (CDN, auth, license validation)</span>
+          <span class="mono" style="color:#e06060;font-size:12px">— $1.50</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:#081408;border-radius:4px;border:1px solid #1a3018">
+          <span class="body" style="color:#90c090;font-size:12px;font-weight:600">Gross Profit</span>
+          <span class="mono" style="color:#2cb67d;font-size:12px">$44.50 &nbsp; 75% GM</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0e0808;border-radius:4px">
+          <span class="body" style="color:#8080a0;font-size:12px">S&amp;M — blended CAC amortised over 48mo LTV</span>
+          <span class="mono" style="color:#e06060;font-size:12px">— $12.00</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0e0808;border-radius:4px">
+          <span class="body" style="color:#8080a0;font-size:12px">R&amp;D — amortised engineering cost per user</span>
+          <span class="mono" style="color:#e06060;font-size:12px">— $8.00</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0e0808;border-radius:4px">
+          <span class="body" style="color:#8080a0;font-size:12px">G&amp;A — operations, legal, finance</span>
+          <span class="mono" style="color:#e06060;font-size:12px">— $6.50</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#0c0a1e;border-radius:4px;border:1px solid #3a2490">
+          <span class="body" style="color:#b0a0f0;font-size:13px;font-weight:700">EBITDA</span>
+          <span class="mono" style="color:#7f5af0;font-size:14px;font-weight:700">$18.00 &nbsp; 30%</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="mono" style="color:#303060;font-size:10px;margin-bottom:14px">MARGIN PROFILE BY TIER (AT SCALE)</div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+            <span class="body" style="color:#7070a0;font-size:11px">BYOK Pro — no API cost</span>
+            <span class="mono" style="color:#7f5af0;font-size:10px">96% GM · 28% EBITDA</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="background:#7f5af0;width:96%"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+            <span class="body" style="color:#7070a0;font-size:11px">Shadow AI Core ($25)</span>
+            <span class="mono" style="color:#2cb67d;font-size:10px">80% GM · 20% EBITDA</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="background:#2cb67d;width:80%"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+            <span class="body" style="color:#7070a0;font-size:11px">Shadow AI Pro ($59)</span>
+            <span class="mono" style="color:#a080ff;font-size:10px">75% GM · 30% EBITDA</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="background:#a080ff;width:75%"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+            <span class="body" style="color:#7070a0;font-size:11px">Enterprise ($299/mo)</span>
+            <span class="mono" style="color:#f0a020;font-size:10px">82% GM · 35% EBITDA</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="background:#f0a020;width:82%"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+            <span class="body" style="color:#f0eeff;font-size:11px;font-weight:600">Blended Portfolio Target</span>
+            <span class="mono" style="color:#f0eeff;font-size:10px;font-weight:600">78% GM · 20% EBITDA</span>
+          </div>
+          <div class="bar-track" style="height:10px;border:1px solid #3a2490"><div class="bar-fill" style="background:#7f5af0;width:78%;height:10px"></div></div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="grid2" style="gap:10px">
+        <div class="metric" style="text-align:center">
+          <div style="font-size:20px;font-weight:700;color:#7f5af0">$38</div>
+          <div class="mono" style="color:#303060;font-size:9px;margin-top:2px">Blended ARPU/mo</div>
+        </div>
+        <div class="metric" style="text-align:center">
+          <div style="font-size:20px;font-weight:700;color:#2cb67d">$1,824</div>
+          <div class="mono" style="color:#303060;font-size:9px;margin-top:2px">LTV (4yr · 8% churn)</div>
+        </div>
+        <div class="metric" style="text-align:center">
+          <div style="font-size:20px;font-weight:700;color:#f0c040">$38</div>
+          <div class="mono" style="color:#303060;font-size:9px;margin-top:2px">Blended CAC (target)</div>
+        </div>
+        <div class="metric" style="text-align:center">
+          <div style="font-size:20px;font-weight:700;color:#e06060">48:1</div>
+          <div class="mono" style="color:#303060;font-size:9px;margin-top:2px">LTV : CAC Ratio</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S9: FINANCIAL PROJECTIONS -->
+<div class="slide" id="s9">
+  <span class="tag" style="color:#2cb67d">// 08 — FINANCIAL PROJECTIONS</span>
+  <div class="h2" style="color:#f0eeff;margin-bottom:6px">Path to $68M ARR by Year 5.</div>
+  <div class="body" style="color:#606080;font-size:13px;margin-bottom:20px">Conservative case: 8% monthly churn, 15% free-to-paid conversion, $38 blended CAC. Seed funding accelerates to Bull case.</div>
+  <div class="grid5" style="margin-bottom:20px">
+    <div class="metric" style="text-align:center;border:1px solid #1e1e30">
+      <div class="mono" style="color:#303060;font-size:8px;margin-bottom:6px">YEAR 1 · SEED</div>
+      <div style="font-size:20px;font-weight:800;color:#7f5af0">$150K</div>
+      <div class="mono" style="color:#282848;font-size:8px;margin-top:4px">500 paid · Break-even Q4</div>
+    </div>
+    <div class="metric" style="text-align:center;border:1px solid #1e1e30">
+      <div class="mono" style="color:#303060;font-size:8px;margin-bottom:6px">YEAR 2 · PRE-A</div>
+      <div style="font-size:20px;font-weight:800;color:#7f5af0">$1.2M</div>
+      <div class="mono" style="color:#282848;font-size:8px;margin-top:4px">3,500 paid · Seed close</div>
+    </div>
+    <div class="metric" style="text-align:center;border:1px solid #1e2e20">
+      <div class="mono" style="color:#203040;font-size:8px;margin-bottom:6px">YEAR 3 · SERIES A</div>
+      <div style="font-size:20px;font-weight:800;color:#2cb67d">$5.8M</div>
+      <div class="mono" style="color:#282848;font-size:8px;margin-top:4px">15,000 paid · Series A</div>
+    </div>
+    <div class="metric" style="text-align:center;border:1px solid #1e2e20">
+      <div class="mono" style="color:#203040;font-size:8px;margin-bottom:6px">YEAR 4 · SCALE</div>
+      <div style="font-size:20px;font-weight:800;color:#2cb67d">$21M</div>
+      <div class="mono" style="color:#282848;font-size:8px;margin-top:4px">50,000 paid · Series B</div>
+    </div>
+    <div class="metric" style="text-align:center;border:1px solid #2a1860">
+      <div class="mono" style="color:#3030a0;font-size:8px;margin-bottom:6px">YEAR 5 · CATEGORY</div>
+      <div style="font-size:20px;font-weight:800;color:#a080ff">$68M</div>
+      <div class="mono" style="color:#282848;font-size:8px;margin-top:4px">150,000 paid · M&amp;A / IPO</div>
+    </div>
+  </div>
+  <div style="position:relative;height:260px;margin-bottom:16px">
+    <canvas id="revChart" role="img" aria-label="ARR bar chart Year 1-5 growing from $150K to $68M, with EBITDA overlay">ARR: Y1 $150K, Y2 $1.2M, Y3 $5.8M, Y4 $21M, Y5 $68M. EBITDA (20%): Y2 $0.12M, Y3 $1.16M, Y4 $4.2M, Y5 $13.6M</canvas>
+  </div>
+  <div class="grid4">
+    <div class="metric" style="text-align:center">
+      <div style="font-size:18px;font-weight:700;color:#2cb67d">$1.2M</div><div class="mono" style="color:#303060;font-size:9px;margin-top:3px">ARR at Series A</div>
+    </div>
+    <div class="metric" style="text-align:center">
+      <div style="font-size:18px;font-weight:700;color:#7f5af0">8×</div><div class="mono" style="color:#303060;font-size:9px;margin-top:3px">Revenue Multiple (SaaS)</div>
+    </div>
+    <div class="metric" style="text-align:center">
+      <div style="font-size:18px;font-weight:700;color:#f0c040">$544M</div><div class="mono" style="color:#303060;font-size:9px;margin-top:3px">Y5 Exit Valuation</div>
+    </div>
+    <div class="metric" style="text-align:center">
+      <div style="font-size:18px;font-weight:700;color:#e06060">~34×</div><div class="mono" style="color:#303060;font-size:9px;margin-top:3px">Return on Seed Capital</div>
+    </div>
+  </div>
+</div>
+
+<!-- S10: GTM STRATEGY -->
+<div class="slide" id="s10">
+  <span class="tag" style="color:#f0a020">// 09 — GO-TO-MARKET STRATEGY</span>
+  <div class="h2" style="color:#f0eeff;margin-bottom:6px">Product-Led. Community-Amplified. Enterprise-Pulled.</div>
+  <div class="body" style="color:#606080;font-size:13px;margin-bottom:24px">PLG flywheel: free users → evangelists → team advocates → enterprise contracts. Every privacy scandal is free PR.</div>
+  <div class="grid3" style="margin-bottom:20px">
+    <div class="card" style="border-top:3px solid #7f5af0">
+      <div class="mono" style="color:#302070;font-size:9px;margin-bottom:10px">PHASE 01 · M1–M6 · COMMUNITY SEED</div>
+      <div class="h3" style="color:#f0eeff;font-size:14px;margin-bottom:10px">Organic Ignition</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="body" style="color:#7070a0;font-size:11px">▸ Reddit: r/privacy · r/selfhosted · r/LocalLLaMA</div>
+        <div class="body" style="color:#7070a0;font-size:11px">▸ ProductHunt #1 day launch campaign</div>
+        <div class="body" style="color:#7070a0;font-size:11px">▸ HackerNews "Show HN" post</div>
+        <div class="body" style="color:#7070a0;font-size:11px">▸ YouTube SEO: "Replace ChatGPT locally"</div>
+        <div class="body" style="color:#7070a0;font-size:11px">▸ GitHub community edition (OSS goodwill)</div>
+      </div>
+      <div style="margin-top:12px;padding-top:10px;border-top:1px solid #1e1e30">
+        <div class="mono" style="color:#302070;font-size:9px">TARGET: 5,000 downloads · 300 paid · $36K ARR</div>
+      </div>
+    </div>
+    <div class="card" style="border-top:3px solid #2cb67d">
+      <div class="mono" style="color:#103020;font-size:9px;margin-bottom:10px">PHASE 02 · M7–M18 · DEVELOPER &amp; PROSUMER SCALE</div>
+      <div class="h3" style="color:#f0eeff;font-size:14px;margin-bottom:10px">Growth Acceleration</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="body" style="color:#7070a0;font-size:11px">▸ Affiliate programme (30% rev share, 1yr)</div>
+        <div class="body" style="color:#7070a0;font-size:11px">▸ IndieHackers + privacy Substack partnerships</div>
+        <div class="body" style="color:#7070a0;font-size:11px">▸ Developer API + plugin marketplace</div>
+        <div class="body" style="color:#7070a0;font-size:11px">▸ India market blitz (Tier B PPP pricing)</div>
+        <div class="body" style="color:#7070a0;font-size:11px">▸ Regulatory news newsjacking (GDPR, AI Act)</div>
+      </div>
+      <div style="margin-top:12px;padding-top:10px;border-top:1px solid #1e1e30">
+        <div class="mono" style="color:#103020;font-size:9px">TARGET: 50,000 downloads · 5,000 paid · $1.2M ARR</div>
+      </div>
+    </div>
+    <div class="card" style="border-top:3px solid #f0a020">
+      <div class="mono" style="color:#402010;font-size:9px;margin-bottom:10px">PHASE 03 · M19–M36 · ENTERPRISE &amp; COMPLIANCE</div>
+      <div class="h3" style="color:#f0eeff;font-size:14px;margin-bottom:10px">Enterprise Pull</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="body" style="color:#7070a0;font-size:11px">▸ Outbound to legal, health, finance SMBs</div>
+        <div class="body" style="color:#7070a0;font-size:11px">▸ GDPR / DPDP compliance certification</div>
+        <div class="body" style="color:#7070a0;font-size:11px">▸ IT reseller &amp; MSP channel partners</div>
+        <div class="body" style="color:#7070a0;font-size:11px">▸ SOC2 Type II audit for enterprise sales</div>
+        <div class="body" style="color:#7070a0;font-size:11px">▸ DEF CON / RSA / BlackHat conference circuit</div>
+      </div>
+      <div style="margin-top:12px;padding-top:10px;border-top:1px solid #1e1e30">
+        <div class="mono" style="color:#402010;font-size:9px">TARGET: 200K downloads · 25,000 paid · $5.8M ARR</div>
+      </div>
+    </div>
+  </div>
+  <div class="grid4">
+    <div class="metric" style="text-align:center"><div style="font-size:20px;font-weight:700;color:#7f5af0">$0</div><div class="mono" style="color:#303060;font-size:9px;margin-top:2px">Organic CAC (PLG)</div></div>
+    <div class="metric" style="text-align:center"><div style="font-size:20px;font-weight:700;color:#2cb67d">$38</div><div class="mono" style="color:#303060;font-size:9px;margin-top:2px">Blended Paid CAC</div></div>
+    <div class="metric" style="text-align:center"><div style="font-size:20px;font-weight:700;color:#f0c040">15%</div><div class="mono" style="color:#303060;font-size:9px;margin-top:2px">Free→Paid Conversion</div></div>
+    <div class="metric" style="text-align:center"><div style="font-size:20px;font-weight:700;color:#e06060">30%</div><div class="mono" style="color:#303060;font-size:9px;margin-top:2px">Affiliate Channel Mix</div></div>
+  </div>
+</div>
+
+<!-- S11: COMPETITIVE MOAT -->
+<div class="slide" id="s11">
+  <span class="tag" style="color:#e06060">// 10 — COMPETITIVE LANDSCAPE</span>
+  <div class="h2" style="color:#f0eeff;margin-bottom:6px">The Moat No Cloud Player Can Cross.</div>
+  <div class="body" style="color:#606080;font-size:13px;margin-bottom:22px">Cloud AI companies are structurally incentivised to collect data. They cannot pivot to local-first without destroying their own business model. That is our permanent moat.</div>
+  <table class="comp-table" style="margin-bottom:20px">
+    <thead>
+      <tr>
+        <th style="text-align:left;min-width:160px">CAPABILITY</th>
+        <th style="color:#7f5af0">SHADOWAGENT</th>
+        <th>ChatGPT / Copilot</th>
+        <th>Claude.ai</th>
+        <th>Gemini</th>
+        <th>Jan / LM Studio</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>100% local processing</td><td style="color:#2cb67d;font-weight:700">✓</td><td style="color:#e06060">✗</td><td style="color:#e06060">✗</td><td style="color:#e06060">✗</td><td style="color:#2cb67d">✓</td></tr>
+      <tr><td>WhatsApp integration</td><td style="color:#2cb67d;font-weight:700">✓</td><td style="color:#e06060">✗</td><td style="color:#e06060">✗</td><td style="color:#e06060">✗</td><td style="color:#e06060">✗</td></tr>
+      <tr><td>Multi-channel automation</td><td style="color:#2cb67d;font-weight:700">✓</td><td style="color:#f0a020">Partial</td><td style="color:#e06060">✗</td><td style="color:#e06060">✗</td><td style="color:#e06060">✗</td></tr>
+      <tr><td>Free with own model (Ollama)</td><td style="color:#2cb67d;font-weight:700">✓</td><td style="color:#e06060">✗</td><td style="color:#e06060">✗</td><td style="color:#e06060">✗</td><td style="color:#2cb67d">✓</td></tr>
+      <tr><td>GDPR / EU AI Act native</td><td style="color:#2cb67d;font-weight:700">✓</td><td style="color:#e06060">✗</td><td style="color:#f0a020">Partial</td><td style="color:#f0a020">Partial</td><td style="color:#2cb67d">✓</td></tr>
+      <tr><td>Managed AI API (optional)</td><td style="color:#2cb67d;font-weight:700">✓</td><td style="color:#2cb67d">✓</td><td style="color:#2cb67d">✓</td><td style="color:#2cb67d">✓</td><td style="color:#e06060">✗</td></tr>
+      <tr><td>User profile personalization</td><td style="color:#2cb67d;font-weight:700">✓ local</td><td style="color:#f0a020">Cloud only</td><td style="color:#f0a020">Cloud only</td><td style="color:#f0a020">Cloud only</td><td style="color:#e06060">✗</td></tr>
+      <tr><td>AES-256 local vault</td><td style="color:#2cb67d;font-weight:700">✓</td><td style="color:#e06060">✗</td><td style="color:#e06060">✗</td><td style="color:#e06060">✗</td><td style="color:#f0a020">Partial</td></tr>
+    </tbody>
+  </table>
+  <div class="grid2" style="gap:16px">
+    <div class="card" style="border-left:3px solid #7f5af0;padding:14px 16px">
+      <div class="mono" style="color:#302060;font-size:9px;margin-bottom:6px">TECHNICAL MOAT</div>
+      <div class="body" style="color:#8080a0;font-size:12px">WhatsApp local bridge (Baileys) + local IMAP + Slack/Discord API — integrated into one privacy-native runtime. This is a 12–18 month minimum build for any funded competitor. <strong style="color:#f0eeff">Cloud players structurally cannot replicate local-first</strong> without destroying their training data pipelines and investor thesis.</div>
+    </div>
+    <div class="card" style="border-left:3px solid #2cb67d;padding:14px 16px">
+      <div class="mono" style="color:#103020;font-size:9px;margin-bottom:6px">CATEGORY MOAT — "SOVEREIGN AI"</div>
+      <div class="body" style="color:#8080a0;font-size:12px">ShadowAgent is defining the category. First-mover brand equity in privacy-native AI automation. Local model performance is on a ~10× / 18mo trajectory — our platform value <strong style="color:#f0eeff">compounds with every Llama, Phi, and Mistral release</strong>. Regulatory tailwind makes every AI scandal free PR for us.</div>
+    </div>
+  </div>
+</div>
+
+<!-- S12: MARKETING DEEP DIVE -->
+<div class="slide" id="s12">
+  <span class="tag" style="color:#7f5af0">// 11 — MARKETING STRATEGY</span>
+  <div class="h2" style="color:#f0eeff;margin-bottom:6px">Owned Media. Community Gravity. Regulatory Amplification.</div>
+  <div class="body" style="color:#606080;font-size:13px;margin-bottom:24px">We don't buy attention — we earn it. Privacy is a growing social movement and ShadowAgent is its primary tool. Every GDPR headline works for us for free.</div>
+  <div class="grid2" style="gap:22px;margin-bottom:20px">
+    <div>
+      <div class="mono" style="color:#303060;font-size:10px;margin-bottom:12px">CONTENT PILLARS</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="card" style="padding:10px 14px;display:flex;gap:10px;align-items:flex-start">
+          <span style="color:#7f5af0;font-size:18px;font-weight:800;margin-top:-2px">01</span>
+          <div><div class="body" style="color:#f0eeff;font-size:12px;font-weight:600">"Run AI Locally" Tutorial Series</div><div class="body" style="color:#505080;font-size:11px">YouTube + X. Targets "local LLM", "offline ChatGPT", "private AI" — all high-intent, low-competition SEO terms.</div></div>
+        </div>
+        <div class="card" style="padding:10px 14px;display:flex;gap:10px;align-items:flex-start">
+          <span style="color:#2cb67d;font-size:18px;font-weight:800;margin-top:-2px">02</span>
+          <div><div class="body" style="color:#f0eeff;font-size:12px;font-weight:600">Weekly AI Privacy Breach Report</div><div class="body" style="color:#505080;font-size:11px">Newsletter covering AI data leaks, fines, and corporate scandals. Fear-driven urgency → organic ShadowAgent signups.</div></div>
+        </div>
+        <div class="card" style="padding:10px 14px;display:flex;gap:10px;align-items:flex-start">
+          <span style="color:#f0a020;font-size:18px;font-weight:800;margin-top:-2px">03</span>
+          <div><div class="body" style="color:#f0eeff;font-size:12px;font-weight:600">Sovereignty Benchmark Reports</div><div class="body" style="color:#505080;font-size:11px">Quarterly "Local vs Cloud AI" performance + privacy comparison. PR bait for TechCrunch, Ars Technica, Wired.</div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="mono" style="color:#303060;font-size:10px;margin-bottom:12px">ACQUISITION CHANNELS (RANKED BY ROI)</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0a0a16;border-radius:4px">
+          <span class="body" style="color:#8080a0;font-size:11px">Organic Search (SEO + YouTube)</span>
+          <div style="display:flex;align-items:center;gap:8px"><div style="background:#7f5af0;width:90px;height:5px;border-radius:2px"></div><span class="mono" style="color:#7f5af0;font-size:10px">ROI: ∞</span></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0a0a16;border-radius:4px">
+          <span class="body" style="color:#8080a0;font-size:11px">Community / Reddit / HN</span>
+          <div style="display:flex;align-items:center;gap:8px"><div style="background:#2cb67d;width:78px;height:5px;border-radius:2px"></div><span class="mono" style="color:#2cb67d;font-size:10px">CAC: ~$4</span></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0a0a16;border-radius:4px">
+          <span class="body" style="color:#8080a0;font-size:11px">Affiliate Programme (30% rev share)</span>
+          <div style="display:flex;align-items:center;gap:8px"><div style="background:#f0c040;width:60px;height:5px;border-radius:2px"></div><span class="mono" style="color:#f0c040;font-size:10px">CAC: ~$18</span></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0a0a16;border-radius:4px">
+          <span class="body" style="color:#8080a0;font-size:11px">YouTube / Podcast Content</span>
+          <div style="display:flex;align-items:center;gap:8px"><div style="background:#f0a020;width:52px;height:5px;border-radius:2px"></div><span class="mono" style="color:#f0a020;font-size:10px">CAC: ~$22</span></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0a0a16;border-radius:4px">
+          <span class="body" style="color:#8080a0;font-size:11px">Paid Social (LinkedIn / X)</span>
+          <div style="display:flex;align-items:center;gap:8px"><div style="background:#e06060;width:38px;height:5px;border-radius:2px"></div><span class="mono" style="color:#e06060;font-size:10px">CAC: ~$65</span></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0a0a16;border-radius:4px">
+          <span class="body" style="color:#8080a0;font-size:11px">Enterprise Outbound (BDR)</span>
+          <div style="display:flex;align-items:center;gap:8px"><div style="background:#4090d0;width:30px;height:5px;border-radius:2px"></div><span class="mono" style="color:#4090d0;font-size:10px">CAC: ~$280</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="padding:14px 18px;border-left:3px solid #f0c040">
+    <div class="mono" style="color:#503010;font-size:9px;margin-bottom:6px">STRATEGIC INSIGHT — THE REGULATORY FLYWHEEL</div>
+    <div class="body" style="color:#8080a0;font-size:12px">Every GDPR enforcement action, every EU AI Act violation headline, every OpenAI data scandal is <strong style="color:#f0eeff">free marketing for ShadowAgent</strong>. Our PR strategy systematically ties major AI data controversies to ShadowAgent as the only structural solution — zero paid placement required. We are the natural beneficiary of the surveillance economy's slow collapse.</div>
+  </div>
+</div>
+
+<!-- S13: THE ASK -->
+<div class="slide" id="s13">
+  <span class="tag" style="color:#7f5af0">// 12 — THE ASK</span>
+  <div class="h2" style="color:#f0eeff;margin-bottom:6px">Raising $1.5M Seed Round.</div>
+  <div class="body" style="color:#606080;font-size:13px;margin-bottom:28px">To reach 5,000 paid users, $1.2M ARR, Series A readiness within 18 months. Structuring as SAFE for speed — priced round option available for larger cheques.</div>
+  <div class="grid2" style="gap:24px;margin-bottom:20px">
+    <div>
+      <div class="mono" style="color:#303060;font-size:10px;margin-bottom:14px">USE OF FUNDS — $1.5M SEED</div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:#0a0a18;border-radius:4px">
+          <span class="body" style="color:#8080a0;font-size:12px">Product Engineering + Security</span>
+          <span class="mono" style="color:#7f5af0;font-size:12px">$600K · 40%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:#0a0a18;border-radius:4px">
+          <span class="body" style="color:#8080a0;font-size:12px">GTM + Growth Marketing</span>
+          <span class="mono" style="color:#2cb67d;font-size:12px">$375K · 25%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:#0a0a18;border-radius:4px">
+          <span class="body" style="color:#8080a0;font-size:12px">Infrastructure + API Cost Ramp</span>
+          <span class="mono" style="color:#f0c040;font-size:12px">$225K · 15%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:#0a0a18;border-radius:4px">
+          <span class="body" style="color:#8080a0;font-size:12px">Legal — IP, Compliance, GDPR Audit</span>
+          <span class="mono" style="color:#f0a020;font-size:12px">$150K · 10%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:#0a0a18;border-radius:4px">
+          <span class="body" style="color:#8080a0;font-size:12px">Operations + Contingency</span>
+          <span class="mono" style="color:#e06060;font-size:12px">$150K · 10%</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="mono" style="color:#303060;font-size:10px;margin-bottom:14px">DEAL TERMS — INDICATIVE</div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <div style="padding:9px 12px;background:#0c0a1c;border:1px solid #241660;border-radius:4px;display:flex;justify-content:space-between">
+          <span class="body" style="color:#7070a0;font-size:11px">Instrument</span><span class="mono" style="color:#b0a0f0;font-size:11px">SAFE (Post-Money)</span>
+        </div>
+        <div style="padding:9px 12px;background:#0c0a1c;border:1px solid #241660;border-radius:4px;display:flex;justify-content:space-between">
+          <span class="body" style="color:#7070a0;font-size:11px">Round Size</span><span class="mono" style="color:#b0a0f0;font-size:11px">$1.5M (up to $2M)</span>
+        </div>
+        <div style="padding:9px 12px;background:#0c0a1c;border:1px solid #241660;border-radius:4px;display:flex;justify-content:space-between">
+          <span class="body" style="color:#7070a0;font-size:11px">Valuation Cap</span><span class="mono" style="color:#b0a0f0;font-size:11px">$8M pre-money</span>
+        </div>
+        <div style="padding:9px 12px;background:#0c0a1c;border:1px solid #241660;border-radius:4px;display:flex;justify-content:space-between">
+          <span class="body" style="color:#7070a0;font-size:11px">Discount</span><span class="mono" style="color:#b0a0f0;font-size:11px">20% on next priced round</span>
+        </div>
+        <div style="padding:9px 12px;background:#0c0a1c;border:1px solid #241660;border-radius:4px;display:flex;justify-content:space-between">
+          <span class="body" style="color:#7070a0;font-size:11px">Series A Target</span><span class="mono" style="color:#b0a0f0;font-size:11px">$6M @ $35M cap · Month 18</span>
+        </div>
+        <div style="padding:9px 12px;background:#0c0a1c;border:1px solid #241660;border-radius:4px;display:flex;justify-content:space-between">
+          <span class="body" style="color:#7070a0;font-size:11px">Pro-rata Rights</span><span class="mono" style="color:#b0a0f0;font-size:11px">Included for all Seed investors</span>
+        </div>
+        <div style="padding:9px 12px;background:#0c0a1c;border:1px solid #241660;border-radius:4px;display:flex;justify-content:space-between">
+          <span class="body" style="color:#7070a0;font-size:11px">Exit Strategy</span><span class="mono" style="color:#b0a0f0;font-size:11px">Strategic M&amp;A or IPO (Y5–Y7)</span>
+        </div>
+      </div>
+      <div style="margin-top:10px;padding:12px 14px;background:#081208;border:1px solid #163016;border-radius:4px">
+        <div class="mono" style="color:#2cb67d;font-size:9px;margin-bottom:4px">INVESTOR RETURN SCENARIO — Y5 @ 8× ARR MULTIPLE</div>
+        <div style="font-size:22px;font-weight:800;color:#2cb67d">$544M exit · ~34× seed capital return</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#0c0a1e;border:1px solid #3a2490;border-radius:6px;padding:18px 22px;display:flex;align-items:flex-start;gap:16px">
+    <div style="font-size:36px;color:#7f5af0;line-height:1;margin-top:4px">◈</div>
+    <div>
+      <div class="h3" style="color:#f0eeff;font-size:15px;margin-bottom:6px">The Sovereignty Revolution Has Already Begun.</div>
+      <div class="body" style="color:#7070a0;font-size:12px">In a world where every major AI company is under regulatory scrutiny, ShadowAgent is the only infrastructure that is <strong style="color:#f0eeff">structurally immune to data regulation risk</strong>. We're not pivoting to privacy — we were built sovereign from day one. The question isn't whether privacy-native AI wins. It's who owns the category when it does.</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- NAVIGATION BAR -->
+<div id="nav">
+  <button class="nav-btn" id="prevBtn" onclick="go(-1)">◄ PREV</button>
+  <div style="display:flex;align-items:center;gap:14px">
+    <div id="dots" style="display:flex;gap:5px;align-items:center"></div>
+    <span id="lbl" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#2a2a50"></span>
+  </div>
+  <button class="nav-btn" id="nextBtn" onclick="go(1)">NEXT ►</button>
+</div>
+
+<span id="key-hint">← → arrow keys to navigate</span>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const SLIDES=document.querySelectorAll('.slide');
+const N=SLIDES.length;
+const TITLES=['Cover','The Problem','The Solution','Market Opportunity','Business Model','Pricing Tiers','Country Pricing','Unit Economics','Financial Projections','GTM Strategy','Competitive Moat','Marketing Strategy','The Ask'];
+let cur=0, chartDone=false;
+
+function render(){
+  SLIDES.forEach((s,i)=>{s.style.display=i===cur?'flex':'none'});
+  const dc=document.getElementById('dots');dc.innerHTML='';
+  for(let i=0;i<N;i++){const d=document.createElement('div');d.className='dot'+(i===cur?' on':'');d.onclick=()=>to(i);dc.appendChild(d);}
+  document.getElementById('lbl').textContent=TITLES[cur]+' · '+(cur+1)+' / '+N;
+  if(cur===8&&!chartDone){buildChart();chartDone=true;}
+}
+function to(n){cur=Math.max(0,Math.min(N-1,n));render();}
+function go(d){to(cur+d);}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')go(1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(-1);});
+render();
+
+function buildChart(){
+  const el=document.getElementById('revChart');
+  if(!el)return;
+  new Chart(el,{
+    type:'bar',
+    data:{
+      labels:['Year 1','Year 2','Year 3','Year 4','Year 5'],
+      datasets:[
+        {label:'ARR ($M)',data:[0.15,1.2,5.8,21,68],backgroundColor:['#282048','#332660','#3d2e80','#5040a8','#7f5af0'],borderWidth:0},
+        {label:'EBITDA ($M)',data:[0,0.12,1.16,4.2,13.6],backgroundColor:['#081410','#0d1e14','#122618','#163020','#2cb67d'],borderWidth:0}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:c=>c.dataset.label+': $'+c.parsed.y+'M'}}
+      },
+      scales:{
+        x:{ticks:{color:'#404070',font:{family:'JetBrains Mono',size:10}},grid:{color:'#121220'}},
+        y:{ticks:{color:'#404070',font:{family:'JetBrains Mono',size:10},callback:v=>'$'+v+'M'},grid:{color:'#121220'},beginAtZero:true}
+      }
+    }
+  });
+  const leg=document.createElement('div');
+  leg.style.cssText='display:flex;gap:20px;margin-top:8px;font-size:11px;font-family:JetBrains Mono,monospace;color:#404070;justify-content:center';
+  leg.innerHTML='<span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#7f5af0;display:inline-block"></span>ARR</span><span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#2cb67d;display:inline-block"></span>EBITDA (20%)</span>';
+  el.parentNode.appendChild(leg);
+}
+</script>
+</body>
+</html>

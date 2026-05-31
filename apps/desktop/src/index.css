@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0A0A0A;
+  --surface: #111111;
+  --glass: rgba(255, 255, 255, 0.06);
+  --accent-cyan: #00F0FF;
+  --accent-purple: #A020F0;
+}
+
+@layer base {
+  body {
+    @apply bg-[#0A0A0A] text-[#F5F5F7] antialiased overflow-hidden selection:bg-cyan-500/30;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 { font-family: 'Syne', sans-serif; }
+}
+
+/* Glassmorphism System */
+.glass-panel {
+  @apply bg-white/[0.03] backdrop-blur-[60px] border border-white/[0.08] shadow-[0_24px_80px_rgba(0,0,0,0.8)];
+  background-image: linear-gradient(to bottom right, rgba(255,255,255,0.02), transparent);
+}
+
+.glass-card {
+  @apply bg-white/[0.04] backdrop-blur-3xl border border-white/[0.06] rounded-2xl transition-all duration-300;
+}
+
+/* Background Decor */
+.bg-glow {
+  position: absolute;
+  width: 800px;
+  height: 800px;
+  border-radius: 50%;
+  filter: blur(150px);
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.15;
+}
+
+.glow-left {
+  background: radial-gradient(circle, #00F0FF 0%, transparent 70%);
+  top: -20%; left: -20%;
+}
+
+.glow-right {
+  background: radial-gradient(circle, #A020F0 0%, transparent 70%);
+  bottom: -20%; right: -20%;
+}
+
+.btn-primary {
+  @apply relative overflow-hidden px-8 py-3 rounded-xl bg-white text-black font-extrabold transition-all hover:scale-105 active:scale-95 shadow-xl shadow-white/5;
+}
+
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }

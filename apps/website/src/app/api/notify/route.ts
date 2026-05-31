@@ -91,9 +91,10 @@ export async function POST(req: NextRequest) {
     }
 
     // ── 1. Google Sheets Web App Webhook Integration (Optional & Highly Recommended) ─────
-    if (process.env.GOOGLE_SCRIPT_URL) {
+    const webhookUrl = process.env.GURL || process.env.GOOGLE_SCRIPT_URL;
+    if (webhookUrl) {
       try {
-        const response = await fetch(process.env.GOOGLE_SCRIPT_URL, {
+        const response = await fetch(webhookUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ type, data }),

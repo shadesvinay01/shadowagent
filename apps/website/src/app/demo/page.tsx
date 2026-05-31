@@ -274,6 +274,118 @@ export default function DemoSimulator() {
   
   const [hubActionStatus, setHubActionStatus] = useState<"pending" | "approving" | "approved">("pending");
 
+  // Fluctuating hardware load metrics states
+  const [metricCpu, setMetricCpu] = useState(12);
+  const [metricLatency, setMetricLatency] = useState(0.4);
+  const [metricGpu, setMetricGpu] = useState(18);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setMetricCpu(prev => {
+        const delta = (Math.random() - 0.5) * 2;
+        const target = Math.min(Math.max(5, prev + delta), 22);
+        return Math.round(target);
+      });
+      setMetricLatency(prev => {
+        const delta = (Math.random() - 0.5) * 0.1;
+        const target = Math.min(Math.max(0.2, prev + delta), 0.8);
+        return parseFloat(target.toFixed(2));
+      });
+      setMetricGpu(prev => {
+        const delta = (Math.random() - 0.5) * 4;
+        const target = Math.min(Math.max(10, prev + delta), 28);
+        return Math.round(target);
+      });
+    }, 2000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const activeCpu = (ragProgress > 0 && ragProgress < 100) 
+    ? Math.round(62 + Math.random() * 12) 
+    : chatTyping 
+      ? Math.round(28 + Math.random() * 8) 
+      : metricCpu;
+
+  const activeGpu = (ragProgress > 0 && ragProgress < 100) 
+    ? Math.round(80 + Math.random() * 8) 
+    : chatTyping 
+      ? Math.round(35 + Math.random() * 10) 
+      : metricGpu;
+
+  // OS Desktop Toast System
+  interface Toast {
+    id: string;
+    message: string;
+    type: "info" | "success" | "warning";
+  }
+  const [toasts, setToasts] = useState<Toast[]>([]);
+
+  const addToast = (message: string, type: "info" | "success" | "warning" = "info") => {
+    const id = Math.random().toString(36).substring(7);
+    setToasts(prev => [...prev, { id, message, type }]);
+    setTimeout(() => {
+      setToasts(prev => prev.filter(t => t.id !== id));
+    }, 4500);
+  };
+
+  // Custom RAG Note state
+  const [customNote, setCustomNote] = useState("");
+  const [indexingCustomNote, setIndexingCustomNote] = useState(false);
+  const [vectorPoints, setVectorPoints] = useState([
+    { cx: 50, cy: 60, id: "Chunk_01", text: "Projections match users locally under 15ms using nomic-embed-text." },
+    { cx: 100, cy: 40, id: "Chunk_06", text: "HNSW SQLite indexing matches user queries natively on client database." },
+    { cx: 150, cy: 80, id: "Chunk_09", text: "Ollama (Llama-3-Groq-Tool-Use) enables offline tool binding calls." },
+    { cx: 200, cy: 30, id: "Active_Query", text: "Workspace task retrieval finds Sarah's meeting conflict slot.", isActive: true },
+    { cx: 250, cy: 60, id: "Chunk_12", text: "Zero data transmitted to external cloud systems, maintaining air-gapped status." }
+  ]);
+  const [hoveredChunk, setHoveredChunk] = useState<string | null>(null);
+
+  // WhatsApp Scanning phone viewfinder overlay
+  const [showScannerViewfinder, setShowScannerViewfinder] = useState(false);
+
+  // Email SMTP Reply state
+  const [emailReplyText, setEmailReplyText] = useState("");
+  const [emailSending, setEmailSending] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
+
+  // Preferences Tabs & Connection Sockets Diagnostics
+  const [prefTab, setPrefTab] = useState<"system" | "config" | "sockets">("system");
+  const [socketCheckStatus, setSocketCheckStatus] = useState<"idle" | "running" | "done">("idle");
+  const [socketResults, setSocketResults] = useState({
+    imap: "offline",
+    smtp: "offline",
+    ollama: "offline"
+  });
+
+  // Captions TTS voice assistant synthesizer
+  const speakText = (text: string) => {
+    if (!soundEnabled || !("speechSynthesis" in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const cleanText = text
+        .replace(/calendar\.ics/g, "calendar file")
+        .replace(/sqlite/gi, "sqlite database")
+        .replace(/hnsw/gi, "index structures")
+        .replace(/sarah ops/gi, "sarah")
+        .replace(/ceo@sovereign\.ai/gi, "ceo at sovereign dot AI")
+        .replace(/100%/g, "one hundred percent");
+      
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      utterance.rate = 1.05;
+      utterance.pitch = 1.0;
+      const voices = window.speechSynthesis.getVoices();
+      const engVoice = voices.find(v => v.lang.startsWith("en") && (v.name.includes("Google") || v.name.includes("Natural") || v.name.includes("Microsoft")));
+      if (engVoice) utterance.voice = engVoice;
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {}
+  };
+
+  useEffect(() => {
+    if (!soundEnabled && typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  }, [soundEnabled]);
+
   const handleManualChatSend = () => {
     if (!chatInput.trim() || chatTyping) return;
     const prompt = chatInput;
@@ -381,6 +493,7 @@ export default function DemoSimulator() {
     let charIndex = 0;
     const fullCaption = STEPS[step - 1].caption;
     setCaptionText("");
+    speakText(fullCaption); // TTS voice narration
     const textTimer = setInterval(() => {
       if (charIndex < fullCaption.length) {
         setCaptionText(prev => prev + fullCaption.charAt(charIndex));
@@ -558,6 +671,7 @@ export default function DemoSimulator() {
       setSelectedSubTool(null);
       setWaSessionStatus("disconnected");
       setShowCursor(true);
+      setShowScannerViewfinder(false);
       
       // Move to Tools Hub tab in sidebar
       setTimeout(() => {
@@ -593,10 +707,12 @@ export default function DemoSimulator() {
                       setTimeout(() => {
                         setCursorClicking(false);
                         setWaSessionStatus("pairing");
+                        setShowScannerViewfinder(true);
                         playToolHum();
                         
                         // Scanning finished
                         setTimeout(() => {
+                          setShowScannerViewfinder(false);
                           setWaSessionStatus("connected");
                           setWaInboxData([
                             { name: "Investor Update", lastMsg: "When can we see the live demo?", unread: 2, initials: "IU", time: "10:14 AM" },
@@ -604,6 +720,7 @@ export default function DemoSimulator() {
                             { name: "Sarah (Ops)", lastMsg: "Can you check the calendar?", unread: 1, initials: "SO", time: "09:15 AM" }
                           ]);
                           playSuccessChirp();
+                          addToast("WhatsApp paired securely via local session keys!", "success");
                           
                           // Glide to "Back to Tools" button
                           setTimeout(() => {
@@ -744,6 +861,7 @@ export default function DemoSimulator() {
                                             
                                             setTimeout(() => {
                                               setHubActionStatus("approved");
+                                              addToast("Calendar sync approved: calendar.ics written locally.", "success");
                                               playSuccessChirp();
                                               
                                               // Glide down to Suggestion Card 2 "Approve" (WhatsApp Reply)
@@ -762,6 +880,7 @@ export default function DemoSimulator() {
                                                     setTimeout(() => {
                                                       setWaReplyStatus("approved");
                                                       setWaReplySent(true);
+                                                      addToast("WhatsApp secure reply suggestion auto-dispatched!", "success");
                                                       playSuccessChirp();
                                                     }, 1200);
                                                   }, 150);
@@ -832,7 +951,27 @@ export default function DemoSimulator() {
                         setTimeout(() => {
                           setCursorClicking(false);
                           setActiveView("general");
-                          setShowCursor(false);
+                          setPrefTab("sockets");
+                          setSocketCheckStatus("running");
+                          setSocketResults({ imap: "offline", smtp: "offline", ollama: "offline" });
+                          
+                          setTimeout(() => {
+                            setSocketResults(prev => ({ ...prev, imap: "online" }));
+                            playTick();
+                            
+                            setTimeout(() => {
+                              setSocketResults(prev => ({ ...prev, smtp: "online" }));
+                              playTick();
+                              
+                              setTimeout(() => {
+                                setSocketResults(prev => ({ ...prev, ollama: "online" }));
+                                setSocketCheckStatus("done");
+                                playSuccessChirp();
+                                addToast("Diagnostic check complete: All local ports operational!", "success");
+                                setShowCursor(false);
+                              }, 800);
+                            }, 800);
+                          }, 800);
                         }, 150);
                       }, 500);
                     }, 2500);
@@ -1020,6 +1159,41 @@ export default function DemoSimulator() {
           {/* RIGHT: DESKTOP CONTAINER (TAURI CLIENT UI) */}
           <div className="flex-1 bg-black/40 border border-white/10 rounded-[2.5rem] overflow-hidden flex flex-col relative shadow-[0_0_100px_rgba(0,0,0,0.7)]">
             
+            {/* Absolute Glassmorphic Desktop Toast Container */}
+            <div className="absolute top-16 right-6 z-[150] w-72 space-y-2 pointer-events-none">
+              <AnimatePresence>
+                {toasts.map((toast) => (
+                  <motion.div
+                    key={toast.id}
+                    initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                    className={`p-3.5 rounded-2xl border backdrop-blur-xl shadow-lg flex items-start gap-3 pointer-events-auto ${
+                      toast.type === "success"
+                        ? "bg-green-500/10 border-green-500/20 text-green-400"
+                        : toast.type === "warning"
+                          ? "bg-red-500/10 border-red-500/20 text-red-400"
+                          : "bg-white/5 border-white/10 text-cyan-400"
+                    }`}
+                  >
+                    <div className="mt-0.5">
+                      {toast.type === "success" ? (
+                        <Check className="w-4 h-4" />
+                      ) : toast.type === "warning" ? (
+                        <X className="w-4 h-4" />
+                      ) : (
+                        <Shield className="w-4 h-4 text-cyan-400 animate-pulse" />
+                      )}
+                    </div>
+                    <div className="space-y-0.5 flex-1">
+                      <div className="text-[9px] font-black uppercase tracking-widest text-white/30">System Notification</div>
+                      <p className="text-[10px] text-white/80 font-medium leading-normal">{toast.message}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+
             {/* Simulated Floating Cursor overlay - ENHANCED VISIBILITY */}
             {showCursor && (
               <>
@@ -1065,9 +1239,12 @@ export default function DemoSimulator() {
                   <Terminal className="w-3.5 h-3.5" /> ShadowAgent_Client_Shell.app
                 </span>
               </div>
-              <div className="flex gap-6 items-center text-[10px] font-mono text-white/20">
-                <span className="flex items-center gap-1.5"><Lock className="w-3.5 h-3.5 text-cyan-400" /> LOCAL: AIR_GAPPED</span>
-                <span className="flex items-center gap-1.5"><Cpu className="w-3.5 h-3.5 text-purple-400" /> OLLAMA: ACTIVE</span>
+              <div className="flex gap-4 items-center text-[9px] font-mono text-white/40">
+                <span className="flex items-center gap-1"><Cpu className="w-3 h-3 text-cyan-400 animate-pulse" /> CPU: <strong className="text-white">{activeCpu}%</strong></span>
+                <span className="flex items-center gap-1"><Activity className="w-3 h-3 text-purple-400" /> GPU: <strong className="text-white">{activeGpu}%</strong></span>
+                <span className="flex items-center gap-1"><Zap className="w-3 h-3 text-emerald-400" /> LATENCY: <strong className="text-white">{metricLatency}ms</strong></span>
+                <span className="text-white/10">|</span>
+                <span className="flex items-center gap-1"><Lock className="w-3 h-3 text-cyan-400" /> AIR_GAPPED</span>
               </div>
             </div>
 
@@ -1234,7 +1411,7 @@ export default function DemoSimulator() {
                       <div className="grid grid-cols-5 gap-6 flex-1 min-h-0">
                         {/* Source corpus list */}
                         <div className="col-span-2 border border-white/5 rounded-3xl bg-black/10 p-5 flex flex-col space-y-4">
-                          <h4 className="text-[10px] font-black uppercase text-white/20 tracking-wider">Source Knowledge Corpus</h4>
+                          <h4 className="text-[10px] font-black uppercase text-white/20 tracking-wider font-bold">Source Knowledge Corpus</h4>
                           <div className="flex-1 overflow-y-auto space-y-2.5 pr-2">
                             <div className="p-3.5 border border-white/5 bg-white/[0.02] rounded-2xl flex items-center justify-between text-xs">
                               <div className="space-y-1">
@@ -1262,6 +1439,48 @@ export default function DemoSimulator() {
                               </motion.div>
                             )}
                           </div>
+
+                          {/* Manual Note Ingest */}
+                          <div className="border-t border-white/5 pt-4 space-y-3">
+                            <div className="flex justify-between items-center">
+                              <h5 className="text-[9px] font-black uppercase text-white/30 tracking-wider font-bold">Manual Ingestion</h5>
+                              <span className="text-[8px] font-mono text-orange-400">Offline Secure</span>
+                            </div>
+                            <textarea
+                              value={customNote}
+                              onChange={(e) => setCustomNote(e.target.value)}
+                              placeholder="Type a custom secret note to vector index (e.g., 'Database token: secret_891')..."
+                              className="w-full bg-white/[0.02] border border-white/10 rounded-xl p-2.5 text-[10px] text-white focus:outline-none placeholder-white/10 resize-none h-14"
+                            />
+                            <button
+                              onClick={() => {
+                                if (!customNote.trim()) return;
+                                setIndexingCustomNote(true);
+                                playToolHum();
+                                addToast("Vectorizing custom note chunk...", "info");
+                                setTimeout(() => {
+                                  setIndexingCustomNote(false);
+                                  const newId = `Manual_Chunk_${Math.round(Math.random() * 90 + 10)}`;
+                                  setVectorPoints(prev => [
+                                    ...prev,
+                                    { cx: Math.round(Math.random() * 180 + 60), cy: Math.random() * 60 + 30, id: newId, text: customNote }
+                                  ]);
+                                  setRagLogs(prev => [
+                                    ...prev,
+                                    `[neural] Vectorizing manual note: "${customNote.substring(0, 30)}..."`,
+                                    `[database] Ingested chunk ${newId} (nomic-embed-text, Similarity: 0.94)`
+                                  ]);
+                                  addToast("Custom note ingested into HNSW store!", "success");
+                                  setCustomNote("");
+                                  playSuccessChirp();
+                                }, 1200);
+                              }}
+                              disabled={indexingCustomNote || !customNote.trim()}
+                              className="w-full py-2 bg-orange-600 hover:bg-orange-500 disabled:opacity-50 text-white rounded-xl text-[9px] font-black uppercase tracking-widest transition-all"
+                            >
+                              {indexingCustomNote ? "Vectorizing..." : "Securely Index Note"}
+                            </button>
+                          </div>
                         </div>
 
                         {/* Operations console and vector map */}
@@ -1287,17 +1506,44 @@ export default function DemoSimulator() {
                                       <motion.line initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.8 }} x1="100" y1="40" x2="200" y2="30" strokeDasharray="2 2" className="text-cyan-400/35" />
                                       <motion.line initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2.2 }} x1="50" y1="60" x2="150" y2="80" strokeDasharray="2 2" className="text-cyan-400/35" />
                                     </g>
-                                    <circle cx="50" cy="60" r="4" className="fill-orange-400 animate-pulse" />
-                                    <circle cx="100" cy="40" r="5" className="fill-orange-500 animate-pulse" />
-                                    <circle cx="150" cy="80" r="4" className="fill-orange-400" />
-                                    <circle cx="200" cy="30" r="6" className="fill-cyan-400 animate-pulse" />
-                                    <circle cx="250" cy="60" r="4" className="fill-orange-400" />
-                                    
-                                    <text x="50" y="50" fill="currentColor" fontSize="6" className="font-mono text-white/40">Chunk_01</text>
-                                    <text x="100" y="30" fill="currentColor" fontSize="6" className="font-mono text-white/40">Chunk_06</text>
-                                    <text x="200" y="20" fill="currentColor" fontSize="6" className="font-mono text-cyan-400">Active_Query</text>
+                                    {vectorPoints.map(pt => (
+                                      <g 
+                                        key={pt.id} 
+                                        onMouseEnter={() => setHoveredChunk(pt.text)}
+                                        onMouseLeave={() => setHoveredChunk(null)}
+                                        className="cursor-pointer"
+                                      >
+                                        <circle 
+                                          cx={pt.cx} 
+                                          cy={pt.cy} 
+                                          r={pt.isActive ? 6 : 4} 
+                                          className={`transition-all duration-300 ${
+                                            pt.isActive 
+                                              ? "fill-cyan-400 animate-pulse stroke-cyan-200 stroke-1" 
+                                              : "fill-orange-500 hover:fill-orange-400"
+                                          }`} 
+                                        />
+                                        <text x={pt.cx - 10} y={pt.cy - 7} fill={pt.isActive ? "#22d3ee" : "#f97316"} fontSize="5" className="font-mono opacity-50">
+                                          {pt.id}
+                                        </text>
+                                      </g>
+                                    ))}
                                   </svg>
                                   <div className="absolute top-2 right-2 px-2 py-0.5 border border-cyan-500/20 bg-cyan-500/5 text-[7px] font-mono text-cyan-400 uppercase rounded">Similarity Mesh View</div>
+                                  
+                                  {/* Glassmorphic Scatter Tooltip */}
+                                  <AnimatePresence>
+                                    {hoveredChunk && (
+                                      <motion.div
+                                        initial={{ opacity: 0, y: 5, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.95 }}
+                                        className="absolute bottom-2 left-2 right-2 p-2 border border-white/10 bg-black/85 backdrop-blur-md rounded-xl text-[9px] text-white/80 font-mono shadow-xl leading-normal pointer-events-none"
+                                      >
+                                        <span className="text-cyan-400 font-bold">Vector Node Chunk Data:</span> "{hoveredChunk}"
+                                      </motion.div>
+                                    )}
+                                  </AnimatePresence>
                                 </div>
 
                                 <div className="bg-black/60 border border-white/5 rounded-xl p-3.5 font-mono text-[9px] text-white/50 space-y-1 overflow-y-auto max-h-[110px] flex-1">
@@ -1654,15 +1900,15 @@ export default function DemoSimulator() {
                             {selectedSubTool === "whatsapp" && (
                               <div className="h-full flex flex-col justify-between min-h-0">
                                 {waSessionStatus !== "connected" ? (
-                                  <div className="max-w-md mx-auto w-full p-6 border border-white/5 bg-black/40 rounded-2xl text-center space-y-5">
+                                  <div className="max-w-md mx-auto w-full p-6 border border-white/5 bg-black/40 rounded-2xl text-center space-y-5 relative overflow-hidden">
                                     <div className="space-y-1">
                                       <h5 className="text-xs font-bold text-white/80 uppercase tracking-wider">Pair WhatsApp Node Session</h5>
                                       <p className="text-[10px] text-white/40">Secure local session token pairing. Data remains entirely on-device.</p>
                                     </div>
                                     
-                                    {waSessionStatus === "disconnected" ? (
-                                      <div className="w-36 h-36 bg-white p-2.5 rounded-xl mx-auto relative overflow-hidden flex items-center justify-center shadow-lg">
-                                        {/* Mock QR details using Grid */}
+                                    <div className="relative w-44 h-44 mx-auto flex items-center justify-center">
+                                      {/* The static QR underneath */}
+                                      <div className="w-36 h-36 bg-white p-2.5 rounded-xl flex items-center justify-center shadow-lg">
                                         <div className="grid grid-cols-6 grid-rows-6 gap-1 w-full h-full text-black">
                                           <div className="bg-black rounded-sm" /><div className="bg-black rounded-sm" /><div className="bg-black rounded-sm" /><div className="bg-white" /><div className="bg-black rounded-sm" /><div className="bg-black rounded-sm" />
                                           <div className="bg-black rounded-sm" /><div className="bg-white" /><div className="bg-white" /><div className="bg-black rounded-sm" /><div className="bg-white" /><div className="bg-black rounded-sm" />
@@ -1671,22 +1917,46 @@ export default function DemoSimulator() {
                                           <div className="bg-black rounded-sm" /><div className="bg-white" /><div className="bg-black rounded-sm" /><div className="bg-black rounded-sm" /><div className="bg-white" /><div className="bg-black rounded-sm" />
                                           <div className="bg-black rounded-sm" /><div className="bg-black rounded-sm" /><div className="bg-black rounded-sm" /><div className="bg-white" /><div className="bg-black rounded-sm" /><div className="bg-black rounded-sm" />
                                         </div>
+                                      </div>
+
+                                      {/* Floating camera smartphone scan overlay */}
+                                      {showScannerViewfinder && (
                                         <motion.div 
-                                          animate={{ top: ["0%", "100%", "0%"] }}
-                                          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                                          className="absolute left-0 w-full h-[3px] bg-emerald-400 shadow-[0_0_12px_#34d399]"
-                                        />
-                                      </div>
-                                    ) : (
-                                      <div className="w-36 h-36 bg-black/20 border border-white/5 rounded-xl flex flex-col items-center justify-center mx-auto text-green-400">
-                                        <RefreshCw className="w-8 h-8 animate-spin" />
-                                        <span className="text-[8px] font-mono mt-3 uppercase tracking-wider animate-pulse text-green-400">Pairing Handshake...</span>
-                                      </div>
-                                    )}
+                                          initial={{ scale: 0.8, opacity: 0, y: 10 }}
+                                          animate={{ scale: 1, opacity: 1, y: 0 }}
+                                          className="absolute inset-0 z-10 border-2 border-cyan-400 bg-black/60 rounded-3xl p-3 flex flex-col justify-between shadow-[0_0_40px_rgba(6,182,212,0.4)] pointer-events-none"
+                                        >
+                                          <div className="absolute inset-2 border border-dashed border-cyan-400/30 rounded-2xl flex flex-col justify-between overflow-hidden">
+                                            {/* Green scanning laser line */}
+                                            <motion.div 
+                                              animate={{ top: ["0%", "100%", "0%"] }}
+                                              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                                              className="absolute left-0 w-full h-[2px] bg-emerald-400 shadow-[0_0_12px_#10b981]"
+                                            />
+                                            <div className="m-auto w-12 h-12 border-2 border-cyan-400/50 rounded-full flex items-center justify-center animate-ping" />
+                                          </div>
+                                          <div className="flex justify-between items-center text-[7px] font-mono text-cyan-400 px-1 relative z-20">
+                                            <span>📷 SCANNING</span>
+                                            <span>1080p 60fps</span>
+                                          </div>
+                                          <div className="text-[7px] font-mono text-cyan-400 text-center relative z-20">
+                                            ALIGNING QR NODE
+                                          </div>
+                                        </motion.div>
+                                      )}
+                                    </div>
+                                    
+                                    <div className="text-center font-mono text-[9px] text-white/40">
+                                      {showScannerViewfinder ? (
+                                        <span className="text-cyan-400 animate-pulse uppercase">Device Camera Scanning Active...</span>
+                                      ) : (
+                                        "Click to generate unique session handshake"
+                                      )}
+                                    </div>
 
                                     <button 
                                       onClick={triggerWhatsAppPairingManual}
-                                      className="px-6 py-2.5 bg-green-600 hover:bg-green-500 text-white font-extrabold text-[10px] uppercase tracking-widest rounded-xl shadow-lg shadow-green-500/10 transition-all hover:scale-[1.02]"
+                                      className="px-6 py-2.5 bg-green-600 hover:bg-green-500 text-white font-extrabold text-[10px] uppercase tracking-widest shadow-lg shadow-green-500/10 transition-all hover:scale-[1.02]"
                                     >
                                       Generate QR & Pair
                                     </button>
@@ -1834,7 +2104,7 @@ export default function DemoSimulator() {
                                 </div>
 
                                 {/* Reading Pane */}
-                                <div className="flex-1 flex flex-col justify-between bg-black/10 p-5">
+                                <div className="flex-1 flex flex-col justify-between bg-black/10 p-5 overflow-y-auto">
                                   <div className="space-y-4 flex-1">
                                     <div className="border-b border-white/5 pb-4 space-y-2.5">
                                       <div className="flex justify-between">
@@ -1856,8 +2126,85 @@ export default function DemoSimulator() {
                                       <p>Let me know if this works. I can send a calendar block if you are free.</p>
                                       <p>Best,<br />Sarah</p>
                                     </div>
+                                    
+                                    {/* Email reply composer */}
+                                    <div className="border-t border-white/5 pt-4 mt-4 space-y-3">
+                                      <div className="flex justify-between items-center">
+                                        <span className="text-[9px] font-black text-white/30 uppercase tracking-widest font-bold">Reply Securely (SMTP Node)</span>
+                                        <span className="text-[8px] font-mono text-cyan-400">TLS Secured TLS_AES_256</span>
+                                      </div>
+                                      
+                                      {emailSent ? (
+                                        <div className="p-3 border border-green-500/20 bg-green-500/[0.01] rounded-xl text-green-400 text-[9px] flex items-center gap-2 font-mono">
+                                          <Check className="w-4 h-4" /> Sent securely: "Hi Sarah, yes, 2:00 PM tomorrow works perfectly. The calendar block is sync-approved."
+                                        </div>
+                                      ) : (
+                                        <div className="space-y-2">
+                                          <textarea
+                                            value={emailReplyText}
+                                            onChange={(e) => setEmailReplyText(e.target.value)}
+                                            placeholder="Write reply or use a quick template below..."
+                                            className="w-full bg-white/[0.02] border border-white/10 rounded-xl p-2.5 text-[10px] text-white focus:outline-none placeholder-white/10 resize-none h-14"
+                                          />
+                                          
+                                          <div className="flex justify-between items-center gap-2 flex-wrap">
+                                            <div className="flex gap-2 flex-wrap">
+                                              <button
+                                                onClick={() => {
+                                                  setEmailReplyText("Hi Sarah, yes, 2:00 PM tomorrow works perfectly. See you then!");
+                                                  playTick();
+                                                }}
+                                                className="px-2.5 py-1 border border-white/10 hover:border-cyan-500/30 bg-white/5 hover:bg-cyan-500/5 text-white/60 hover:text-cyan-400 rounded-lg text-[8px] font-bold"
+                                              >
+                                                Accept Slot (2 PM)
+                                              </button>
+                                              <button
+                                                onClick={() => {
+                                                  setEmailReplyText("Hi Sarah, tomorrow at 2:00 PM is tight. Can we push to 3:30 PM?");
+                                                  playTick();
+                                                }}
+                                                className="px-2.5 py-1 border border-white/10 hover:border-cyan-500/30 bg-white/5 hover:bg-cyan-500/5 text-white/60 hover:text-cyan-400 rounded-lg text-[8px] font-bold"
+                                              >
+                                                Propose 3:30 PM
+                                              </button>
+                                            </div>
+                                            
+                                            <button
+                                              onClick={() => {
+                                                if (!emailReplyText.trim()) return;
+                                                setEmailSending(true);
+                                                playToolHum();
+                                                addToast("Connecting to local SMTP server...", "info");
+                                                setTimeout(() => {
+                                                  setEmailSending(false);
+                                                  setEmailSent(true);
+                                                  setHubActionStatus("approved");
+                                                  setShowNewCalendarEvent(true);
+                                                  addToast("SMTP Mail dispatched & Calendar.ics updated!", "success");
+                                                  playSuccessChirp();
+                                                }, 1500);
+                                              }}
+                                              disabled={emailSending || !emailReplyText.trim()}
+                                              className="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-lg shadow-blue-500/5 ml-auto"
+                                            >
+                                              {emailSending ? (
+                                                <>
+                                                  <Activity className="w-3 h-3 animate-spin" />
+                                                  Sending...
+                                                </>
+                                              ) : (
+                                                <>
+                                                  <Send className="w-3 h-3" />
+                                                  Send Reply
+                                                </>
+                                              )}
+                                            </button>
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
                                   </div>
-                                  <div className="p-3 border border-blue-500/10 bg-blue-500/[0.02] text-blue-300 text-[9px] rounded-xl flex items-center gap-2 font-mono">
+                                  <div className="p-3 border border-blue-500/10 bg-blue-500/[0.02] text-blue-300 text-[9px] rounded-xl flex items-center gap-2 font-mono mt-4">
                                     <Lock className="w-3.5 h-3.5" /> Credentials and tokens securely encrypted via local OS parameters.
                                   </div>
                                 </div>
@@ -1969,67 +2316,201 @@ export default function DemoSimulator() {
                       key="step-general" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                       className="h-full p-8 flex flex-col justify-between overflow-y-auto"
                     >
-                      <div className="space-y-2">
-                        <h3 className="text-xl font-extrabold tracking-tight">Sovereign Credentials</h3>
-                        <p className="text-[10px] text-white/30 font-black uppercase tracking-widest">Local System Settings</p>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-6 my-4">
-                        <div className="space-y-4">
-                          <div className="p-4 border border-white/5 bg-white/[0.01] rounded-2xl flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 flex items-center justify-center flex-shrink-0">
-                              <Lock className="w-5 h-5" />
-                            </div>
-                            <div>
-                              <h4 className="text-xs font-bold">OS-Native Encryption</h4>
-                              <p className="text-[9px] text-white/30 uppercase font-mono mt-0.5">AES-256 Enabled</p>
-                            </div>
-                          </div>
-                          <div className="p-4 border border-white/5 bg-white/[0.01] rounded-2xl flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center flex-shrink-0">
-                              <Shield className="w-5 h-5" />
-                            </div>
-                            <div>
-                              <h4 className="text-xs font-bold">Zero-Cloud Sync Policy</h4>
-                              <p className="text-[9px] text-white/30 uppercase font-mono mt-0.5">Air-Gapped Status</p>
-                            </div>
-                          </div>
+                      <div className="flex justify-between items-center">
+                        <div className="space-y-1">
+                          <h3 className="text-xl font-extrabold tracking-tight">System Preferences</h3>
+                          <p className="text-[10px] text-white/30 font-black uppercase tracking-widest font-bold">Local Configuration Enclave</p>
                         </div>
-
-                        <div className="border border-white/5 bg-black/40 rounded-2xl p-4 flex flex-col justify-between space-y-3">
-                          <h4 className="text-[9px] font-black uppercase text-white/20 tracking-widest flex items-center justify-between">
-                            <span>Live Waveforms</span>
-                            <span className="text-cyan-400 animate-pulse">● System Diagnostic</span>
-                          </h4>
-                          
-                          <div className="h-[90px] w-full flex gap-3">
-                            <div className="flex-1 h-full border border-white/5 bg-black/20 rounded-xl overflow-hidden relative">
-                              <svg className="w-full h-full text-green-400/80" viewBox="0 0 100 40" preserveAspectRatio="none">
-                                <path 
-                                  d="M0,20 Q15,5 30,35 T60,20 T90,30 L100,20" 
-                                  fill="none" stroke="currentColor" strokeWidth="1.5"
-                                />
-                              </svg>
-                              <span className="absolute bottom-1 left-2 text-[7px] font-mono text-green-400/50">CPU LOAD: 12%</span>
-                            </div>
-                            <div className="flex-1 h-full border border-white/5 bg-black/20 rounded-xl overflow-hidden relative">
-                              <svg className="w-full h-full text-cyan-400/80" viewBox="0 0 100 40" preserveAspectRatio="none">
-                                <path 
-                                  d="M0,10 Q20,38 40,12 T80,32 L100,5" 
-                                  fill="none" stroke="currentColor" strokeWidth="1.5"
-                                />
-                              </svg>
-                              <span className="absolute bottom-1 left-2 text-[7px] font-mono text-cyan-400/50">LATENCY: 0.4ms</span>
-                            </div>
-                          </div>
+                        
+                        {/* Tab Switcher */}
+                        <div className="flex border border-white/10 rounded-xl bg-white/[0.02] p-1 select-none">
+                          {[
+                            { id: "system", label: "Diagnostics" },
+                            { id: "config", label: "config.json" },
+                            { id: "sockets", label: "Socket Ports" }
+                          ].map(t => (
+                            <button
+                              key={t.id}
+                              onClick={() => {
+                                setPrefTab(t.id as any);
+                                playTick();
+                              }}
+                              className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${
+                                prefTab === t.id ? "bg-white text-black font-extrabold shadow" : "text-white/40 hover:text-white/80"
+                              }`}
+                            >
+                              {t.label}
+                            </button>
+                          ))}
                         </div>
                       </div>
 
-                      <div className="border border-green-500/20 bg-green-500/[0.02] p-5 rounded-2xl text-center space-y-2">
-                        <Check className="w-8 h-8 text-green-500 mx-auto" />
-                        <h4 className="text-xs font-bold uppercase tracking-wide">Secure local system active</h4>
-                        <p className="text-[11px] text-white/40 max-w-sm mx-auto leading-relaxed">All inputs, key files, and communication nodes remain stored strictly in OS-Native Credential parameters.</p>
-                      </div>
+                      {prefTab === "system" && (
+                        <div className="space-y-5 flex-1 mt-4">
+                          <div className="grid grid-cols-2 gap-6">
+                            <div className="space-y-4">
+                              <div className="p-4 border border-white/5 bg-white/[0.01] rounded-2xl flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 flex items-center justify-center flex-shrink-0">
+                                  <Lock className="w-5 h-5" />
+                                </div>
+                                <div>
+                                  <h4 className="text-xs font-bold">OS-Native Encryption</h4>
+                                  <p className="text-[9px] text-white/30 uppercase font-mono mt-0.5">AES-256 Enabled</p>
+                                </div>
+                              </div>
+                              <div className="p-4 border border-white/5 bg-white/[0.01] rounded-2xl flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center flex-shrink-0">
+                                  <Shield className="w-5 h-5" />
+                                </div>
+                                <div>
+                                  <h4 className="text-xs font-bold">Zero-Cloud Sync Policy</h4>
+                                  <p className="text-[9px] text-white/30 uppercase font-mono mt-0.5">Air-Gapped Status</p>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="border border-white/5 bg-black/40 rounded-2xl p-4 flex flex-col justify-between space-y-3">
+                              <h4 className="text-[9px] font-black uppercase text-white/20 tracking-widest flex items-center justify-between">
+                                <span>Live Waveforms</span>
+                                <span className="text-cyan-400 animate-pulse">● System Diagnostic</span>
+                              </h4>
+                              
+                              <div className="h-[90px] w-full flex gap-3">
+                                <div className="flex-1 h-full border border-white/5 bg-black/20 rounded-xl overflow-hidden relative">
+                                  <svg className="w-full h-full text-green-400/80" viewBox="0 0 100 40" preserveAspectRatio="none">
+                                    <path 
+                                      d="M0,20 Q15,5 30,35 T60,20 T90,30 L100,20" 
+                                      fill="none" stroke="currentColor" strokeWidth="1.5"
+                                    />
+                                  </svg>
+                                  <span className="absolute bottom-1 left-2 text-[7px] font-mono text-green-400/50">CPU LOAD: {activeCpu}%</span>
+                                </div>
+                                <div className="flex-1 h-full border border-white/5 bg-black/20 rounded-xl overflow-hidden relative">
+                                  <svg className="w-full h-full text-cyan-400/80" viewBox="0 0 100 40" preserveAspectRatio="none">
+                                    <path 
+                                      d="M0,10 Q20,38 40,12 T80,32 L100,5" 
+                                      fill="none" stroke="currentColor" strokeWidth="1.5"
+                                    />
+                                  </svg>
+                                  <span className="absolute bottom-1 left-2 text-[7px] font-mono text-cyan-400/50">LATENCY: {metricLatency}ms</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="border border-green-500/20 bg-green-500/[0.02] p-5 rounded-2xl text-center space-y-2">
+                            <Check className="w-8 h-8 text-green-500 mx-auto" />
+                            <h4 className="text-xs font-bold uppercase tracking-wide">Secure local system active</h4>
+                            <p className="text-[11px] text-white/40 max-w-sm mx-auto leading-relaxed">All inputs, key files, and communication nodes remain stored strictly in OS-Native Credential parameters.</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {prefTab === "config" && (
+                        <div className="flex-1 mt-4 flex flex-col justify-between space-y-4">
+                          <div className="bg-black/60 border border-white/10 rounded-2xl p-4 flex-1 font-mono text-[9.5px] leading-relaxed text-cyan-300 overflow-y-auto max-h-[220px]">
+                            <div className="text-white/30 mb-2">// Path: C:\Users\nehaa\.shadowagent\config.json (READ_ONLY)</div>
+                            <div>{`{`}</div>
+                            <div className="pl-4"><span className="text-purple-400">"license_owner"</span>: <span className="text-yellow-400">"ceo@sovereign.ai"</span>,</div>
+                            <div className="pl-4"><span className="text-purple-400">"license_hash"</span>: <span className="text-yellow-400">"SHA256:d84e91bc...[ENCRYPTED]"</span>,</div>
+                            <div className="pl-4"><span className="text-purple-400">"local_llm_model"</span>: <span className="text-yellow-400">"Llama-3-Groq-Tool-Use-8B"</span>,</div>
+                            <div className="pl-4"><span className="text-purple-400">"embedding_model"</span>: <span className="text-yellow-400">"nomic-embed-text-v1.5"</span>,</div>
+                            <div className="pl-4"><span className="text-purple-400">"credentials_store"</span>: {`{`}</div>
+                            <div className="pl-8"><span className="text-purple-400">"imap_host"</span>: <span className="text-yellow-400">"imap.sovereign.ai"</span>,</div>
+                            <div className="pl-8"><span className="text-purple-400">"imap_password"</span>: <span className="text-emerald-400">"●●●●●●●●●●●●●●●● [SECURE_CRED_MGR]"</span>,</div>
+                            <div className="pl-8"><span className="text-purple-400">"smtp_port"</span>: <span className="text-orange-400">587</span></div>
+                            <div className="pl-4">{`}`},</div>
+                            <div className="pl-4"><span className="text-purple-400">"whatsapp_paired"</span>: <span className="text-yellow-400">{waSessionStatus === "connected" ? "true" : "false"}</span>,</div>
+                            <div className="pl-4"><span className="text-purple-400">"calendar_ics_path"</span>: <span className="text-yellow-400">"apps/integrations/calendar.ics"</span></div>
+                            <div>{`}`}</div>
+                          </div>
+                          <div className="p-3 border border-white/5 bg-white/[0.02] text-white/45 text-[9px] rounded-xl flex items-center gap-2 font-mono">
+                            <Lock className="w-3.5 h-3.5 text-cyan-400" /> Keys decrypted in secure hardware volatile memory block.
+                          </div>
+                        </div>
+                      )}
+
+                      {prefTab === "sockets" && (
+                        <div className="flex-1 mt-4 flex flex-col justify-between space-y-4">
+                          <div className="border border-white/5 bg-black/40 rounded-2xl p-5 space-y-4 flex-1">
+                            <div className="flex justify-between items-center">
+                              <h4 className="text-[10px] font-black uppercase text-white/20 tracking-wider">Host Socket Diagnostics</h4>
+                              <button
+                                onClick={() => {
+                                  setSocketCheckStatus("running");
+                                  setSocketResults({ imap: "offline", smtp: "offline", ollama: "offline" });
+                                  playToolHum();
+                                  addToast("Starting diagnostic port tests...", "info");
+                                  
+                                  setTimeout(() => {
+                                    setSocketResults(prev => ({ ...prev, imap: "online" }));
+                                    playTick();
+                                    
+                                    setTimeout(() => {
+                                      setSocketResults(prev => ({ ...prev, smtp: "online" }));
+                                      playTick();
+                                      
+                                      setTimeout(() => {
+                                        setSocketResults(prev => ({ ...prev, ollama: "online" }));
+                                        setSocketCheckStatus("done");
+                                        playSuccessChirp();
+                                        addToast("Diagnostics complete! All ports active.", "success");
+                                      }, 800);
+                                    }, 800);
+                                  }, 800);
+                                }}
+                                disabled={socketCheckStatus === "running"}
+                                className="px-3.5 py-1.5 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-lg shadow-cyan-500/5 transition-all"
+                              >
+                                {socketCheckStatus === "running" ? (
+                                  <>
+                                    <Activity className="w-3 h-3 animate-spin" /> Running Diagnostics...
+                                  </>
+                                ) : "Run Connection Check"}
+                              </button>
+                            </div>
+                            
+                            <div className="space-y-2.5 font-mono text-[10px] text-white/70">
+                              <div className="flex justify-between items-center p-2.5 border border-white/5 bg-white/[0.01] rounded-xl">
+                                <span className="flex items-center gap-2">
+                                  <Terminal className="w-3.5 h-3.5 text-blue-400" /> IMAP Protocol Node (Port 993)
+                                </span>
+                                <span className={`font-bold px-2 py-0.5 rounded text-[8px] uppercase ${
+                                  socketResults.imap === "online" 
+                                    ? "bg-green-500/10 text-green-400 border border-green-500/20" 
+                                    : "bg-white/5 text-white/30"
+                                }`}>
+                                  {socketResults.imap}
+                                </span>
+                              </div>
+                              <div className="flex justify-between items-center p-2.5 border border-white/5 bg-white/[0.01] rounded-xl">
+                                <span className="flex items-center gap-2">
+                                  <Mail className="w-3.5 h-3.5 text-purple-400" /> SMTP Outbound Node (Port 587)
+                                </span>
+                                <span className={`font-bold px-2 py-0.5 rounded text-[8px] uppercase ${
+                                  socketResults.smtp === "online" 
+                                    ? "bg-green-500/10 text-green-400 border border-green-500/20" 
+                                    : "bg-white/5 text-white/30"
+                                }`}>
+                                  {socketResults.smtp}
+                                </span>
+                              </div>
+                              <div className="flex justify-between items-center p-2.5 border border-white/5 bg-white/[0.01] rounded-xl">
+                                <span className="flex items-center gap-2">
+                                  <Cpu className="w-3.5 h-3.5 text-orange-400" /> Ollama Local Inference (Port 11434)
+                                </span>
+                                <span className={`font-bold px-2 py-0.5 rounded text-[8px] uppercase ${
+                                  socketResults.ollama === "online" 
+                                    ? "bg-green-500/10 text-green-400 border border-green-500/20" 
+                                    : "bg-white/5 text-white/30"
+                                }`}>
+                                  {socketResults.ollama}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
 
                       <button 
                         onClick={() => {

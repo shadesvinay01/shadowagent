@@ -312,6 +312,33 @@ export default function DemoSimulator() {
       ? Math.round(35 + Math.random() * 10) 
       : metricGpu;
 
+  // Terminal console states
+  const [terminalOpen, setTerminalOpen] = useState(false);
+  const [terminalInput, setTerminalInput] = useState("");
+  const [terminalHistory, setTerminalHistory] = useState<string[]>([
+    "SHADOWAGENT SOVEREIGN CLIENT v0.1.48",
+    "Local enclave active. Type 'help' for sovereign commands.",
+    ""
+  ]);
+
+  // Model selection states
+  const [selectedModel, setSelectedModel] = useState("Llama-3-Groq-Tool-Use-8B");
+  const [modelDownloading, setModelDownloading] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState(0);
+
+  // RAG configuration parameters
+  const [ragChunkSize, setRagChunkSize] = useState(500);
+  const [ragOverlap, setRagOverlap] = useState(50);
+  const [ragSimilarity, setRagSimilarity] = useState(0.85);
+
+  // Notification Center states
+  const [notiCenterOpen, setNotiCenterOpen] = useState(false);
+  const [notificationHistory, setNotificationHistory] = useState<string[]>([
+    "Local HNSW SQLite database locked securely.",
+    "Ollama sovereign handshake established.",
+    "Tauri secure environment loaded."
+  ]);
+
   // OS Desktop Toast System
   interface Toast {
     id: string;
@@ -323,6 +350,7 @@ export default function DemoSimulator() {
   const addToast = (message: string, type: "info" | "success" | "warning" = "info") => {
     const id = Math.random().toString(36).substring(7);
     setToasts(prev => [...prev, { id, message, type }]);
+    setNotificationHistory(prev => [`[${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}] ${message}`, ...prev]);
     setTimeout(() => {
       setToasts(prev => prev.filter(t => t.id !== id));
     }, 4500);
@@ -1042,6 +1070,20 @@ export default function DemoSimulator() {
           >
             {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
           </button>
+
+          {/* Notification Center Trigger */}
+          <button 
+            onClick={() => {
+              setNotiCenterOpen(!notiCenterOpen);
+              playChirp();
+            }}
+            className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/50 hover:text-white transition-all relative"
+          >
+            <Zap className={`w-4 h-4 ${notificationHistory.length > 0 ? "text-pink-400" : ""}`} />
+            {notificationHistory.length > 0 && (
+              <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-pink-500 rounded-full animate-ping" />
+            )}
+          </button>
           
           <Link href="/" className="px-5 py-2 border border-white/10 hover:bg-white/5 rounded-full text-xs font-bold transition-all">
             Exit Demo
@@ -1238,6 +1280,21 @@ export default function DemoSimulator() {
                 <span className="text-[10px] font-mono tracking-widest text-white/30 uppercase ml-2 flex items-center gap-1.5 font-bold">
                   <Terminal className="w-3.5 h-3.5" /> ShadowAgent_Client_Shell.app
                 </span>
+                
+                <button
+                  onClick={() => {
+                    setTerminalOpen(!terminalOpen);
+                    playChirp();
+                  }}
+                  className={`ml-4 px-2 py-0.5 rounded-lg border text-[8px] font-black uppercase tracking-widest flex items-center gap-1 transition-all select-none ${
+                    terminalOpen
+                      ? "bg-cyan-500 text-black border-cyan-500 shadow-md shadow-cyan-500/20"
+                      : "border-white/10 text-white/40 hover:bg-white/5 hover:text-white"
+                  }`}
+                >
+                  <Terminal className="w-2.5 h-2.5" />
+                  Terminal: {terminalOpen ? "ON" : "OFF"}
+                </button>
               </div>
               <div className="flex gap-4 items-center text-[9px] font-mono text-white/40">
                 <span className="flex items-center gap-1"><Cpu className="w-3 h-3 text-cyan-400 animate-pulse" /> CPU: <strong className="text-white">{activeCpu}%</strong></span>
@@ -1481,6 +1538,87 @@ export default function DemoSimulator() {
                               {indexingCustomNote ? "Vectorizing..." : "Securely Index Note"}
                             </button>
                           </div>
+
+                          {/* RAG Parameters Sliders */}
+                          <div className="border-t border-white/5 pt-4 space-y-3 select-none">
+                            <div className="flex justify-between items-center">
+                              <h5 className="text-[9px] font-black uppercase text-white/30 tracking-wider">Vector parameters</h5>
+                              <span className="text-[8px] font-mono text-cyan-400">HNSW Parameter</span>
+                            </div>
+                            
+                            <div className="space-y-2 text-left">
+                              <div className="flex justify-between text-[8px] font-mono text-white/40 uppercase">
+                                <span>Chunk Size:</span>
+                                <span>{ragChunkSize} chars</span>
+                              </div>
+                              <input
+                                type="range"
+                                min="200"
+                                max="1500"
+                                step="100"
+                                value={ragChunkSize}
+                                onChange={(e) => {
+                                  const val = parseInt(e.target.value);
+                                  setRagChunkSize(val);
+                                  playTick();
+                                  
+                                  // Re-plot vector points dynamically
+                                  addToast("Recalculating similarity vector spaces...", "info");
+                                  const dotsCount = Math.round(15 - (val / 150));
+                                  const dots = [];
+                                  for (let i = 0; i < dotsCount; i++) {
+                                    dots.push({
+                                      cx: Math.random() * 180 + 60,
+                                      cy: Math.random() * 60 + 30,
+                                      id: `Chunk_${i < 9 ? '0' + (i+1) : (i+1)}`,
+                                      text: `Vector chunk segment parsed dynamically with chunk size ${val} characters.`,
+                                      isActive: i === 2
+                                    });
+                                  }
+                                  setVectorPoints(dots);
+                                }}
+                                className="w-full h-1 bg-white/5 rounded-full appearance-none cursor-pointer accent-cyan-400"
+                              />
+                            </div>
+
+                            <div className="space-y-2 text-left">
+                              <div className="flex justify-between text-[8px] font-mono text-white/40 uppercase">
+                                <span>Chunk Overlap:</span>
+                                <span>{ragOverlap} chars</span>
+                              </div>
+                              <input
+                                type="range"
+                                min="10"
+                                max="200"
+                                step="10"
+                                value={ragOverlap}
+                                onChange={(e) => {
+                                  setRagOverlap(parseInt(e.target.value));
+                                  playTick();
+                                }}
+                                className="w-full h-1 bg-white/5 rounded-full appearance-none cursor-pointer accent-cyan-400"
+                              />
+                            </div>
+
+                            <div className="space-y-2 text-left">
+                              <div className="flex justify-between text-[8px] font-mono text-white/40 uppercase">
+                                <span>Similarity Cutoff:</span>
+                                <span>{(ragSimilarity * 100).toFixed(0)}%</span>
+                              </div>
+                              <input
+                                type="range"
+                                min="50"
+                                max="99"
+                                step="5"
+                                value={ragSimilarity * 100}
+                                onChange={(e) => {
+                                  setRagSimilarity(parseInt(e.target.value) / 100);
+                                  playTick();
+                                }}
+                                className="w-full h-1 bg-white/5 rounded-full appearance-none cursor-pointer accent-cyan-400"
+                              />
+                            </div>
+                          </div>
                         </div>
 
                         {/* Operations console and vector map */}
@@ -1573,9 +1711,72 @@ export default function DemoSimulator() {
                   {activeView === "chat" && (
                     <motion.div 
                       key="step-chat" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                      className="h-full flex flex-col justify-between p-6 min-h-0"
+                      className="h-full flex flex-col justify-between p-6 min-h-0 select-none"
                     >
-                      <div className="flex-1 overflow-y-auto space-y-4 p-4 min-h-0">
+                      <div className="flex justify-between items-center border-b border-white/5 pb-3">
+                        <div className="flex items-center gap-2">
+                          <Bot className="w-5 h-5 text-cyan-400 animate-pulse" />
+                          <div className="text-left">
+                            <h4 className="text-[10px] font-black uppercase tracking-wider text-white">Local LLM Chat</h4>
+                            <p className="text-[7px] font-mono text-cyan-400 uppercase">Active: {selectedModel}</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[7.5px] font-mono text-white/30 uppercase">Engine Core:</span>
+                          <select
+                            value={selectedModel}
+                            disabled={modelDownloading}
+                            onChange={(e) => {
+                              const newModel = e.target.value;
+                              setSelectedModel(newModel);
+                              setModelDownloading(true);
+                              setDownloadProgress(0);
+                              playToolHum();
+                              addToast(`Switching local Ollama model to ${newModel}...`, "info");
+                              
+                              let progress = 0;
+                              const interval = setInterval(() => {
+                                progress += 20;
+                                setDownloadProgress(progress);
+                                playTick();
+                                
+                                if (progress >= 100) {
+                                  clearInterval(interval);
+                                  setModelDownloading(false);
+                                  addToast(`Ollama loaded model: ${newModel} successfully!`, "success");
+                                  playSuccessChirp();
+                                  setTerminalHistory(prev => [
+                                    ...prev,
+                                    `[ollama] Model verify success: ${newModel}`,
+                                    `[ollama] Handshake established (384 dimensions initialized)`
+                                  ]);
+                                }
+                              }, 400);
+                            }}
+                            className="bg-black border border-white/10 hover:border-cyan-500/30 rounded-lg px-2 py-0.5 text-[8.5px] text-white focus:outline-none"
+                          >
+                            <option value="Llama-3-Groq-Tool-Use-8B">Llama-3-Groq (8B)</option>
+                            <option value="Mistral-7B-Instruct-v0.3">Mistral-7B (v0.3)</option>
+                            <option value="Phi-3.5-Medium-14B">Phi-3.5-Medium (14B)</option>
+                            <option value="Gemma-2-9B-Sovereign">Gemma-Sovereign (9B)</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {modelDownloading ? (
+                        <div className="flex-1 flex flex-col items-center justify-center space-y-4">
+                          <RefreshCw className="w-8 h-8 text-cyan-400 animate-spin" />
+                          <div className="text-center space-y-1">
+                            <span className="text-[9px] font-mono tracking-widest text-cyan-400 uppercase animate-pulse">Ollama local-pull loader</span>
+                            <h4 className="text-xs font-bold text-white/80">Downloading Model Weights: {downloadProgress}%</h4>
+                            <div className="h-1.5 w-48 bg-white/5 rounded-full overflow-hidden mx-auto mt-2">
+                              <div className="h-full bg-cyan-400 transition-all duration-300" style={{ width: `${downloadProgress}%` }} />
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex-1 overflow-y-auto space-y-4 p-4 min-h-0">
                         {chatMessages.map((msg, i) => (
                           <div key={i} className={`flex gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                             {msg.role === "bot" && (
@@ -1660,6 +1861,7 @@ export default function DemoSimulator() {
                           </div>
                         )}
                       </div>
+                    )}
 
                       <div className="p-2 border-t border-white/5">
                         <div className="relative">
@@ -2526,6 +2728,99 @@ export default function DemoSimulator() {
                   )}
 
                 </AnimatePresence>
+                
+                {/* Collapsible Terminal Shell */}
+                <AnimatePresence>
+                  {terminalOpen && (
+                    <motion.div
+                      initial={{ height: 0 }}
+                      animate={{ height: 160 }}
+                      exit={{ height: 0 }}
+                      className="border-t border-white/10 bg-black/90 backdrop-blur-2xl flex flex-col justify-between font-mono text-[9px] text-cyan-400 select-none overflow-hidden absolute bottom-0 left-0 right-0 z-50"
+                    >
+                      <div className="px-4 py-1.5 bg-white/5 border-b border-white/5 flex items-center justify-between text-white/30 tracking-wider">
+                        <span>🤖 DIAGNOSTIC SHELL (SHADOWAGENT_OS)</span>
+                        <button
+                          onClick={() => {
+                            setTerminalOpen(false);
+                            playTick();
+                          }}
+                          className="hover:text-white"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                      
+                      <div className="flex-1 p-4 overflow-y-auto space-y-1 select-text">
+                        {terminalHistory.map((line, idx) => (
+                          <div key={idx} className={line.startsWith(">") ? "text-white font-bold" : line.includes("✓") || line.includes("SUCCESS") ? "text-green-400" : ""}>
+                            {line}
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <div className="px-4 py-2 border-t border-white/5 bg-black flex items-center gap-2">
+                        <span className="text-white/40 font-bold">$</span>
+                        <input
+                          value={terminalInput}
+                          onChange={(e) => setTerminalInput(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" && terminalInput.trim()) {
+                              const cmd = terminalInput.trim();
+                              setTerminalHistory(prev => [...prev, `> ${cmd}`]);
+                              setTerminalInput("");
+                              playTick();
+                              
+                              const lower = cmd.toLowerCase();
+                              if (lower === "help") {
+                                setTerminalHistory(prev => [
+                                  ...prev,
+                                  "Available commands:",
+                                  "  help        - Show available sovereign commands",
+                                  "  status      - Display Air-Gapped Engine Status",
+                                  "  database    - Display indexed local RAG metrics",
+                                  "  logs        - View secure activity background logs",
+                                  "  clear       - Clear screen history"
+                                ]);
+                              } else if (lower === "status") {
+                                setTerminalHistory(prev => [
+                                  ...prev,
+                                  "--- SOVEREIGN LOCAL STATE ---",
+                                  `Ollama Local Engine: v0.1.48 (PORT: 11434)`,
+                                  `Current LLM Model: ${selectedModel}`,
+                                  `Vector Embedding: nomic-embed-text (384 Dimensions)`,
+                                  `Network Policy: 100% AIR_GAPPED (Zero Sync Leakage)`,
+                                  `Database Enclave: AES-256 SQLite HNSW Indexed`
+                                ]);
+                              } else if (lower === "database") {
+                                setTerminalHistory(prev => [
+                                  ...prev,
+                                  `Total Indexed Vector Dots: ${vectorPoints.length}`,
+                                  `Similarity Indexing Metric: Cosine Similarity`,
+                                  `SQLite Database Size: 1.48 MB`,
+                                  `RAG Chunk parameters: Size ${ragChunkSize} chars, Overlap ${ragOverlap} chars`
+                                ]);
+                              } else if (lower === "logs") {
+                                setTerminalHistory(prev => [
+                                  ...prev,
+                                  `[${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}:12] [system] Listening on port 11434...`,
+                                  `[${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}:14] [neural] Local LLM signature handshake verified.`,
+                                  `[${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}:22] [database] Vector HNSW map loaded successfully.`
+                                ]);
+                              } else if (lower === "clear") {
+                                setTerminalHistory([]);
+                              } else {
+                                setTerminalHistory(prev => [...prev, `shell: command not found: ${cmd}. Type 'help' for instructions.`]);
+                              }
+                            }
+                          }}
+                          placeholder="Type sovereign command (e.g., 'help', 'status', 'database')..."
+                          className="flex-1 bg-transparent text-white focus:outline-none"
+                        />
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           </div>
@@ -2548,6 +2843,140 @@ export default function DemoSimulator() {
         </div>
 
       </main>
+
+      {/* SLIDING GLASSMORPHIC NOTIFICATION CENTER SIDEBAR */}
+      <AnimatePresence>
+        {notiCenterOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.5 }}
+              exit={{ opacity: 0 }}
+              onClick={() => {
+                setNotiCenterOpen(false);
+                playTick();
+              }}
+              className="fixed inset-0 z-[160] bg-black"
+            />
+            
+            {/* Sliding Panel */}
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed right-0 top-0 bottom-0 w-[360px] z-[170] border-l border-white/10 bg-black/60 backdrop-blur-3xl p-6 flex flex-col justify-between shadow-[0_0_50px_rgba(0,0,0,0.8)]"
+            >
+              <div className="flex flex-col flex-1 min-h-0">
+                {/* Header */}
+                <div className="flex items-center justify-between border-b border-white/5 pb-4 mb-6">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2.5 h-2.5 rounded-full bg-pink-500 animate-ping" />
+                    <div>
+                      <h4 className="text-sm font-extrabold tracking-tight">Notification Enclave</h4>
+                      <p className="text-[8px] font-mono text-white/30 uppercase tracking-widest font-bold">Shadow_OS Daemon Logs</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => {
+                        setNotificationHistory([]);
+                        playSuccessChirp();
+                        addToast("Notification history cleared natively", "info");
+                      }}
+                      className="px-2 py-1 border border-white/5 hover:border-white/10 bg-white/5 hover:bg-white/10 text-white/40 hover:text-white rounded-lg text-[8px] font-black uppercase tracking-widest transition-all"
+                    >
+                      Clear All
+                    </button>
+                    <button
+                      onClick={() => {
+                        setNotiCenterOpen(false);
+                        playTick();
+                      }}
+                      className="p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-white/50 hover:text-white transition-all"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Notifications List */}
+                <div className="flex-1 overflow-y-auto space-y-3 pr-1.5 scrollbar-thin">
+                  {notificationHistory.length === 0 ? (
+                    <div className="h-full flex flex-col items-center justify-center text-center space-y-3 opacity-40 py-10">
+                      <Zap className="w-8 h-8 text-white/30" />
+                      <div className="space-y-1">
+                        <h5 className="text-[10px] font-bold uppercase tracking-wider">No Terminal Dispatches</h5>
+                        <p className="text-[9px] text-white/50">Local activity logs are completely clear.</p>
+                      </div>
+                    </div>
+                  ) : (
+                    notificationHistory.map((log, idx) => {
+                      const isSuccess = log.toLowerCase().includes("success") || log.toLowerCase().includes("complete") || log.toLowerCase().includes("paired") || log.toLowerCase().includes("approved");
+                      const isWarning = log.toLowerCase().includes("warning") || log.toLowerCase().includes("error") || log.toLowerCase().includes("leak");
+                      const cleanLog = log.replace(/^\[.*?\]\s*/, "");
+                      const timeMatch = log.match(/^\[(.*?)\]/);
+                      const timeStr = timeMatch ? timeMatch[1] : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                      return (
+                        <motion.div
+                          key={idx}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: idx * 0.05 }}
+                          className={`p-3.5 rounded-2xl border bg-white/[0.01] hover:bg-white/[0.03] transition-all flex gap-3 relative group overflow-hidden ${
+                            isSuccess 
+                              ? "border-green-500/10 hover:border-green-500/20" 
+                              : isWarning 
+                                ? "border-red-500/10 hover:border-red-500/20" 
+                                : "border-white/5 hover:border-white/10"
+                          }`}
+                        >
+                          <div className={`w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 ${
+                            isSuccess ? "bg-green-400" : isWarning ? "bg-red-400" : "bg-cyan-400"
+                          }`} />
+                          
+                          <div className="space-y-1 flex-1 min-w-0">
+                            <div className="flex justify-between items-center">
+                              <span className={`text-[8px] font-mono tracking-widest uppercase font-black ${
+                                isSuccess ? "text-green-400" : isWarning ? "text-red-400" : "text-cyan-400"
+                              }`}>
+                                {isSuccess ? "Success Node" : isWarning ? "Warning Alert" : "System Daemon"}
+                              </span>
+                              <span className="text-[7px] font-mono text-white/20">{timeStr}</span>
+                            </div>
+                            <p className="text-[10px] text-white/80 font-medium leading-relaxed break-words">{cleanLog}</p>
+                          </div>
+                        </motion.div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+
+              {/* Footer Section in Drawer */}
+              <div className="border-t border-white/5 pt-4 mt-4 space-y-3">
+                <div className="p-3 border border-pink-500/10 bg-pink-500/[0.01] rounded-2xl text-[9px] font-mono text-pink-300 flex items-center gap-2">
+                  <Shield className="w-3.5 h-3.5 text-pink-400 flex-shrink-0" />
+                  <span>Sovereign local audit logs are preserved in memory enclaves.</span>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      addToast("ShadowAgent manually dispatches telemetry ping...", "info");
+                      playToolHum();
+                    }}
+                    className="flex-1 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-extrabold text-[9px] uppercase tracking-widest rounded-xl transition-all"
+                  >
+                    Ping Diagnostic
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* PRIVACY AUDIT DIALOG OVERLAY (Cloud Leak vs Shadow OS comparison) */}
       <AnimatePresence>

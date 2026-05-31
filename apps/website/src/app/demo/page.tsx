@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Play, Pause, RotateCcw, ChevronRight, ChevronLeft, 
   Shield, Zap, MessageSquare, Mail, Calendar, FileText, 
-  Terminal, Bot, User, Check, X, Sparkles, Send, Activity, Lock, Cpu, Key
+  Terminal, Bot, User, Check, X, Sparkles, Send, Activity, Lock, Cpu, Key, Volume2, VolumeX
 } from "lucide-react";
 import Link from "next/link";
 
@@ -13,21 +13,140 @@ interface SimulationStep {
   id: number;
   title: string;
   caption: string;
+  glowClass: string;
 }
 
 const STEPS: SimulationStep[] = [
-  { id: 1, title: "Sovereign Activation", caption: "Welcome to Shadow. The app launches offline and validates the sovereign license key locally, verifying the secure node connection." },
-  { id: 2, title: "Memory Bank (Local RAG)", caption: "Private data is ingested entirely offline. The documents are split, embedded via Ollama, and saved directly to the local HNSW vector store." },
-  { id: 3, title: "Local Neural Chat", caption: "The user asks the agent to consolidate updates. The agent triggers local tools, mirroring WhatsApp messages and reading secure IMAP e-mail packets." },
-  { id: 4, title: "Autonomous Hub Suggestion", caption: "Shadow's polling engine flags scheduling requests from e-mails. It drafts calendar slots, waiting for a secure one-click user approval." },
-  { id: 5, title: "Zero-Server Policy", caption: "Execution complete. The meeting is written to calendar.ics and synced across local nodes. 100% offline, 100% yours." }
+  { id: 1, title: "Sovereign Activation", caption: "Welcome to Shadow. The app launches offline and validates the sovereign license key locally, verifying the secure node connection.", glowClass: "from-cyan-500/10 via-transparent to-transparent" },
+  { id: 2, title: "Memory Bank (Local RAG)", caption: "Private data is ingested entirely offline. The documents are split, embedded via Ollama, and saved directly to the local HNSW vector store.", glowClass: "from-orange-500/10 via-transparent to-transparent" },
+  { id: 3, title: "Local Neural Chat", caption: "The user asks the agent to consolidate updates. The agent triggers local tools, mirroring WhatsApp messages and reading secure IMAP e-mail packets.", glowClass: "from-purple-500/10 via-transparent to-transparent" },
+  { id: 4, title: "Autonomous Hub Suggestion", caption: "Shadow's polling engine flags scheduling requests from e-mails. It drafts calendar slots, waiting for a secure one-click user approval.", glowClass: "from-pink-500/10 via-transparent to-transparent" },
+  { id: 5, title: "Zero-Server Policy", caption: "Execution complete. The meeting is written to calendar.ics and synced across local nodes. 100% offline, 100% yours.", glowClass: "from-green-500/10 via-transparent to-transparent" }
 ];
 
 export default function DemoSimulator() {
   const [isPlaying, setIsPlaying] = useState(true);
   const [currentStep, setCurrentStep] = useState(1);
   const [captionText, setCaptionText] = useState("");
+  const [soundEnabled, setSoundEnabled] = useState(true);
   
+  // Audio Synthesizer logic
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  const initAudio = () => {
+    if (!audioCtxRef.current) {
+      audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+    if (audioCtxRef.current.state === "suspended") {
+      audioCtxRef.current.resume();
+    }
+  };
+
+  const playTick = () => {
+    if (!soundEnabled) return;
+    try {
+      initAudio();
+      const ctx = audioCtxRef.current;
+      if (!ctx) return;
+      
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(2000, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.04);
+      
+      gain.gain.setValueAtTime(0.015, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.04);
+      
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.04);
+    } catch (e) {
+      console.warn("Audio block failed", e);
+    }
+  };
+
+  const playChirp = () => {
+    if (!soundEnabled) return;
+    try {
+      initAudio();
+      const ctx = audioCtxRef.current;
+      if (!ctx) return;
+      
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(900, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1400, ctx.currentTime + 0.12);
+      
+      gain.gain.setValueAtTime(0.02, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.12);
+      
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.12);
+    } catch (e) {}
+  };
+
+  const playSuccessChirp = () => {
+    if (!soundEnabled) return;
+    try {
+      initAudio();
+      const ctx = audioCtxRef.current;
+      if (!ctx) return;
+      
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.06);
+        
+        gain.gain.setValueAtTime(0.015, ctx.currentTime + idx * 0.06);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + idx * 0.06 + 0.18);
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + idx * 0.06);
+        osc.stop(ctx.currentTime + idx * 0.06 + 0.18);
+      });
+    } catch (e) {}
+  };
+
+  const playToolHum = () => {
+    if (!soundEnabled) return;
+    try {
+      initAudio();
+      const ctx = audioCtxRef.current;
+      if (!ctx) return;
+      
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(220, ctx.currentTime);
+      osc.frequency.setValueAtTime(330, ctx.currentTime + 0.2);
+      
+      gain.gain.setValueAtTime(0.02, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.4);
+      
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.4);
+    } catch (e) {}
+  };
+
+  // Automated cursor pathing states
+  const [cursorPos, setCursorPos] = useState({ x: "50%", y: "50%" });
+  const [cursorClicking, setCursorClicking] = useState(false);
+  const [showCursor, setShowCursor] = useState(true);
+
   // Animation states for simulation stages
   const [emailInput, setEmailInput] = useState("");
   const [licenseInput, setLicenseInput] = useState("");
@@ -43,9 +162,8 @@ export default function DemoSimulator() {
   const [chatToolActive, setChatToolActive] = useState<string | null>(null);
   
   const [hubActionStatus, setHubActionStatus] = useState<"pending" | "approving" | "approved">("pending");
-  const [hubDismissStatus, setHubDismissStatus] = useState<"pending" | "dismissed">("pending");
   
-  // Auto progress timer
+  // Auto progress timeline timer
   useEffect(() => {
     let interval: any;
     if (isPlaying) {
@@ -55,14 +173,13 @@ export default function DemoSimulator() {
         } else {
           setIsPlaying(false);
         }
-      }, 10000); // Progress every 10 seconds
+      }, 10000);
     }
     return () => clearInterval(interval);
   }, [isPlaying, currentStep]);
 
-  // Handle stage transition effects
+  // Handle stage transitions and simulated movements
   useEffect(() => {
-    // Reset/Trigger stage-specific animations
     const step = currentStep;
     
     // Caption writing effect
@@ -76,140 +193,226 @@ export default function DemoSimulator() {
       } else {
         clearInterval(textTimer);
       }
-    }, 15);
+    }, 12);
     
+    // Trigger cursor glides & step content loops
     if (step === 1) {
-      // Step 1 reset
       setEmailInput("");
       setLicenseInput("");
       setActivationState("typing");
+      setShowCursor(true);
       
-      // Auto write email & license
+      // Path 1: Glide to email input
       setTimeout(() => {
-        let emailText = "ceo@sovereign.ai";
-        let emailTyped = "";
-        let i = 0;
-        const eTimer = setInterval(() => {
-          if (i < emailText.length) {
-            emailTyped += emailText[i];
-            setEmailInput(emailTyped);
-            i++;
-          } else {
-            clearInterval(eTimer);
-            // Now type license
-            setTimeout(() => {
-              let licText = "SHADOW-PRO-99F2-4821";
-              let licTyped = "";
-              let j = 0;
-              const lTimer = setInterval(() => {
-                if (j < licText.length) {
-                  licTyped += licText[j];
-                  setLicenseInput(licTyped);
-                  j++;
-                } else {
-                  clearInterval(lTimer);
-                  setActivationState("verifying");
-                  setTimeout(() => {
-                    setActivationState("activated");
-                  }, 1500);
-                }
-              }, 50);
-            }, 500);
-          }
-        }, 40);
-      }, 1000);
+        setCursorPos({ x: "40%", y: "45%" });
+        
+        // Path 2: Type email
+        setTimeout(() => {
+          let emailText = "ceo@sovereign.ai";
+          let emailTyped = "";
+          let i = 0;
+          const eTimer = setInterval(() => {
+            if (i < emailText.length) {
+              emailTyped += emailText[i];
+              setEmailInput(emailTyped);
+              playTick();
+              i++;
+            } else {
+              clearInterval(eTimer);
+              
+              // Path 3: Glide to license input
+              setTimeout(() => {
+                setCursorPos({ x: "40%", y: "55%" });
+                
+                // Path 4: Type license
+                setTimeout(() => {
+                  let licText = "SHADOW-PRO-99F2-4821";
+                  let licTyped = "";
+                  let j = 0;
+                  const lTimer = setInterval(() => {
+                    if (j < licText.length) {
+                      licTyped += licText[j];
+                      setLicenseInput(licTyped);
+                      playTick();
+                      j++;
+                    } else {
+                      clearInterval(lTimer);
+                      
+                      // Path 5: Glide to Finalize button
+                      setTimeout(() => {
+                        setCursorPos({ x: "50%", y: "70%" });
+                        
+                        // Click action
+                        setTimeout(() => {
+                          setCursorClicking(true);
+                          playChirp();
+                          setTimeout(() => {
+                            setCursorClicking(false);
+                            setActivationState("verifying");
+                            
+                            // Activation finish
+                            setTimeout(() => {
+                              setActivationState("activated");
+                              playSuccessChirp();
+                            }, 1200);
+                          }, 150);
+                        }, 500);
+                      }, 500);
+                    }
+                  }, 40);
+                }, 500);
+              }, 500);
+            }
+          }, 35);
+        }, 800);
+      }, 500);
+      
     } else if (step === 2) {
-      // Step 2 Reset
       setRagProgress(0);
       setRagLogs([]);
       setRagSuccess(false);
+      setShowCursor(true);
       
-      // Document upload and logs
+      // Path 1: Glide to document area
       setTimeout(() => {
-        setRagLogs(["[system] Selected: Q3_Financial_Projections.pdf", "[system] Size: 1.2 MB"]);
+        setCursorPos({ x: "65%", y: "40%" });
+        
+        // Path 2: Trigger PDF indexing
         setTimeout(() => {
-          setRagLogs(prev => [...prev, "[system] Parsing document tokens...", "[system] Splitting into 1000-character blocks..."]);
-          let progress = 0;
-          const progressTimer = setInterval(() => {
-            progress += 10;
-            setRagProgress(progress);
-            if (progress === 30) {
-              setRagLogs(prev => [...prev, "[neural] Initializing Ollama local vector embeddings...", "[neural] Model: nomic-embed-text loaded."]);
-            }
-            if (progress === 60) {
-              setRagLogs(prev => [...prev, "[neural] Encoding blocks 1 to 24...", "[neural] Encoding blocks 25 to 48..."]);
-            }
-            if (progress === 90) {
-              setRagLogs(prev => [...prev, "[database] Storing vector points in HNSW indices...", "[database] Writing local database nodes..."]);
-            }
-            if (progress >= 100) {
-              clearInterval(progressTimer);
-              setRagSuccess(true);
-              setRagLogs(prev => [...prev, "✓ SUCCESS: Ingestion complete. Index refreshed."]);
-            }
-          }, 300);
-        }, 1000);
+          setCursorClicking(true);
+          playChirp();
+          setTimeout(() => {
+            setCursorClicking(false);
+            setRagLogs(["[system] Selected: Q3_Financial_Projections.pdf", "[system] Size: 1.2 MB"]);
+            playToolHum();
+            
+            setTimeout(() => {
+              setRagLogs(prev => [...prev, "[system] Parsing document tokens...", "[system] Splitting into 1000-character blocks..."]);
+              
+              let progress = 0;
+              const progressTimer = setInterval(() => {
+                progress += 10;
+                setRagProgress(progress);
+                playTick();
+                
+                if (progress === 30) {
+                  setRagLogs(prev => [...prev, "[neural] Initializing Ollama local vector embeddings...", "[neural] Model: nomic-embed-text loaded."]);
+                }
+                if (progress === 60) {
+                  setRagLogs(prev => [...prev, "[neural] Encoding blocks 1 to 24...", "[neural] Encoding blocks 25 to 48..."]);
+                }
+                if (progress === 90) {
+                  setRagLogs(prev => [...prev, "[database] Storing vector points in HNSW indices...", "[database] Writing local database nodes..."]);
+                }
+                if (progress >= 100) {
+                  clearInterval(progressTimer);
+                  setRagSuccess(true);
+                  setRagLogs(prev => [...prev, "✓ SUCCESS: Ingestion complete. Index refreshed."]);
+                  playSuccessChirp();
+                }
+              }, 250);
+            }, 800);
+          }, 150);
+        }, 800);
       }, 500);
+      
     } else if (step === 3) {
-      // Step 3 Reset
       setChatMessages([
         { role: "bot", content: "Neural core online. Custom tools linked. How can I assist you?" }
       ]);
       setChatInput("");
       setChatTyping(false);
       setChatToolActive(null);
+      setShowCursor(true);
       
-      // Auto type message
+      // Path 1: Glide to Chat input
       setTimeout(() => {
-        let msg = "Check email and WhatsApp for new updates, and consolidate tasks.";
-        let typed = "";
-        let i = 0;
-        const msgTimer = setInterval(() => {
-          if (i < msg.length) {
-            typed += msg[i];
-            setChatInput(typed);
-            i++;
-          } else {
-            clearInterval(msgTimer);
-            // Send
-            setTimeout(() => {
-              setChatMessages(prev => [...prev, { role: "user", content: msg }]);
-              setChatInput("");
-              setChatTyping(true);
-              
-              // Run WhatsApp Tool
-              setTimeout(() => {
-                setChatToolActive("WhatsApp Node");
-                // Run Email Tool
-                setTimeout(() => {
-                  setChatToolActive("Email Intelligence");
-                  // Final reply
-                  setTimeout(() => {
-                    setChatTyping(false);
-                    setChatToolActive(null);
-                    setChatMessages(prev => [...prev, { 
-                      role: "bot", 
-                      content: "Local sync complete. Found details:\n\n1. Email from Sarah (Sarah Ops): Suggested a Q3 Project review meeting.\n2. WhatsApp (Investor Update): Unread messages asking for a live demo.\n\nI have created suggested actions in your Autonomous Hub." 
-                    }]);
-                  }, 2000);
-                }, 1500);
-              }, 1000);
-            }, 500);
-          }
-        }, 40);
-      }, 1000);
-    } else if (step === 4) {
-      // Step 4 Reset
-      setHubActionStatus("pending");
-      setHubDismissStatus("pending");
-      
-      // Auto-click suggestion
-      setTimeout(() => {
-        setHubActionStatus("approving");
+        setCursorPos({ x: "45%", y: "88%" });
+        
+        // Path 2: Auto type command
         setTimeout(() => {
-          setHubActionStatus("approved");
-        }, 2000);
-      }, 3500);
+          let msg = "Check email and WhatsApp for new updates, and consolidate tasks.";
+          let typed = "";
+          let i = 0;
+          const msgTimer = setInterval(() => {
+            if (i < msg.length) {
+              typed += msg[i];
+              setChatInput(typed);
+              playTick();
+              i++;
+            } else {
+              clearInterval(msgTimer);
+              
+              // Path 3: Glide to Send button
+              setTimeout(() => {
+                setCursorPos({ x: "82%", y: "88%" });
+                
+                // Click Send
+                setTimeout(() => {
+                  setCursorClicking(true);
+                  playChirp();
+                  setTimeout(() => {
+                    setCursorClicking(false);
+                    setChatMessages(prev => [...prev, { role: "user", content: msg }]);
+                    setChatInput("");
+                    setChatTyping(true);
+                    
+                    // Activate WhatsApp tool
+                    setTimeout(() => {
+                      setChatToolActive("WhatsApp Node");
+                      playToolHum();
+                      
+                      // Activate Email tool
+                      setTimeout(() => {
+                        setChatToolActive("Email Intelligence");
+                        playToolHum();
+                        
+                        // Bot Response
+                        setTimeout(() => {
+                          setChatTyping(false);
+                          setChatToolActive(null);
+                          setChatMessages(prev => [...prev, { 
+                            role: "bot", 
+                            content: "Local sync complete. Found details:\n\n1. Email from Sarah (Sarah Ops): Suggested a Q3 Project review meeting.\n2. WhatsApp (Investor Update): Unread messages asking for a live demo.\n\nI have created suggested actions in your Autonomous Hub." 
+                          }]);
+                          playSuccessChirp();
+                        }, 1800);
+                      }, 1200);
+                    }, 800);
+                  }, 150);
+                }, 500);
+              }, 500);
+            }
+          }, 30);
+        }, 800);
+      }, 500);
+      
+    } else if (step === 4) {
+      setHubActionStatus("pending");
+      setShowCursor(true);
+      
+      // Path 1: Glide to suggestion Approve & Run button
+      setTimeout(() => {
+        setCursorPos({ x: "82%", y: "30%" });
+        
+        // Click Approve
+        setTimeout(() => {
+          setCursorClicking(true);
+          playChirp();
+          setTimeout(() => {
+            setCursorClicking(false);
+            setHubActionStatus("approving");
+            playToolHum();
+            
+            setTimeout(() => {
+              setHubActionStatus("approved");
+              playSuccessChirp();
+            }, 1800);
+          }, 150);
+        }, 800);
+      }, 500);
+    } else if (step === 5) {
+      setShowCursor(false);
     }
     
     return () => clearInterval(textTimer);
@@ -217,10 +420,10 @@ export default function DemoSimulator() {
 
   return (
     <div className="min-h-screen bg-[#050508] text-white flex flex-col font-sans overflow-x-hidden relative selection:bg-cyan-500/20">
-      {/* Visual background lights */}
-      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-purple-500/5 pointer-events-none" />
-      <div className="bg-glow glow-left opacity-20" />
-      <div className="bg-glow glow-right opacity-20" />
+      
+      {/* Dynamic Background Glow Layer matching active stage */}
+      <div className={`absolute inset-0 bg-gradient-to-br transition-all duration-1000 pointer-events-none z-0 ${STEPS[currentStep - 1].glowClass}`} />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/[0.01] via-transparent to-transparent pointer-events-none" />
 
       {/* Top Navbar */}
       <header className="px-10 h-20 border-b border-white/5 bg-black/40 backdrop-blur-md flex items-center justify-between relative z-50">
@@ -234,18 +437,27 @@ export default function DemoSimulator() {
         </Link>
         <div className="flex items-center gap-6">
           <span className="text-[10px] font-mono tracking-widest text-white/30 uppercase">DEMO SIMULATOR MODE</span>
+          
+          {/* Sound Toggle */}
+          <button 
+            onClick={() => setSoundEnabled(!soundEnabled)}
+            className="p-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/50 hover:text-white transition-all"
+          >
+            {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+          </button>
+          
           <Link href="/" className="px-5 py-2 border border-white/10 hover:bg-white/5 rounded-full text-xs font-bold transition-all">
             Exit Demo
           </Link>
         </div>
       </header>
 
-      {/* Simulator Core Content */}
-      <main className="flex-1 flex flex-col items-center justify-center p-8 max-w-6xl w-full mx-auto relative z-10">
+      {/* Simulator Viewport Container - SCALED FULLSCREEN */}
+      <main className="flex-1 w-full max-w-[96%] mx-auto flex flex-col justify-between py-6 relative z-10 min-h-0">
         
         {/* Stages Timeline HUD */}
-        <div className="w-full flex justify-between items-center mb-10 border-b border-white/5 pb-6">
-          <div className="flex gap-4">
+        <div className="w-full flex justify-between items-center mb-6 border-b border-white/5 pb-4">
+          <div className="flex gap-3 overflow-x-auto no-scrollbar">
             {STEPS.map((s) => (
               <button 
                 key={s.id}
@@ -253,7 +465,7 @@ export default function DemoSimulator() {
                   setCurrentStep(s.id);
                   setIsPlaying(false);
                 }}
-                className={`px-5 py-2.5 rounded-full border text-xs font-bold transition-all flex items-center gap-2.5 ${
+                className={`px-4 py-2 rounded-full border text-[11px] font-bold transition-all flex items-center gap-2 ${
                   currentStep === s.id 
                     ? "bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.15)]" 
                     : currentStep > s.id 
@@ -261,46 +473,70 @@ export default function DemoSimulator() {
                       : "border-white/5 text-white/40 hover:bg-white/5"
                 }`}
               >
-                {currentStep > s.id ? <Check className="w-3.5 h-3.5" /> : <span className="font-mono text-[10px]">0{s.id}</span>}
+                {currentStep > s.id ? <Check className="w-3 h-3" /> : <span className="font-mono text-[9px]">0{s.id}</span>}
                 {s.title}
               </button>
             ))}
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-shrink-0">
             <button 
               onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
-              className="p-2.5 rounded-xl border border-white/5 hover:bg-white/5 text-white/40 hover:text-white"
+              className="p-2 rounded-xl border border-white/5 hover:bg-white/5 text-white/40 hover:text-white"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
             <button 
               onClick={() => setIsPlaying(!isPlaying)}
-              className="px-6 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold text-xs uppercase tracking-widest rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-500/10"
+              className="px-5 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold text-[10px] uppercase tracking-widest rounded-xl flex items-center gap-1.5 shadow-lg shadow-cyan-500/10"
             >
               {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-              {isPlaying ? "Pause Timeline" : "Auto Play"}
+              {isPlaying ? "Pause" : "Play"}
             </button>
             <button 
               onClick={() => {
                 setCurrentStep(1);
                 setIsPlaying(true);
               }}
-              className="p-2.5 rounded-xl border border-white/5 hover:bg-white/5 text-white/40 hover:text-white"
+              className="p-2 rounded-xl border border-white/5 hover:bg-white/5 text-white/40 hover:text-white"
             >
               <RotateCcw className="w-4 h-4" />
             </button>
             <button 
               onClick={() => setCurrentStep(prev => Math.min(STEPS.length, prev + 1))}
-              className="p-2.5 rounded-xl border border-white/5 hover:bg-white/5 text-white/40 hover:text-white"
+              className="p-2 rounded-xl border border-white/5 hover:bg-white/5 text-white/40 hover:text-white"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        {/* Desktop Container (Tauri UI Simulation) */}
-        <div className="w-full h-[620px] rounded-3xl border border-white/10 bg-black/40 backdrop-blur-3xl overflow-hidden flex flex-col shadow-[0_0_100px_rgba(0,0,0,0.5)]">
-          {/* Header */}
+        {/* Desktop Container (Tauri UI Simulation) - EXPANDED VIEWPORT SIZE */}
+        <div className="flex-1 w-full bg-black/40 border border-white/10 rounded-[2.5rem] overflow-hidden flex flex-col relative shadow-[0_0_100px_rgba(0,0,0,0.7)] h-[calc(100vh-270px)] min-h-[500px]">
+          
+          {/* Simulated Floating Cursor overlay */}
+          {showCursor && (
+            <motion.div 
+              animate={{ x: cursorPos.x, y: cursorPos.y }}
+              transition={{ type: "tween", ease: "easeInOut", duration: 0.8 }}
+              className="absolute pointer-events-none z-[999] -ml-2.5 -mt-2.5 select-none"
+              style={{ left: 0, top: 0 }}
+            >
+              <div className="relative">
+                {/* Pointer Core */}
+                <div className={`w-5 h-5 rounded-full bg-cyan-400/80 shadow-[0_0_10px_#22d3ee] border border-white flex items-center justify-center transition-all ${
+                  cursorClicking ? "scale-75 bg-cyan-600" : ""
+                }`}>
+                  <Sparkles className="w-2.5 h-2.5 text-black" />
+                </div>
+                {/* Outward pulsing circle */}
+                <div className={`absolute inset-[-10px] rounded-full border border-cyan-400/30 scale-75 animate-ping duration-1000 ${
+                  cursorClicking ? "border-cyan-600 scale-110" : ""
+                }`} />
+              </div>
+            </motion.div>
+          )}
+
+          {/* Window Header */}
           <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
             <div className="flex items-center gap-3">
               <div className="flex gap-1.5">
@@ -308,7 +544,9 @@ export default function DemoSimulator() {
                 <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/40" />
                 <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/40" />
               </div>
-              <span className="text-[10px] font-mono tracking-widest text-white/30 uppercase ml-2">ShadowAgent_Client_Shell.app</span>
+              <span className="text-[10px] font-mono tracking-widest text-white/30 uppercase ml-2 flex items-center gap-1.5">
+                <Terminal className="w-3.5 h-3.5" /> ShadowAgent_Client_Shell.app
+              </span>
             </div>
             <div className="flex gap-6 items-center text-[10px] font-mono text-white/20">
               <span className="flex items-center gap-1.5"><Lock className="w-3.5 h-3.5 text-cyan-400" /> LOCAL: AIR_GAPPED</span>
@@ -316,10 +554,14 @@ export default function DemoSimulator() {
             </div>
           </div>
 
-          <div className="flex-1 flex overflow-hidden">
+          {/* Core Simulator Workspace */}
+          <div className="flex-1 flex overflow-hidden min-h-0">
             {/* Sidebar Mock */}
-            <div className="w-[200px] border-r border-white/5 bg-black/20 p-4 space-y-2">
-              <div className="h-10 flex items-center px-4 mb-4"><Shield className="w-5 h-5 text-cyan-400 mr-2" /><span className="font-bold text-sm">Shadow</span></div>
+            <div className="w-[220px] border-r border-white/5 bg-black/20 p-5 space-y-2 select-none">
+              <div className="h-10 flex items-center px-4 mb-4">
+                <Shield className="w-5 h-5 text-cyan-400 mr-2" />
+                <span className="font-syne font-bold text-base tracking-tight">Shadow</span>
+              </div>
               {[
                 { label: "Neural Chat", active: currentStep === 3 },
                 { label: "Tools Hub", active: false },
@@ -329,7 +571,7 @@ export default function DemoSimulator() {
               ].map((tab, i) => (
                 <div 
                   key={i} 
-                  className={`px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                  className={`px-4 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${
                     tab.active ? "bg-white/10 text-white border-l-2 border-cyan-400" : "text-white/25"
                   }`}
                 >
@@ -339,18 +581,18 @@ export default function DemoSimulator() {
             </div>
 
             {/* Central Stage Screens */}
-            <div className="flex-1 bg-black/10 relative overflow-hidden flex flex-col">
+            <div className="flex-1 bg-black/10 relative overflow-hidden flex flex-col min-h-0">
               <AnimatePresence mode="wait">
                 
                 {/* STAGE 1 SCREEN: ONBOARDING WIZARD */}
                 {currentStep === 1 && (
                   <motion.div 
                     key="step-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                    className="h-full flex items-center justify-center p-10 relative"
+                    className="h-full flex items-center justify-center p-10 relative overflow-y-auto"
                   >
-                    <div className="w-full max-w-md p-8 glass-panel border-white/10 rounded-3xl space-y-6 text-center">
+                    <div className="w-full max-w-md p-8 glass-panel border-white/10 rounded-[2.5rem] space-y-6 text-center">
                       <div className="w-16 h-16 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <Key className="w-8 h-8" />
+                        <Key className="w-8 h-8 animate-pulse" />
                       </div>
                       <div className="space-y-1">
                         <h3 className="text-xl font-bold uppercase tracking-tight">Activate Sovereign Core</h3>
@@ -385,7 +627,7 @@ export default function DemoSimulator() {
                         </div>
                       )}
 
-                      <button disabled className={`w-full py-3.5 rounded-xl font-extrabold text-xs uppercase tracking-widest transition-all ${
+                      <button disabled className={`w-full py-4 rounded-xl font-extrabold text-xs uppercase tracking-widest transition-all ${
                         activationState === "activated" ? "bg-green-600 text-white" : "bg-white text-black"
                       }`}>
                         {activationState === "activated" ? "Finalized" : "Finalize Core"}
@@ -398,7 +640,7 @@ export default function DemoSimulator() {
                 {currentStep === 2 && (
                   <motion.div 
                     key="step-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                    className="h-full p-8 flex flex-col space-y-6"
+                    className="h-full p-8 flex flex-col space-y-6 overflow-y-auto"
                   >
                     <div className="flex justify-between items-center">
                       <div>
@@ -417,7 +659,7 @@ export default function DemoSimulator() {
                         <div className="flex-1 overflow-y-auto space-y-2 pr-2">
                           <div className="p-3 border border-white/5 bg-white/[0.02] rounded-xl flex items-center justify-between text-xs">
                             <span className="font-bold flex items-center gap-2"><FileText className="w-4 h-4 text-orange-400" /> company_policy.pdf</span>
-                            <span className="text-[9px] font-mono text-green-400">READY</span>
+                            <span className="text-[9px] font-mono text-green-400 font-bold">READY</span>
                           </div>
                           {ragLogs.length > 0 && (
                             <motion.div 
@@ -425,18 +667,18 @@ export default function DemoSimulator() {
                               className="p-3 border border-orange-500/20 bg-orange-500/[0.02] rounded-xl flex items-center justify-between text-xs"
                             >
                               <span className="font-bold flex items-center gap-2"><FileText className="w-4 h-4 text-orange-400 animate-bounce" /> projections.pdf</span>
-                              <span className="text-[9px] font-mono text-orange-400 animate-pulse">{ragSuccess ? "READY" : "PARSING"}</span>
+                              <span className="text-[9px] font-mono text-orange-400 animate-pulse font-bold">{ragSuccess ? "READY" : "PARSING"}</span>
                             </motion.div>
                           )}
                         </div>
                       </div>
 
-                      {/* Diagnostic Logs & Upload Visual */}
-                      <div className="col-span-3 border border-white/5 rounded-2xl bg-black/20 p-5 flex flex-col justify-between">
-                        <div className="space-y-4 flex-1 flex flex-col">
+                      {/* Diagnostic Logs & Node Visualizer */}
+                      <div className="col-span-3 border border-white/5 rounded-2xl bg-black/20 p-5 flex flex-col justify-between min-h-0">
+                        <div className="space-y-4 flex-1 flex flex-col min-h-0">
                           <h4 className="text-[10px] font-black uppercase text-white/20 tracking-wider">Console Operations</h4>
                           
-                          {/* Mock Ingestion Area */}
+                          {/* Ingestion & Node Animation */}
                           {ragProgress === 0 ? (
                             <div className="border border-dashed border-white/10 hover:border-orange-500/20 rounded-xl p-8 flex flex-col items-center justify-center text-center space-y-3 cursor-pointer group flex-1">
                               <FileText className="w-8 h-8 text-white/25 group-hover:text-orange-400 transition-colors animate-pulse" />
@@ -444,12 +686,55 @@ export default function DemoSimulator() {
                               <span className="text-[9px] text-white/20">Awaiting local character block split.</span>
                             </div>
                           ) : (
-                            <div className="flex-1 flex flex-col justify-between">
-                              <div className="bg-black/40 border border-white/5 rounded-xl p-4 font-mono text-[9px] text-white/40 space-y-1.5 overflow-y-auto max-h-[220px]">
+                            <div className="flex-1 flex flex-col justify-between min-h-0">
+                              
+                              {/* RAG Console Log */}
+                              <div className="bg-black/40 border border-white/5 rounded-xl p-4 font-mono text-[9px] text-white/40 space-y-1.5 overflow-y-auto max-h-[140px] flex-1">
                                 {ragLogs.map((log, index) => (
                                   <div key={index} className={log.includes("SUCCESS") ? "text-green-400" : ""}>{log}</div>
                                 ))}
                               </div>
+
+                              {/* Vector Node Visualizer SVG */}
+                              <div className="h-[120px] w-full border border-white/5 rounded-xl bg-black/40 overflow-hidden relative mt-4 flex items-center justify-center">
+                                <div className="absolute inset-0 bg-[linear-gradient(rgba(249,115,22,0.03)_1px,_transparent_1px),_linear-gradient(90deg,_rgba(249,115,22,0.03)_1px,_transparent_1px)] bg-[size:10px_10px]" />
+                                <svg className="w-full h-full text-orange-400/40 relative z-10" viewBox="0 0 300 100">
+                                  {/* Lines */}
+                                  <motion.line 
+                                    initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.5 }}
+                                    x1="50" y1="50" x2="100" y2="30" stroke="currentColor" strokeWidth="1" 
+                                  />
+                                  <motion.line 
+                                    initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2 }}
+                                    x1="100" y1="30" x2="150" y2="70" stroke="currentColor" strokeWidth="1" 
+                                  />
+                                  <motion.line 
+                                    initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1 }}
+                                    x1="150" y1="70" x2="200" y2="20" stroke="currentColor" strokeWidth="1" 
+                                  />
+                                  <motion.line 
+                                    initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2.5 }}
+                                    x1="200" y1="20" x2="250" y2="50" stroke="currentColor" strokeWidth="1" 
+                                  />
+                                  <motion.line 
+                                    initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.8 }}
+                                    x1="50" y1="50" x2="150" y2="70" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3" 
+                                  />
+                                  <motion.line 
+                                    initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2.2 }}
+                                    x1="100" y1="30" x2="200" y2="20" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3" 
+                                  />
+
+                                  {/* Nodes */}
+                                  <circle cx="50" cy="50" r="4" className="fill-orange-400 animate-pulse" />
+                                  <circle cx="100" cy="30" r="5" className="fill-orange-500 animate-pulse" />
+                                  <circle cx="150" cy="70" r="4" className="fill-orange-400 animate-pulse" />
+                                  <circle cx="200" cy="20" r="6" className="fill-orange-500 animate-pulse" />
+                                  <circle cx="250" cy="50" r="4" className="fill-orange-400 animate-pulse" />
+                                </svg>
+                                <span className="absolute bottom-2 right-3 text-[8px] font-mono text-orange-400/50 uppercase tracking-widest animate-pulse z-20">Embedding Mesh</span>
+                              </div>
+
                               <div className="space-y-2 mt-4">
                                 <div className="flex justify-between text-[9px] font-mono text-white/30 uppercase">
                                   <span>Embedding Matrix Generation</span>
@@ -471,7 +756,7 @@ export default function DemoSimulator() {
                 {currentStep === 3 && (
                   <motion.div 
                     key="step-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                    className="h-full flex flex-col justify-between p-6"
+                    className="h-full flex flex-col justify-between p-6 min-h-0"
                   >
                     {/* Chat Feed */}
                     <div className="flex-1 overflow-y-auto space-y-4 p-4 min-h-0">
@@ -533,14 +818,14 @@ export default function DemoSimulator() {
                 {currentStep === 4 && (
                   <motion.div 
                     key="step-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                    className="h-full p-8 flex flex-col space-y-6"
+                    className="h-full p-8 flex flex-col space-y-6 overflow-y-auto"
                   >
                     <div className="flex justify-between items-center">
                       <div>
                         <h3 className="text-xl font-extrabold tracking-tight">Autonomous Hub</h3>
                         <p className="text-[10px] text-white/30 font-black uppercase tracking-widest">Active Action Recommendations</p>
                       </div>
-                      <div className="px-3 py-1 rounded-full border border-cyan-500/20 text-[9px] font-bold text-cyan-400 bg-cyan-500/5 uppercase tracking-wider animate-pulse flex items-center gap-1.5">
+                      <div className="px-3 py-1 rounded-full border border-pink-500/20 text-[9px] font-bold text-pink-400 bg-pink-500/5 uppercase tracking-wider animate-pulse flex items-center gap-1.5">
                         <Zap className="w-3 h-3" /> Monitoring Inbox
                       </div>
                     </div>
@@ -613,11 +898,11 @@ export default function DemoSimulator() {
                   </motion.div>
                 )}
 
-                {/* STAGE 5 SCREEN: SECURE GENERAL PREFERENCES */}
+                {/* STAGE 5 SCREEN: SECURE GENERAL PREFERENCES & DIAGNOSTICS */}
                 {currentStep === 5 && (
                   <motion.div 
                     key="step-5" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                    className="h-full p-8 flex flex-col justify-between"
+                    className="h-full p-8 flex flex-col justify-between overflow-y-auto"
                   >
                     <div className="space-y-2">
                       <h3 className="text-xl font-extrabold tracking-tight">Sovereign Credentials</h3>
@@ -625,33 +910,74 @@ export default function DemoSimulator() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-6 my-4">
-                      <div className="p-5 border border-white/5 bg-white/[0.01] rounded-2xl flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 flex items-center justify-center">
-                          <Lock className="w-5 h-5" />
+                      {/* Left: General Stats */}
+                      <div className="space-y-4">
+                        <div className="p-4 border border-white/5 bg-white/[0.01] rounded-2xl flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 flex items-center justify-center flex-shrink-0">
+                            <Lock className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <h4 className="text-xs font-bold">OS-Native Encryption</h4>
+                            <p className="text-[9px] text-white/30 uppercase font-mono mt-0.5">AES-256 Enabled</p>
+                          </div>
                         </div>
-                        <div>
-                          <h4 className="text-xs font-bold">Operating System Encryption</h4>
-                          <p className="text-[9px] text-white/30 uppercase font-mono mt-0.5">AES-256 Enabled</p>
+                        <div className="p-4 border border-white/5 bg-white/[0.01] rounded-2xl flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center flex-shrink-0">
+                            <Shield className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <h4 className="text-xs font-bold">Zero-Cloud Sync Policy</h4>
+                            <p className="text-[9px] text-white/30 uppercase font-mono mt-0.5">Air-Gapped Status</p>
+                          </div>
                         </div>
                       </div>
-                      <div className="p-5 border border-white/5 bg-white/[0.01] rounded-2xl flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center">
-                          <Shield className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <h4 className="text-xs font-bold">Zero-Cloud Sync Policy</h4>
-                          <p className="text-[9px] text-white/30 uppercase font-mono mt-0.5">Air-Gapped Status</p>
+
+                      {/* Right: Live Diagnostics SVG Graph Lines */}
+                      <div className="border border-white/5 bg-black/40 rounded-2xl p-4 flex flex-col justify-between space-y-3">
+                        <h4 className="text-[9px] font-black uppercase text-white/20 tracking-widest flex items-center justify-between">
+                          <span>Live Waveforms</span>
+                          <span className="text-cyan-400 animate-pulse">● System Diagnostic</span>
+                        </h4>
+                        
+                        {/* Diagnostics SVG Charts */}
+                        <div className="h-[90px] w-full flex gap-3">
+                          <div className="flex-1 h-full border border-white/5 bg-black/20 rounded-xl overflow-hidden relative">
+                            <svg className="w-full h-full text-green-400/80" viewBox="0 0 100 40" preserveAspectRatio="none">
+                              <path 
+                                d="M0,20 Q15,5 30,35 T60,20 T90,30 L100,20" 
+                                fill="none" stroke="currentColor" strokeWidth="1.5"
+                                className="stroke-[1.5]"
+                              />
+                            </svg>
+                            <span className="absolute bottom-1 left-2 text-[7px] font-mono text-green-400/50">CPU LOAD: 12%</span>
+                          </div>
+                          <div className="flex-1 h-full border border-white/5 bg-black/20 rounded-xl overflow-hidden relative">
+                            <svg className="w-full h-full text-cyan-400/80" viewBox="0 0 100 40" preserveAspectRatio="none">
+                              <path 
+                                d="M0,10 Q20,38 40,12 T80,32 L100,5" 
+                                fill="none" stroke="currentColor" strokeWidth="1.5"
+                                className="stroke-[1.5]"
+                              />
+                            </svg>
+                            <span className="absolute bottom-1 left-2 text-[7px] font-mono text-cyan-400/50">LATENCY: 0.4ms</span>
+                          </div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="border border-green-500/20 bg-green-500/[0.02] p-6 rounded-2xl text-center space-y-3">
-                      <Check className="w-10 h-10 text-green-500 mx-auto" />
-                      <h4 className="text-sm font-bold uppercase tracking-wide">Secure local system active</h4>
-                      <p className="text-xs text-white/40 max-w-sm mx-auto">All inputs, key files, and communication nodes remain stored strictly in OS-Native Credential parameters.</p>
+                    <div className="border border-green-500/20 bg-green-500/[0.02] p-5 rounded-2xl text-center space-y-2">
+                      <Check className="w-8 h-8 text-green-500 mx-auto" />
+                      <h4 className="text-xs font-bold uppercase tracking-wide">Secure local system active</h4>
+                      <p className="text-[11px] text-white/40 max-w-sm mx-auto leading-relaxed">All inputs, key files, and communication nodes remain stored strictly in OS-Native Credential parameters.</p>
                     </div>
 
-                    <button disabled className="w-full py-4 bg-green-600 text-white rounded-xl text-xs font-extrabold uppercase tracking-widest shadow-xl shadow-green-500/10">
+                    <button 
+                      onClick={() => {
+                        setCurrentStep(1);
+                        setIsPlaying(true);
+                      }} 
+                      className="w-full py-3.5 bg-green-600 hover:bg-green-500 text-white rounded-xl text-xs font-extrabold uppercase tracking-widest shadow-xl shadow-green-500/10 mt-4 transition-colors"
+                    >
                       Restart Presentation
                     </button>
                   </motion.div>
@@ -663,16 +989,16 @@ export default function DemoSimulator() {
         </div>
 
         {/* Lower Voiceover Caption Track overlay */}
-        <div className="w-full mt-10 p-6 rounded-2xl border border-purple-500/20 bg-black/60 backdrop-blur-2xl flex items-start gap-4 shadow-xl">
+        <div className="w-full mt-4 p-5 rounded-2xl border border-purple-500/20 bg-black/60 backdrop-blur-2xl flex items-start gap-4 shadow-xl select-none">
           <div className="w-8 h-8 rounded-full bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 flex-shrink-0 animate-pulse">
             <Sparkles className="w-4 h-4" />
           </div>
-          <div className="space-y-1.5 flex-1 min-w-0">
+          <div className="space-y-1 flex-1 min-w-0">
             <div className="flex items-center justify-between">
               <span className="text-[9px] font-black uppercase text-purple-400 tracking-[0.2em]">Voiceover Track // Captions</span>
               <span className="text-[9px] font-mono text-white/20">PROGRESS: STEP {currentStep} OF 5</span>
             </div>
-            <p className="text-sm text-white/90 leading-relaxed font-manrope font-semibold">
+            <p className="text-sm text-white/95 leading-relaxed font-manrope font-semibold">
               {captionText || "Initializing caption feed..."}
             </p>
           </div>
@@ -681,7 +1007,7 @@ export default function DemoSimulator() {
       </main>
 
       {/* Footer */}
-      <footer className="h-16 px-10 border-t border-white/5 bg-black/40 flex items-center justify-between text-xs text-white/30 relative z-50">
+      <footer className="h-16 px-10 border-t border-white/5 bg-black/40 flex items-center justify-between text-xs text-white/30 relative z-50 select-none">
         <span>© 2026 ShadowAgent Collective. All rights reserved locally.</span>
         <div className="flex gap-4">
           <Link href="/" className="hover:text-white transition-colors">Website</Link>

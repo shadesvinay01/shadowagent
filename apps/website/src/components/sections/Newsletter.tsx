@@ -8,10 +8,25 @@ export default function Newsletter() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email) return;
     setStatus("loading");
-    setTimeout(() => setStatus("success"), 1500);
+
+    try {
+      await fetch("/api/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "newsletter",
+          data: { email },
+        }),
+      });
+    } catch (_) {
+      // Silent fail — user still sees success
+    }
+
+    setStatus("success");
   };
 
   return (

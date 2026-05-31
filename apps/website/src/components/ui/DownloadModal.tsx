@@ -34,16 +34,33 @@ export default function DownloadModal({ onClose }: { onClose: () => void }) {
     if (!formData.name || !formData.email) return;
 
     setStatus("loading");
-    
-    // Simulate premium network request
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    
+
+    try {
+      await fetch("/api/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "beta_access",
+          data: {
+            name: formData.name,
+            email: formData.email,
+            useCase: formData.useCase,
+            aiSetup: formData.aiSetup,
+            platform: formData.platform,
+            queue: queueNumber,
+          },
+        }),
+      });
+    } catch (_) {
+      // Silent fail — user still gets the success UI even if email fails
+    }
+
     const info = {
       queue: queueNumber,
       data: formData,
       registeredAt: new Date().toISOString(),
     };
-    
+
     localStorage.setItem("shadow_waitlist_info", JSON.stringify(info));
     setStatus("success");
   };

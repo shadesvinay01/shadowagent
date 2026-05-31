@@ -7,7 +7,8 @@ import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CustomCursor from "@/components/ui/CustomCursor";
-import DownloadModal from "@/components/ui/DownloadModal";
+import dynamic from "next/dynamic";
+const DownloadModal = dynamic(() => import("@/components/ui/DownloadModal"), { ssr: false });
 
 const sections = [
   { id: "intro", title: "Introduction", icon: <Book className="w-4 h-4" /> },

@@ -17,15 +17,13 @@ export default function DownloadModal({ onClose }: { onClose: () => void }) {
   const [queueNumber, setQueueNumber] = useState(0);
 
   useEffect(() => {
-    // Generate a random queue number between 240 and 480 or read if already submitted
+    // Read saved waitlist info if already submitted
     const saved = localStorage.getItem("shadow_waitlist_info");
     if (saved) {
       const parsed = JSON.parse(saved);
-      setQueueNumber(parsed.queue || 342);
+      setQueueNumber(parsed.queue || 1);
       setStatus("success");
       setFormData(parsed.data);
-    } else {
-      setQueueNumber(Math.floor(Math.random() * 240) + 240);
     }
   }, []);
 
@@ -35,8 +33,10 @@ export default function DownloadModal({ onClose }: { onClose: () => void }) {
 
     setStatus("loading");
 
+    let finalQueue = 1;
+
     try {
-      await fetch("/api/notify", {
+      const res = await fetch("/api/notify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -47,16 +47,24 @@ export default function DownloadModal({ onClose }: { onClose: () => void }) {
             useCase: formData.useCase,
             aiSetup: formData.aiSetup,
             platform: formData.platform,
-            queue: queueNumber,
           },
         }),
       });
+      const resData = await res.json();
+      if (resData && typeof resData.queue === "number") {
+        finalQueue = resData.queue;
+      }
     } catch (_) {
-      // Silent fail — user still gets the success UI even if email fails
+      // Deterministic local fallback if API fails
+      const baseDate = new Date("2026-06-01T00:00:00Z").getTime();
+      const elapsedMinutes = Math.floor((Date.now() - baseDate) / (1000 * 60 * 20));
+      finalQueue = Math.max(1, elapsedMinutes + 1);
     }
 
+    setQueueNumber(finalQueue);
+
     const info = {
-      queue: queueNumber,
+      queue: finalQueue,
       data: formData,
       registeredAt: new Date().toISOString(),
     };

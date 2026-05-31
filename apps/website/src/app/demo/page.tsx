@@ -21,7 +21,7 @@ const STEPS: SimulationStep[] = [
   { id: 1, title: "Sovereign Activation", caption: "Welcome to Shadow. The app launches offline and validates the sovereign license key locally, verifying the secure node connection.", glowClass: "from-cyan-500/10 via-transparent to-transparent", view: "settings" },
   { id: 2, title: "Memory Bank (Local RAG)", caption: "Private data is ingested entirely offline. The documents are split, embedded via Ollama, and saved directly to the local HNSW vector store.", glowClass: "from-orange-500/10 via-transparent to-transparent", view: "knowledge" },
   { id: 3, title: "Workspace Node Sync", caption: "Link local communications securely. Scan the mirrored WhatsApp session token and configure encrypted SMTP/IMAP protocol keys on your hard drive.", glowClass: "from-blue-500/10 via-transparent to-transparent", view: "tools" },
-  { id: 4, title: "Intelligent Automation", caption: "Interact with the neural agent. Shadow parses unread mail logs, identifies scheduling conflicts, and queues confirmation cards in the Autonomous Hub.", glowClass: "from-purple-500/10 via-transparent to-transparent", view: "chat" },
+  { id: 4, title: "Neural Hub Automation", caption: "Interact with the neural agent. Shadow parses unread mail logs, identifies scheduling conflicts, and queues confirmation cards in the Neural Hub.", glowClass: "from-purple-500/10 via-transparent to-transparent", view: "chat" },
   { id: 5, title: "Sovereign Sync Success", caption: "Approval complete. The agent appends the meeting directly to calendar.ics, showing the live updated schedule. 100% local, 100% offline.", glowClass: "from-green-500/10 via-transparent to-transparent", view: "tools" }
 ];
 
@@ -60,11 +60,11 @@ const SLIDES = [
     metricLabel: "Communication Node Pairing"
   },
   {
-    title: "Intelligent Automation",
+    title: "Neural Hub Automation",
     subtitle: "Self-Operating Assistance",
     bullets: [
       "Local agent parses workspace logs to identify scheduling conflicts.",
-      "Renders suggest boxes waiting for a secure one-click user approval.",
+      "Renders confirmation cards in the Neural Hub waiting for your secure approval.",
       "Save an average of 12 hours per workspace seat every single week."
     ],
     metric: "+12h",
@@ -95,6 +95,45 @@ export default function DemoSimulator() {
   const [waSessionStatus, setWaSessionStatus] = useState<"disconnected" | "pairing" | "connected">("disconnected");
   const [waQrCodeVal, setWaQrCodeVal] = useState("SHADOW-MOCK-AUTHENTICATION-QR");
   const [waInboxData, setWaInboxData] = useState<any[]>([]);
+  const [waReplySent, setWaReplySent] = useState(false);
+  const [waReplyStatus, setWaReplyStatus] = useState<"pending" | "approving" | "approved">("pending");
+  const [activeWaContact, setActiveWaContact] = useState("Investor Update");
+  const [waTypedInput, setWaTypedInput] = useState("");
+  const [waMessages, setWaMessages] = useState<{ [key: string]: { role: "incoming" | "outgoing", content: string, time: string }[] }>({
+    "Investor Update": [
+      { role: "incoming", content: "When can we see the live demo?", time: "10:14 AM" }
+    ],
+    "Dev Team": [
+      { role: "incoming", content: "Local RAG is 2x faster now.", time: "09:43 AM" },
+      { role: "outgoing", content: "Awesome work! Let's bundle it in the main Tauri executable.", time: "09:45 AM" }
+    ],
+    "Sarah (Ops)": [
+      { role: "incoming", content: "Hi, can you check the calendar for tomorrow? Need to review Q3 numbers.", time: "09:15 AM" },
+      { role: "outgoing", content: "Sure, checking sync logs now. I'll get back to you with a slot.", time: "09:17 AM" }
+    ]
+  });
+
+  // Sync WhatsApp reply automation states
+  useEffect(() => {
+    if (waReplySent) {
+      setWaMessages(prev => {
+        const thread = prev["Investor Update"] || [];
+        if (thread.some(m => m.content.includes("ready for review"))) return prev;
+        return {
+          ...prev,
+          "Investor Update": [
+            ...thread,
+            { role: "outgoing", content: "Hi, the live demo is ready for review.", time: "10:16 AM" }
+          ]
+        };
+      });
+      setWaInboxData(prev => prev.map(chat => 
+        chat.name === "Investor Update" 
+          ? { ...chat, lastMsg: "Hi, the live demo is ready for review.", unread: 0 }
+          : chat
+      ));
+    }
+  }, [waReplySent]);
   
   // Custom Calendar state simulation
   const [showNewCalendarEvent, setShowNewCalendarEvent] = useState(false);
@@ -270,6 +309,23 @@ export default function DemoSimulator() {
       setActivationState("typing");
       setShowCursor(true);
       setSelectedSubTool(null);
+      setWaReplySent(false);
+      setWaReplyStatus("pending");
+      setActiveWaContact("Investor Update");
+      setWaTypedInput("");
+      setWaMessages({
+        "Investor Update": [
+          { role: "incoming", content: "When can we see the live demo?", time: "10:14 AM" }
+        ],
+        "Dev Team": [
+          { role: "incoming", content: "Local RAG is 2x faster now.", time: "09:43 AM" },
+          { role: "outgoing", content: "Awesome work! Let's bundle it in the main Tauri executable.", time: "09:45 AM" }
+        ],
+        "Sarah (Ops)": [
+          { role: "incoming", content: "Hi, can you check the calendar for tomorrow? Need to review Q3 numbers.", time: "09:15 AM" },
+          { role: "outgoing", content: "Sure, checking sync logs now. I'll get back to you with a slot.", time: "09:17 AM" }
+        ]
+      });
       
       // Start cursor at center
       setCursorPos({ x: "50%", y: "50%" });
@@ -563,14 +619,14 @@ export default function DemoSimulator() {
                                 setChatToolActive(null);
                                 setChatMessages(prev => [...prev, { 
                                   role: "bot", 
-                                  content: "Local sync complete. Identified new scheduling suggestions:\n\n1. Email from Sarah (Sarah Ops): Suggested a Q3 Project Review Meeting tomorrow.\n2. WhatsApp (Investor Update): Unread messages asking for a live demo.\n\nI have generated task recommendations inside your Autonomous Hub.",
+                                  content: "Local sync complete. Identified new scheduling suggestions:\n\n1. Email from Sarah (Sarah Ops): Suggested a Q3 Project Review Meeting tomorrow.\n2. WhatsApp (Investor Update): Unread messages asking for a live demo.\n\nI have generated task recommendations inside your Neural Hub.",
                                   showLogs: true
                                 }]);
                                 playSuccessChirp();
                                 
-                                // SWITCH VIEW TO AUTONOMOUS HUB
+                                // SWITCH VIEW TO NEURAL HUB
                                 setTimeout(() => {
-                                  // Glide to Autonomous Hub tab
+                                  // Glide to Neural Hub tab
                                   setCursorPos({ x: "10%", y: "36%" });
                                   
                                   setTimeout(() => {
@@ -580,11 +636,11 @@ export default function DemoSimulator() {
                                       setCursorClicking(false);
                                       setActiveView("hub");
                                       
-                                      // Glide to "Approve & Run" on hub card
+                                      // Glide to "Approve & Run" on hub card (Suggestion Card 1)
                                       setTimeout(() => {
                                         setCursorPos({ x: "82%", y: "32%" });
                                         
-                                        // Click Approve
+                                        // Click Approve Card 1
                                         setTimeout(() => {
                                           setCursorClicking(true);
                                           playChirp();
@@ -596,6 +652,28 @@ export default function DemoSimulator() {
                                             setTimeout(() => {
                                               setHubActionStatus("approved");
                                               playSuccessChirp();
+                                              
+                                              // Glide down to Suggestion Card 2 "Approve" (WhatsApp Reply)
+                                              setTimeout(() => {
+                                                setCursorPos({ x: "82%", y: "65%" });
+                                                
+                                                // Click Approve Card 2
+                                                setTimeout(() => {
+                                                  setCursorClicking(true);
+                                                  playChirp();
+                                                  setTimeout(() => {
+                                                    setCursorClicking(false);
+                                                    setWaReplyStatus("approving");
+                                                    playToolHum();
+                                                    
+                                                    setTimeout(() => {
+                                                      setWaReplyStatus("approved");
+                                                      setWaReplySent(true);
+                                                      playSuccessChirp();
+                                                    }, 1200);
+                                                  }, 150);
+                                                }, 600);
+                                              }, 1000);
                                             }, 1200);
                                           }, 150);
                                         }, 600);
@@ -685,9 +763,9 @@ export default function DemoSimulator() {
     setTimeout(() => {
       setWaSessionStatus("connected");
       setWaInboxData([
-        { name: "Investor Update", lastMsg: "When can we see the live demo?", unread: 2 },
-        { name: "Dev Team", lastMsg: "Local RAG is 2x faster now.", unread: 0 },
-        { name: "Sarah (Ops)", lastMsg: "Can you check the calendar?", unread: 1 }
+        { name: "Investor Update", lastMsg: "When can we see the live demo?", unread: 2, initials: "IU", time: "10:14 AM" },
+        { name: "Dev Team", lastMsg: "Local RAG is 2x faster now.", unread: 0, initials: "DT", time: "09:45 AM" },
+        { name: "Sarah (Ops)", lastMsg: "Can you check the calendar?", unread: 1, initials: "SO", time: "09:15 AM" }
       ]);
       playSuccessChirp();
     }, 1800);
@@ -912,7 +990,7 @@ export default function DemoSimulator() {
                 {[
                   { id: "chat", label: "Neural Chat", icon: <MessageSquare className="w-4 h-4" /> },
                   { id: "tools", label: "Tools Hub", icon: <Compass className="w-4 h-4" /> },
-                  { id: "hub", label: "Autonomous Hub", icon: <Zap className="w-4 h-4" /> },
+                  { id: "hub", label: "Neural Hub", icon: <Zap className="w-4 h-4" /> },
                   { id: "knowledge", label: "Memory Bank", icon: <FileText className="w-4 h-4" /> },
                   { id: "general", label: "Preferences", icon: <Shield className="w-4 h-4" /> }
                 ].map((tab) => (
@@ -1239,7 +1317,7 @@ export default function DemoSimulator() {
                     </motion.div>
                   )}
 
-                  {/* AUTONOMOUS HUB VIEW */}
+                  {/* NEURAL HUB VIEW */}
                   {activeView === "hub" && (
                     <motion.div 
                       key="step-hub" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -1247,8 +1325,8 @@ export default function DemoSimulator() {
                     >
                       <div className="flex justify-between items-center">
                         <div>
-                          <h3 className="text-xl font-extrabold tracking-tight">Autonomous Hub</h3>
-                          <p className="text-[10px] text-white/30 font-black uppercase tracking-widest">Active Action Recommendations</p>
+                          <h3 className="text-xl font-extrabold tracking-tight">Neural Hub</h3>
+                          <p className="text-[10px] text-white/30 font-black uppercase tracking-widest">Central Neural Command & Automation Hub</p>
                         </div>
                         <div className="px-3 py-1 rounded-full border border-pink-500/20 text-[9px] font-bold text-pink-400 bg-pink-500/5 uppercase tracking-wider animate-pulse flex items-center gap-1.5 font-mono">
                           <Zap className="w-3 h-3 text-pink-400" /> Monitoring Local Workspace Nodes
@@ -1305,7 +1383,18 @@ export default function DemoSimulator() {
                           </div>
                           <div className="flex-shrink-0">
                             {hubActionStatus === "pending" && (
-                              <button className="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-lg shadow-cyan-500/5">
+                              <button 
+                                onClick={() => {
+                                  setHubActionStatus("approving");
+                                  playToolHum();
+                                  setTimeout(() => {
+                                    setHubActionStatus("approved");
+                                    setShowNewCalendarEvent(true);
+                                    playSuccessChirp();
+                                  }, 1200);
+                                }}
+                                className="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-lg shadow-cyan-500/5"
+                              >
                                 Approve & Run
                               </button>
                             )}
@@ -1323,7 +1412,11 @@ export default function DemoSimulator() {
                         </div>
 
                         {/* Suggestion Card 2 */}
-                        <div className="p-6 border border-white/5 bg-white/[0.01] hover:border-cyan-500/20 rounded-2xl flex items-center justify-between gap-6 transition-all duration-300">
+                        <div className={`p-6 border rounded-2xl flex items-center justify-between gap-6 transition-all duration-500 ${
+                          waReplyStatus === "approved" 
+                            ? "border-green-500/20 bg-green-500/[0.01]" 
+                            : "border-white/5 bg-white/[0.01] hover:border-cyan-500/20"
+                        }`}>
                           <div className="flex items-start gap-4">
                             <div className="w-11 h-11 bg-green-500/10 border border-green-500/20 text-green-400 rounded-xl flex items-center justify-center flex-shrink-0">
                               <MessageSquare className="w-5 h-5" />
@@ -1340,9 +1433,32 @@ export default function DemoSimulator() {
                             </div>
                           </div>
                           <div className="flex-shrink-0">
-                            <button className="px-5 py-2.5 bg-white/5 border border-white/15 text-white/60 hover:text-white rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5">
-                              Approve
-                            </button>
+                            {waReplyStatus === "pending" && (
+                              <button 
+                                onClick={() => {
+                                  setWaReplyStatus("approving");
+                                  playToolHum();
+                                  setTimeout(() => {
+                                    setWaReplyStatus("approved");
+                                    setWaReplySent(true);
+                                    playSuccessChirp();
+                                  }, 1200);
+                                }}
+                                className="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-lg shadow-cyan-500/5"
+                              >
+                                Approve
+                              </button>
+                            )}
+                            {waReplyStatus === "approving" && (
+                              <button className="px-5 py-2.5 bg-cyan-600/40 text-cyan-200 rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 animate-pulse">
+                                <Activity className="w-3.5 h-3.5 animate-spin" /> Replying...
+                              </button>
+                            )}
+                            {waReplyStatus === "approved" && (
+                              <span className="text-green-500 text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 bg-green-500/10 border border-green-500/20 px-4 py-2 rounded-xl">
+                                <Check className="w-4 h-4" /> Message Sent
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -1459,7 +1575,20 @@ export default function DemoSimulator() {
                                       <div className="px-3.5 py-3 border-b border-white/5 font-bold text-[9px] tracking-wider text-white/30 uppercase">Conversations</div>
                                       <div className="flex-1 overflow-y-auto">
                                         {waInboxData.map((chat, idx) => (
-                                          <div key={idx} className="p-3 border-b border-white/[0.02] flex items-center justify-between cursor-pointer hover:bg-white/[0.02]">
+                                          <div 
+                                            key={idx} 
+                                            onClick={() => {
+                                              setActiveWaContact(chat.name);
+                                              playTick();
+                                              // Clear unread indicator
+                                              setWaInboxData(prev => prev.map(c => 
+                                                c.name === chat.name ? { ...c, unread: 0 } : c
+                                              ));
+                                            }}
+                                            className={`p-3 border-b border-white/[0.02] flex items-center justify-between cursor-pointer transition-colors ${
+                                              activeWaContact === chat.name ? "bg-white/10 border-l-2 border-green-500" : "hover:bg-white/[0.02]"
+                                            }`}
+                                          >
                                             <div className="flex items-center gap-2 min-w-0">
                                               <div className="w-7 h-7 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-[10px] flex-shrink-0">{chat.initials}</div>
                                               <div className="min-w-0">
@@ -1475,29 +1604,79 @@ export default function DemoSimulator() {
                                     {/* Conversation Window */}
                                     <div className="flex-1 flex flex-col justify-between bg-black/10">
                                       <div className="px-4 py-3 border-b border-white/5 flex items-center gap-2 bg-black/20">
-                                        <div className="w-6 h-6 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-[9px]">SO</div>
+                                        <div className="w-6 h-6 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-[9px]">
+                                          {activeWaContact === "Investor Update" ? "IU" : activeWaContact === "Dev Team" ? "DT" : "SO"}
+                                        </div>
                                         <div>
-                                          <h5 className="font-bold text-[10px] text-white/80">Sarah (Ops)</h5>
+                                          <h5 className="font-bold text-[10px] text-white/80">{activeWaContact}</h5>
                                           <p className="text-[7px] font-mono text-green-400">● SECURE SYNC ACTIVE</p>
                                         </div>
                                       </div>
                                       <div className="flex-1 p-4 overflow-y-auto space-y-3">
-                                        <div className="flex justify-start">
-                                          <div className="bg-white/5 border border-white/5 text-white/80 rounded-2xl rounded-tl-none p-3 max-w-[80%] text-[10px] space-y-1">
-                                            <p>Hi, can you check the calendar for tomorrow? Need to review Q3 numbers.</p>
-                                            <span className="text-[7px] text-white/20 block text-right font-mono">09:15 AM</span>
+                                        {(waMessages[activeWaContact] || []).map((msg, mIdx) => (
+                                          <div key={mIdx} className={`flex ${msg.role === "incoming" ? "justify-start" : "justify-end"}`}>
+                                            <div className={`p-3 max-w-[80%] text-[10px] space-y-1 rounded-2xl ${
+                                              msg.role === "incoming"
+                                                ? "bg-white/5 border border-white/5 text-white/80 rounded-tl-none"
+                                                : "bg-green-600 text-white rounded-tr-none font-semibold"
+                                            }`}>
+                                              <p>{msg.content}</p>
+                                              <span className={`text-[7px] block text-right font-mono ${
+                                                msg.role === "incoming" ? "text-white/20" : "text-white/50"
+                                              }`}>{msg.time}</span>
+                                            </div>
                                           </div>
-                                        </div>
-                                        <div className="flex justify-end">
-                                          <div className="bg-green-600 text-white rounded-2xl rounded-tr-none p-3 max-w-[80%] text-[10px] space-y-1 font-semibold">
-                                            <p>Sure, checking sync logs now. I'll get back to you with a slot.</p>
-                                            <span className="text-[7px] text-white/50 block text-right font-mono">09:17 AM</span>
-                                          </div>
-                                        </div>
+                                        ))}
                                       </div>
                                       <div className="p-2.5 border-t border-white/5 bg-black/20 flex gap-2">
-                                        <input readOnly placeholder="Type WhatsApp response securely..." className="flex-1 bg-white/[0.02] border border-white/10 rounded-xl px-3 py-2 text-[10px] text-white focus:outline-none" />
-                                        <button className="px-3 bg-white text-black rounded-xl text-[9px] font-bold">Send</button>
+                                        <input 
+                                          value={waTypedInput}
+                                          onChange={(e) => setWaTypedInput(e.target.value)}
+                                          onKeyDown={(e) => {
+                                            if (e.key === "Enter" && waTypedInput.trim()) {
+                                              const newMsg = waTypedInput;
+                                              setWaMessages(prev => ({
+                                                ...prev,
+                                                [activeWaContact]: [
+                                                  ...(prev[activeWaContact] || []),
+                                                  { role: "outgoing", content: newMsg, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
+                                                ]
+                                              }));
+                                              setWaInboxData(prev => prev.map(chat => 
+                                                chat.name === activeWaContact 
+                                                  ? { ...chat, lastMsg: newMsg }
+                                                  : chat
+                                              ));
+                                              setWaTypedInput("");
+                                              playChirp();
+                                            }
+                                          }}
+                                          placeholder={`Reply to ${activeWaContact} securely...`} 
+                                          className="flex-1 bg-white/[0.02] border border-white/10 rounded-xl px-3 py-2 text-[10px] text-white focus:outline-none" 
+                                        />
+                                        <button 
+                                          onClick={() => {
+                                            if (!waTypedInput.trim()) return;
+                                            const newMsg = waTypedInput;
+                                            setWaMessages(prev => ({
+                                              ...prev,
+                                              [activeWaContact]: [
+                                                ...(prev[activeWaContact] || []),
+                                                { role: "outgoing", content: newMsg, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
+                                              ]
+                                            }));
+                                            setWaInboxData(prev => prev.map(chat => 
+                                              chat.name === activeWaContact 
+                                                ? { ...chat, lastMsg: newMsg }
+                                                : chat
+                                            ));
+                                            setWaTypedInput("");
+                                            playChirp();
+                                          }}
+                                          className="px-3 bg-white text-black rounded-xl text-[9px] font-bold"
+                                        >
+                                          Send
+                                        </button>
                                       </div>
                                     </div>
                                   </div>

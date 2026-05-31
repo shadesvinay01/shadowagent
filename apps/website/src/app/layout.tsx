@@ -66,9 +66,27 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ShadowAgent",
+    "operatingSystem": "Windows, macOS, Linux",
+    "applicationCategory": "SecurityApplication",
+    "offers": {
+      "@type": "AggregateOffer",
+      "lowPrice": "9",
+      "highPrice": "299",
+      "priceCurrency": "USD"
+    }
+  };
+
   return (
     <html lang="en" className="dark">
       <body className={`${syne.variable} ${manrope.variable} ${orbitron.variable} ${spaceGrotesk.variable} ${syncopate.variable} font-space antialiased bg-[#050508] text-white selection:bg-cyan-500/30 overflow-x-hidden`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         {/* Cinematic Noise Overlay - Disabled on mobile/touch for performance */}
         {typeof window !== "undefined" && window.innerWidth > 1024 && !window.matchMedia("(pointer: coarse)").matches && (
           <div className="fixed inset-0 z-[100] pointer-events-none opacity-[0.03] mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />

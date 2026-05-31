@@ -99,9 +99,18 @@ export async function POST(req: NextRequest) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ type, data }),
         });
-        const result = await response.json();
-        if (result.success && typeof result.queue === "number") {
-          return NextResponse.json({ success: true, queue: result.queue });
+        const responseText = await response.text();
+        console.log("[notify] Webhook raw response status:", response.status);
+        
+        try {
+          const result = JSON.parse(responseText);
+          if (result.success && typeof result.queue === "number") {
+            return NextResponse.json({ success: true, queue: result.queue });
+          } else {
+            console.error("[notify] Webhook returned unsuccessful JSON:", result);
+          }
+        } catch (jsonErr) {
+          console.error("[notify] Webhook response was not valid JSON. First 200 chars:", responseText.substring(0, 200), jsonErr);
         }
       } catch (scriptErr) {
         console.error("[notify] Google Script webhook failed, falling back to local:", scriptErr);

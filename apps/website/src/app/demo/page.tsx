@@ -265,12 +265,105 @@ export default function DemoSimulator() {
   const [ragLogs, setRagLogs] = useState<string[]>([]);
   const [ragSuccess, setRagSuccess] = useState(false);
   
-  const [chatMessages, setChatMessages] = useState<any[]>([]);
+  const [chatMessages, setChatMessages] = useState<any[]>([
+    { role: "bot", content: "Neural core online. Local tool nodes connected. How can I assist you today? You can ask me to search documents in your Memory Bank, list emails, scan WhatsApp messages, or check calendar conflicts." }
+  ]);
   const [chatInput, setChatInput] = useState("");
   const [chatTyping, setChatTyping] = useState(false);
   const [chatToolActive, setChatToolActive] = useState<string | null>(null);
   
   const [hubActionStatus, setHubActionStatus] = useState<"pending" | "approving" | "approved">("pending");
+
+  const handleManualChatSend = () => {
+    if (!chatInput.trim() || chatTyping) return;
+    const prompt = chatInput;
+    setChatMessages(prev => [...prev, { role: "user", content: prompt }]);
+    setChatInput("");
+    setChatTyping(true);
+    playChirp();
+
+    const lowerPrompt = prompt.toLowerCase();
+    let responseText = "";
+    let toolOrder: string[] = [];
+    let logSteps: string[] = [];
+
+    if (lowerPrompt.includes("email") || lowerPrompt.includes("mail") || lowerPrompt.includes("inbox") || lowerPrompt.includes("sarah")) {
+      toolOrder = ["Email Intelligence", "Local Database"];
+      responseText = "Local sync complete. Found 1 unread email from Sarah (Ops) regarding the 'Q3 Project Review Meeting' tomorrow. I have scanned conflict states inside integrations/calendar.ics (0 conflicts found) and queued an approval block inside your Neural Hub.";
+      logSteps = [
+        "Intent classification: Secure Workspace Sync",
+        "TOOL CALL: email.list_inbox(unread=true)",
+        "RET Result: 1 unread email from Sarah (Ops) (ID: eml_892)",
+        "TOOL CALL: calendar.check_conflicts(start=\"2026-06-01T14:00\", end=\"2026-06-01T15:00\")",
+        "RET Result: 0 conflicts found in calendar.ics",
+        "PLANNER Queued booking card inside Neural Hub.",
+        "Completed locally in 3.10s. Zero cloud sync leakage."
+      ];
+    } else if (lowerPrompt.includes("whatsapp") || lowerPrompt.includes("message") || lowerPrompt.includes("chat") || lowerPrompt.includes("investor")) {
+      toolOrder = ["WhatsApp Node", "Local Database"];
+      responseText = "Local sync complete. Found 2 unread WhatsApp messages from 'Investor Update' asking: 'When can we see the live demo?'. I have parsed the query and drafted a reply suggestion: 'Hi, the live demo is ready for review' inside your Neural Hub.";
+      logSteps = [
+        "Intent classification: Communication Thread Scan",
+        "TOOL CALL: whatsapp.get_chats(unread=true)",
+        "RET Result: 1 unread chat from Investor Update (2 unread msgs)",
+        "PLANNER Drafting responses using local Llama-3-Groq-Tool-Use...",
+        "TOOL CALL: neural_hub.queue_draft(chat_id=\"wa_401\", reply=\"Hi, the live demo is ready for review.\")",
+        "Completed locally in 2.85s. 100% offline encryption."
+      ];
+    } else if (lowerPrompt.includes("calendar") || lowerPrompt.includes("schedule") || lowerPrompt.includes("meeting") || lowerPrompt.includes("ics")) {
+      toolOrder = ["Calendar Integration", "Local Database"];
+      responseText = "Reading your local calendar.ics node. I found that Tuesday, June 1st is clear between 1:00 PM and 4:00 PM. Existing meetings include Daily Standup (9:30 AM) and Weekly Sync (11:00 AM). There are no conflicts for Sarah's proposed Q3 Review at 2:00 PM.";
+      logSteps = [
+        "Intent classification: Schedule Sync Query",
+        "TOOL CALL: calendar.read_file(target=\"integrations/calendar.ics\")",
+        "RET Result: Local iCalendar parsing successful",
+        "TOOL CALL: calendar.check_conflicts(start=\"14:00\", end=\"15:00\")",
+        "RET Result: No conflicts detected on Tuesday.",
+        "Completed locally in 1.45s."
+      ];
+    } else if (lowerPrompt.includes("rag") || lowerPrompt.includes("document") || lowerPrompt.includes("projections") || lowerPrompt.includes("pdf") || lowerPrompt.includes("bank")) {
+      toolOrder = ["Memory Bank RAG", "Ollama Embeddings"];
+      responseText = "Searching local Memory Bank SQLite. Found matching context inside 'Q3_Financial_Projections.pdf':\n\n- 'Q3 vector projections match users locally under 15ms using nomic-embed-text.'\n- 'Cosine similarity metric: 0.88'.\n\nNo remote API requests were made.";
+      logSteps = [
+        "Intent classification: Vector RAG Retrieval",
+        "TOOL CALL: rag.query_vector_store(text=\"projections\", limit=2)",
+        "RET Result: Matching chunk inside Q3_Financial_Projections.pdf",
+        "PLANNER Generating answer based on local knowledge nodes...",
+        "Completed locally in 2.12s via Ollama (Llama 3)."
+      ];
+    } else {
+      toolOrder = ["Ollama LLM Core", "Local Intelligence"];
+      responseText = "Command parsed. I am running the automation locally on your air-gapped node. I have scanned workspace logs and refreshed your local memory bank index. All files remain strictly inside your sovereign boundaries.";
+      logSteps = [
+        "Intent classification: General Command Analysis",
+        "TOOL CALL: ollama.process_local(prompt)",
+        "RET Result: Output verified by Secure Enclave",
+        "Completed locally in 1.95s."
+      ];
+    }
+
+    let currentToolIndex = 0;
+    const runToolCycle = () => {
+      if (currentToolIndex < toolOrder.length) {
+        setChatToolActive(toolOrder[currentToolIndex]);
+        playToolHum();
+        currentToolIndex++;
+        setTimeout(runToolCycle, 1000);
+      } else {
+        setChatTyping(false);
+        setChatToolActive(null);
+        setChatMessages(prev => [...prev, {
+          role: "bot",
+          content: responseText,
+          showLogs: true,
+          manualLogs: logSteps
+        }]);
+        playSuccessChirp();
+      }
+    };
+
+    setTimeout(runToolCycle, 600);
+  };
 
   // Sync activeView to step timeline when playing
   useEffect(() => {
@@ -1264,16 +1357,36 @@ export default function DemoSimulator() {
                                     <span className="text-cyan-400">Offline Secure Enclave</span>
                                   </div>
                                   <div className="p-3 space-y-1.5 text-white/60">
-                                    <div>[10:14:02] <span className="text-purple-400 font-bold">INFO</span> Intent classification: Consolidated Task Retrieval</div>
-                                    <div>[10:14:02] <span className="text-cyan-400 font-bold">TOOL</span> CALL: <span className="text-yellow-400 font-bold">email.list_inbox(unread=true)</span></div>
-                                    <div>[10:14:03] <span className="text-green-400 font-bold">RET</span> Result: 1 unread email from <span className="text-cyan-300 font-bold">Sarah (Ops)</span> (ID: eml_892)</div>
-                                    <div>[10:14:03] <span className="text-cyan-400 font-bold">TOOL</span> CALL: <span className="text-yellow-400 font-bold">whatsapp.get_chats(unread=true)</span></div>
-                                    <div>[10:14:04] <span className="text-green-400 font-bold">RET</span> Result: 1 unread message from <span className="text-cyan-300 font-bold">Investor Update</span> (ID: wa_401)</div>
-                                    <div>[10:14:04] <span className="text-purple-400 font-bold">ANALYZER</span> Reading email contents... Request for "Review meeting tomorrow at 2:00 PM"</div>
-                                    <div>[10:14:05] <span className="text-cyan-400 font-bold">TOOL</span> CALL: <span className="text-yellow-400 font-bold">calendar.check_conflicts(start="2026-06-01T14:00", end="2026-06-01T15:00")</span></div>
-                                    <div>[10:14:05] <span className="text-green-400 font-bold">RET</span> Result: 0 conflicts found in calendar.ics</div>
-                                    <div>[10:14:06] <span className="text-purple-400 font-bold">PLANNER</span> Recommendations generated. Queuing Action Cards inside Autonomous Hub.</div>
-                                    <div>[10:14:06] <span className="text-green-400 font-bold">STATUS</span> Completed locally in 4.12s. Zero data transmitted to cloud.</div>
+                                    {msg.manualLogs ? (
+                                      msg.manualLogs.map((log: string, lIdx: number) => {
+                                        const timestamp = `[10:14:${10 + lIdx}]`;
+                                        if (log.includes("INFO")) {
+                                          return <div key={lIdx}>{timestamp} <span className="text-purple-400 font-bold">INFO</span> {log.replace("INFO", "")}</div>;
+                                        } else if (log.includes("TOOL CALL")) {
+                                          return <div key={lIdx}>{timestamp} <span className="text-cyan-400 font-bold">TOOL</span> CALL: <span className="text-yellow-400 font-bold">{log.replace("TOOL CALL:", "")}</span></div>;
+                                        } else if (log.includes("RET Result")) {
+                                          return <div key={lIdx}>{timestamp} <span className="text-green-400 font-bold">RET</span> Result: <span className="text-white/80">{log.replace("RET Result:", "")}</span></div>;
+                                        } else if (log.includes("PLANNER")) {
+                                          return <div key={lIdx}>{timestamp} <span className="text-purple-400 font-bold">PLANNER</span> {log.replace("PLANNER", "")}</div>;
+                                        } else if (log.includes("STATUS") || log.includes("Completed")) {
+                                          return <div key={lIdx}>{timestamp} <span className="text-green-400 font-bold">STATUS</span> {log}</div>;
+                                        }
+                                        return <div key={lIdx}>{timestamp} {log}</div>;
+                                      })
+                                    ) : (
+                                      <>
+                                        <div>[10:14:02] <span className="text-purple-400 font-bold">INFO</span> Intent classification: Consolidated Task Retrieval</div>
+                                        <div>[10:14:02] <span className="text-cyan-400 font-bold">TOOL</span> CALL: <span className="text-yellow-400 font-bold">email.list_inbox(unread=true)</span></div>
+                                        <div>[10:14:03] <span className="text-green-400 font-bold">RET</span> Result: 1 unread email from <span className="text-cyan-300 font-bold">Sarah (Ops)</span> (ID: eml_892)</div>
+                                        <div>[10:14:03] <span className="text-cyan-400 font-bold">TOOL</span> CALL: <span className="text-yellow-400 font-bold">whatsapp.get_chats(unread=true)</span></div>
+                                        <div>[10:14:04] <span className="text-green-400 font-bold">RET</span> Result: 1 unread message from <span className="text-cyan-300 font-bold">Investor Update</span> (ID: wa_401)</div>
+                                        <div>[10:14:04] <span className="text-purple-400 font-bold">ANALYZER</span> Reading email contents... Request for "Review meeting tomorrow at 2:00 PM"</div>
+                                        <div>[10:14:05] <span className="text-cyan-400 font-bold">TOOL</span> CALL: <span className="text-yellow-400 font-bold">calendar.check_conflicts(start="2026-06-01T14:00", end="2026-06-01T15:00")</span></div>
+                                        <div>[10:14:05] <span className="text-green-400 font-bold">RET</span> Result: 0 conflicts found in calendar.ics</div>
+                                        <div>[10:14:06] <span className="text-purple-400 font-bold">PLANNER</span> Recommendations generated. Queuing Action Cards inside Neural Hub.</div>
+                                        <div>[10:14:06] <span className="text-green-400 font-bold">STATUS</span> Completed locally in 4.12s. Zero data transmitted to cloud.</div>
+                                      </>
+                                    )}
                                   </div>
                                 </motion.div>
                               )}
@@ -1305,11 +1418,21 @@ export default function DemoSimulator() {
                       <div className="p-2 border-t border-white/5">
                         <div className="relative">
                           <input 
-                            readOnly value={chatInput}
-                            placeholder="Ask ShadowAgent to automate something..."
+                            value={chatInput}
+                            onChange={(e) => setChatInput(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                handleManualChatSend();
+                              }
+                            }}
+                            readOnly={chatTyping || (isPlaying && currentStep === 4)}
+                            placeholder={chatTyping ? "ShadowAgent is thinking..." : "Ask ShadowAgent to automate something..."}
                             className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3.5 pr-12 text-xs text-white placeholder-white/10 focus:outline-none"
                           />
-                          <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg bg-white text-black">
+                          <button 
+                            onClick={handleManualChatSend}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg bg-white text-black hover:bg-white/90 transition-colors"
+                          >
                             <Send className="w-3.5 h-3.5" />
                           </button>
                         </div>

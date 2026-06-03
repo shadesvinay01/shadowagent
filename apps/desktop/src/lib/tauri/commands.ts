@@ -7,6 +7,13 @@ export interface LicenseResponse {
   error?: string;
 }
 
+// FIX: typed hardware info instead of `any`
+export interface HardwareInfo {
+  acceleration: string;
+  cores: number;
+  arch: string;
+}
+
 export async function validateLicense(email: string, licenseKey: string): Promise<LicenseResponse> {
   return await invoke("validate_license", { email, licenseKey });
 }
@@ -31,7 +38,7 @@ export async function getWhatsappMessages(): Promise<any[]> {
   return await invoke("get_whatsapp_messages");
 }
 
-export async function getHardwareInfo(): Promise<any> {
+export async function getHardwareInfo(): Promise<HardwareInfo> {
   return await invoke("get_hardware_info");
 }
 

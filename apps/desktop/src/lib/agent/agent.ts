@@ -10,12 +10,12 @@ export class ShadowAgent {
   constructor() {
     const model = new ChatOllama({
       baseUrl: "http://localhost:11434",
-      model: "llama3-groq-tool-use", // Or llama3.1
+      model: "llama3-groq-tool-use",
       temperature: 0.1,
     });
 
     this.checkpointSaver = new MemorySaver();
-    
+
     this.agent = createReactAgent({
       llm: model,
       tools,
@@ -25,7 +25,7 @@ export class ShadowAgent {
 
   async ask(input: string, threadId: string = "default") {
     const config = { configurable: { thread_id: threadId } };
-    
+
     const stream = await this.agent.stream(
       { messages: [{ role: "user", content: input }] },
       config
@@ -41,7 +41,6 @@ export class ShadowAgent {
           finalResponse = lastMsg.content;
         }
       } else if (chunk.tools) {
-        // Collect tool executions for UI feedback
         toolCalls.push(chunk.tools);
       }
     }
@@ -50,5 +49,21 @@ export class ShadowAgent {
   }
 }
 
-// Singleton instance
-export const shadowAgent = new ShadowAgent();
+// FIX: Lazy singleton — only instantiated on first use, not at import time.
+// This prevents a crash when Ollama is offline at app startup.
+let _agent: ShadowAgent | null = null;
+
+export function getShadowAgent(): ShadowAgent {
+  if (!_agent) _agent = new ShadowAgent();
+  return _agent;
+}
+
+// Reset the singleton (e.g. after Ollama comes online)
+export function resetShadowAgent(): void {
+  _agent = null;
+}
+
+// Keep legacy named export for backward compat but make it lazy too
+export const shadowAgent = {
+  ask: (input: string, threadId?: string) => getShadowAgent().ask(input, threadId),
+};

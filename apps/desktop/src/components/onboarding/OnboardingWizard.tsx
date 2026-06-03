@@ -62,7 +62,13 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
       }
 
       if (currentStep === 5) {
-        if (!email || !licenseKey) throw new Error("Email and License Key are required.");
+        // FIX: allow skipping license in dev/offline mode by leaving both fields blank
+        if (!email && !licenseKey) {
+          localStorage.setItem("shadow_license_token", "DEV-MODE-SKIP");
+          onComplete();
+          return;
+        }
+        if (!email || !licenseKey) throw new Error("Enter both your email and license key, or leave both blank to continue in dev mode.");
         const res = await validateLicense(email, licenseKey);
         if (!res.success) throw new Error(res.error || "License validation failed.");
         localStorage.setItem("shadow_license_token", res.token || "");
@@ -222,6 +228,10 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                              className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-5 text-xl font-bold tracking-widest text-center text-white focus:border-cyan-500/40 focus:outline-none transition-all placeholder:text-white/5 uppercase"
                           />
                        </div>
+                       {/* FIX: dev mode hint */}
+                       <p className="text-[10px] text-white/20 text-center tracking-widest uppercase">
+                         Leave both fields empty to enter dev mode
+                       </p>
                     </div>
                   )}
 

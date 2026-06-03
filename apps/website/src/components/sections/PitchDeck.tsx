@@ -384,9 +384,7 @@ export default function PitchDeck() {
 
         {currentSlide === slides.length - 1 ? (
           <a 
-            href="/pricing.html" 
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/#pricing" 
             className="group flex items-center gap-3 px-8 py-3 rounded-full border border-cyan-500/50 hover:bg-cyan-500/10 transition-all text-[10px] font-bold text-cyan-400 uppercase tracking-widest"
           >
             GTM Slides

@@ -26,8 +26,18 @@ export async function getSecureCredential(service: string, key: string): Promise
   return await invoke("get_secure_credential", { service, key });
 }
 
-export async function checkOllamaStatus(): Promise<boolean> {
+export interface OllamaStatus {
+  running: boolean;
+  has_llm: boolean;
+  has_embedding: boolean;
+}
+
+export async function checkOllamaStatus(): Promise<OllamaStatus> {
   return await invoke("check_ollama_status");
+}
+
+export async function pullOllamaModel(model: string): Promise<void> {
+  return await invoke("pull_ollama_model", { model });
 }
 
 export async function startWhatsappSession(): Promise<string> {

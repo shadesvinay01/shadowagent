@@ -18,52 +18,47 @@ struct Claims {
 
 #[tauri::command]
 async fn validate_license(email: String, license_key: String) -> Result<LicenseResponse, String> {
-    // Development Master Key Bypass
-    if license_key == "SHADOW-INVESTOR-2026" {
-        return Ok(LicenseResponse {
-            success: true,
-            token: Some("MASTER_TOKEN".to_string()),
-            expires_at: Some(2147483647), // Year 2038
-            error: None,
-        });
-    }
+    // Read JWT_SECRET from environment variables, falling back to mock secret for local test
+    let jwt_secret = std::env::var("JWT_SECRET").unwrap_or_else(|_| "SHADOW_SERVER_SECRET_2026".to_string());
 
-    // Production Logic: Split the license key into Payload and Signature
-    let parts: Vec<&str> = license_key.split('.').collect();
-    if parts.len() != 2 {
-        return Ok(LicenseResponse {
-            success: false,
-            token: None,
-            expires_at: None,
-            error: Some("Invalid license format".to_string()),
-        });
-    }
-
-    let payload_b64 = parts[0];
-    // In a real production build, you would verify parts[1] (signature) 
-    // against your embedded Public Key here.
+    // Validate the JWT signature and expiration
+    let mut validation = jsonwebtoken::Validation::new(jsonwebtoken::Algorithm::HS256);
+    // Since we are validating local licenses, we can optionally relax some validations if needed,
+    // but by default validation verifies exp.
     
-    use base64::Engine;
-    let payload_bytes = base64::prelude::BASE64_STANDARD
-        .decode(payload_b64)
-        .map_err(|e| e.to_string())?;
-    
-    let claims: Claims = serde_json::from_slice(&payload_bytes).map_err(|e| e.to_string())?;
+    let token_data = jsonwebtoken::decode::<Claims>(
+        &license_key,
+        &jsonwebtoken::DecodingKey::from_secret(jwt_secret.as_bytes()),
+        &validation,
+    );
 
-    if claims.sub == email {
-        Ok(LicenseResponse {
-            success: true,
-            token: Some(license_key),
-            expires_at: Some(claims.exp as u64),
-            error: None,
-        })
-    } else {
-        Ok(LicenseResponse {
-            success: false,
-            token: None,
-            expires_at: None,
-            error: Some("License email mismatch".to_string()),
-        })
+    match token_data {
+        Ok(data) => {
+            let claims = data.claims;
+            if claims.sub == email {
+                Ok(LicenseResponse {
+                    success: true,
+                    token: Some(license_key),
+                    expires_at: Some(claims.exp as u64),
+                    error: None,
+                })
+            } else {
+                Ok(LicenseResponse {
+                    success: false,
+                    token: None,
+                    expires_at: None,
+                    error: Some("License email mismatch".to_string()),
+                })
+            }
+        }
+        Err(err) => {
+            Ok(LicenseResponse {
+                success: false,
+                token: None,
+                expires_at: None,
+                error: Some(format!("Invalid license token: {}", err)),
+            })
+        }
     }
 }
 
@@ -75,12 +70,8 @@ async fn start_whatsapp_session(app_handle: tauri::AppHandle) -> Result<String, 
     // Ensure session directory exists
     std::fs::create_dir_all(&session_path).map_err(|e| e.to_string())?;
 
-    // Create a mock messages.json for the UI to read
-    let mock_data = serde_json::json!([
-        { "contact": "Investor Update", "last_msg": "The pitch deck looks incredible. When can we see the live demo?", "time": "10:42 AM" },
-        { "contact": "Dev Team", "last_msg": "Local RAG is now 2x faster with the new indexing logic.", "time": "09:15 AM" },
-        { "contact": "Sarah (Ops)", "last_msg": "Can you check the calendar for the Q3 review?", "time": "Yesterday" }
-    ]);
+    // Create an empty messages.json for the UI to read
+    let mock_data = serde_json::json([]);
     
     let messages_path = session_path.join("messages.json");
     std::fs::write(messages_path, serde_json::to_string_pretty(&mock_data).unwrap()).map_err(|e| e.to_string())?;
@@ -110,12 +101,70 @@ fn get_secure_credential(service: String, key: String) -> Result<String, String>
     entry.get_password().map_err(|e| e.to_string())
 }
 
+#[derive(Serialize, Deserialize)]
+struct OllamaStatus {
+    running: bool,
+    has_llm: bool,
+    has_embedding: bool,
+}
+
+#[derive(Deserialize)]
+struct OllamaTagResponse {
+    models: Vec<OllamaModel>,
+}
+
+#[derive(Deserialize)]
+struct OllamaModel {
+    name: String,
+}
+
 #[tauri::command]
-async fn check_ollama_status() -> Result<bool, String> {
-    // Simple check if Ollama is running on default port 11434
+async fn check_ollama_status() -> Result<OllamaStatus, String> {
     let client = reqwest::Client::new();
     let res = client.get("http://localhost:11434/api/tags").send().await;
-    Ok(res.is_ok())
+
+    match res {
+        Ok(response) => {
+            if let Ok(tags) = response.json::<OllamaTagResponse>().await {
+                let has_llm = tags.models.iter().any(|m| m.name.starts_with("llama3-groq-tool-use"));
+                let has_embedding = tags.models.iter().any(|m| m.name.starts_with("nomic-embed-text"));
+                Ok(OllamaStatus {
+                    running: true,
+                    has_llm,
+                    has_embedding,
+                })
+            } else {
+                Ok(OllamaStatus {
+                    running: true,
+                    has_llm: false,
+                    has_embedding: false,
+                })
+            }
+        }
+        Err(_) => {
+            Ok(OllamaStatus {
+                running: false,
+                has_llm: false,
+                has_embedding: false,
+            })
+        }
+    }
+}
+
+#[tauri::command]
+async fn pull_ollama_model(model: String) -> Result<(), String> {
+    let client = reqwest::Client::new();
+    let res = client.post("http://localhost:11434/api/pull")
+        .json(&serde_json::json!({ "name": model, "stream": false }))
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    if res.status().is_success() {
+        Ok(())
+    } else {
+        Err(format!("Failed to pull model: {}", res.status()))
+    }
 }
 
 #[tauri::command]
@@ -150,8 +199,52 @@ async fn register_shadow_node(node_id: String, manifest: serde_json::Value) -> R
 }
 
 #[tauri::command]
-async fn read_local_file(path: String) -> Result<String, String> {
-    std::fs::read_to_string(path).map_err(|e| e.to_string())
+async fn read_local_file(path: String, app_handle: tauri::AppHandle) -> Result<String, String> {
+    let target_path = std::path::Path::new(&path);
+    
+    // Resolve absolute path to prevent directory traversal
+    let canonical_path = match target_path.canonicalize() {
+        Ok(p) => p,
+        Err(_) => target_path.to_path_buf(),
+    };
+    
+    // List of allowed base directories
+    let mut allowed = false;
+    
+    if let Ok(app_dir) = app_handle.path().app_data_dir() {
+        if let Ok(canon_app) = app_dir.canonicalize() {
+            if canonical_path.starts_with(&canon_app) { allowed = true; }
+        } else if canonical_path.starts_with(&app_dir) {
+            allowed = true;
+        }
+    }
+    if let Ok(doc_dir) = app_handle.path().document_dir() {
+        if let Ok(canon_doc) = doc_dir.canonicalize() {
+            if canonical_path.starts_with(&canon_doc) { allowed = true; }
+        } else if canonical_path.starts_with(&doc_dir) {
+            allowed = true;
+        }
+    }
+    if let Ok(download_dir) = app_handle.path().download_dir() {
+        if let Ok(canon_download) = download_dir.canonicalize() {
+            if canonical_path.starts_with(&canon_download) { allowed = true; }
+        } else if canonical_path.starts_with(&download_dir) {
+            allowed = true;
+        }
+    }
+    if let Ok(cwd) = std::env::current_dir() {
+        if let Ok(canon_cwd) = cwd.canonicalize() {
+            if canonical_path.starts_with(&canon_cwd) { allowed = true; }
+        } else if canonical_path.starts_with(&cwd) {
+            allowed = true;
+        }
+    }
+
+    if !allowed {
+        return Err("Security Error: Path is outside the allowed directories.".to_string());
+    }
+
+    std::fs::read_to_string(canonical_path).map_err(|e| e.to_string())
 }
 
 #[tauri::command]
@@ -172,6 +265,7 @@ pub fn run() {
             store_secure_credential,
             get_secure_credential,
             check_ollama_status,
+            pull_ollama_model,
             start_whatsapp_session,
             get_whatsapp_messages,
             get_hardware_info,

@@ -128,12 +128,12 @@ app.get('/whatsapp/messages', async (req, res) => {
 
 // --- EMAIL SETUP ---
 app.get('/email/inbox', async (req, res) => {
-    const user = process.env.IMAP_USER;
-    const password = process.env.IMAP_PASS;
-    const host = process.env.IMAP_HOST;
+    const user = req.headers['x-imap-user'] as string || process.env.IMAP_USER;
+    const password = req.headers['x-imap-pass'] as string || process.env.IMAP_PASS;
+    const host = req.headers['x-imap-host'] as string || process.env.IMAP_HOST;
 
     if (!user || !password || !host) {
-        return res.status(400).json({ error: 'Email credentials not provided in .env' });
+        return res.status(400).json({ error: 'Email credentials not provided in OS Keychain or .env' });
     }
 
     const config = {
@@ -174,9 +174,14 @@ app.get('/email/inbox', async (req, res) => {
 
 // --- CALENDAR SETUP ---
 app.get('/calendar/events', (req, res) => {
-    const calendarPath = path.join(__dirname, 'calendar.ics');
+    let calendarPath = path.join(__dirname, 'calendar.ics');
     if (!fs.existsSync(calendarPath)) {
-        return res.status(400).json({ error: 'calendar.ics not found in integrations folder' });
+        const examplePath = path.join(__dirname, 'calendar.ics.example');
+        if (fs.existsSync(examplePath)) {
+            calendarPath = examplePath;
+        } else {
+            return res.status(400).json({ error: 'calendar.ics or calendar.ics.example not found in integrations folder' });
+        }
     }
 
     try {
@@ -208,12 +213,12 @@ app.get('/calendar/events', (req, res) => {
 // --- SMTP EMAIL SENDING ---
 app.post('/email/send', async (req, res) => {
     const { to, subject, body } = req.body;
-    const user = process.env.IMAP_USER;
-    const password = process.env.IMAP_PASS;
-    const host = process.env.IMAP_HOST;
+    const user = req.headers['x-imap-user'] as string || process.env.IMAP_USER;
+    const password = req.headers['x-imap-pass'] as string || process.env.IMAP_PASS;
+    const host = req.headers['x-imap-host'] as string || process.env.IMAP_HOST;
 
     if (!user || !password || !host) {
-        return res.status(400).json({ error: 'Email credentials not provided in .env' });
+        return res.status(400).json({ error: 'Email credentials not provided in OS Keychain or .env' });
     }
 
     try {

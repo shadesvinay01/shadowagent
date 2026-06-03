@@ -8,7 +8,7 @@ import {
   RefreshCcw, AlertCircle, Terminal,
   CheckCircle, XCircle, Download, ExternalLink
 } from "lucide-react";
-import { validateLicense, checkOllamaStatus, startWhatsappSession } from "../../lib/tauri/commands";
+import { validateLicense, checkOllamaStatus, startWhatsappSession, pullOllamaModel } from "../../lib/tauri/commands";
 
 interface Step {
   id: number;
@@ -25,7 +25,7 @@ const steps: Step[] = [
   { id: 5, title: "Final Activation", description: "Enter your Sovereign access key.", icon: <Key className="w-12 h-12" /> }
 ];
 
-type OllamaState = "checking" | "found" | "not_found";
+type OllamaState = "checking" | "found" | "missing_models" | "not_found";
 
 export default function OnboardingWizard({ onComplete }: { onComplete: () => void }) {
   const [currentStep, setCurrentStep] = useState(1);
@@ -33,23 +33,56 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
   const [email, setEmail] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [ollamaState, setOllamaState] = useState<OllamaState>("checking");
+  const [ollamaStatus, setOllamaStatus] = useState({ running: false, has_llm: false, has_embedding: false });
+  const [pullingModel, setPullingModel] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   // Check Ollama whenever we land on step 2
   useEffect(() => {
     if (currentStep === 2) {
-      setOllamaState("checking");
-      checkOllamaStatus()
-        .then((ready) => setOllamaState(ready ? "found" : "not_found"))
-        .catch(() => setOllamaState("not_found"));
+      retryOllamaCheck();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep]);
 
   const retryOllamaCheck = () => {
     setOllamaState("checking");
     checkOllamaStatus()
-      .then((ready) => setOllamaState(ready ? "found" : "not_found"))
-      .catch(() => setOllamaState("not_found"));
+      .then((status) => {
+        setOllamaStatus(status);
+        if (!status.running) {
+          setOllamaState("not_found");
+        } else if (!status.has_llm || !status.has_embedding) {
+          setOllamaState("missing_models");
+        } else {
+          setOllamaState("found");
+        }
+      })
+      .catch(() => {
+        setOllamaState("not_found");
+      });
+  };
+
+  const handlePullModels = async () => {
+    setIsProcessing(true);
+    setError(null);
+    try {
+      if (!ollamaStatus.has_llm) {
+        setPullingModel("llama3-groq-tool-use (LLM Engine)");
+        await pullOllamaModel("llama3-groq-tool-use");
+      }
+      if (!ollamaStatus.has_embedding) {
+        setPullingModel("nomic-embed-text (Embedding Engine)");
+        await pullOllamaModel("nomic-embed-text");
+      }
+      setPullingModel(null);
+      retryOllamaCheck();
+    } catch (e: any) {
+      setError("Failed to pull models: " + e.message);
+      setPullingModel(null);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handleNext = async () => {
@@ -165,6 +198,63 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                         </div>
                       )}
 
+                      {/* Missing Models */}
+                      {ollamaState === "missing_models" && (
+                        <div className="flex flex-col items-center gap-5">
+                          <AlertCircle className="w-10 h-10 text-orange-400" />
+                          <div>
+                            <p className="text-sm font-bold uppercase tracking-widest text-orange-400 mb-1">
+                              Missing Required Models
+                            </p>
+                            <p className="text-xs text-white/30 leading-relaxed">
+                              Ollama is running, but you need the following models downloaded:
+                            </p>
+                            <div className="flex flex-col gap-2 mt-4 text-left text-xs font-mono text-white/60">
+                              <div className="flex items-center gap-2">
+                                <span className={ollamaStatus.has_llm ? "text-green-400" : "text-orange-400"}>
+                                  {ollamaStatus.has_llm ? "✓" : "✗"}
+                                </span>
+                                <span>llama3-groq-tool-use (LLM engine)</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className={ollamaStatus.has_embedding ? "text-green-400" : "text-orange-400"}>
+                                  {ollamaStatus.has_embedding ? "✓" : "✗"}
+                                </span>
+                                <span>nomic-embed-text (Embedding engine)</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {pullingModel ? (
+                            <div className="flex flex-col items-center gap-3 w-full max-w-xs">
+                              <Activity className="w-6 h-6 text-cyan-400 animate-spin" />
+                              <p className="text-[10px] text-white/40 uppercase tracking-widest text-center">
+                                Pulling: {pullingModel}...
+                              </p>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={handlePullModels}
+                              disabled={isProcessing}
+                              className="flex items-center gap-2 px-6 py-3 bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 rounded-2xl text-sm font-bold hover:bg-cyan-500/30 transition-all disabled:opacity-50"
+                            >
+                              <Download className="w-4 h-4" />
+                              Download Models (Auto-Pull)
+                            </button>
+                          )}
+
+                          {/* Retry Button */}
+                          <button
+                            onClick={retryOllamaCheck}
+                            disabled={isProcessing}
+                            className="flex items-center gap-2 px-6 py-3 border border-white/10 text-white/40 rounded-2xl text-xs font-bold hover:text-white hover:border-white/30 transition-all disabled:opacity-50"
+                          >
+                            <RefreshCcw className="w-3 h-3" />
+                            Retry Detection
+                          </button>
+                        </div>
+                      )}
+
                       {/* Not Found */}
                       {ollamaState === "not_found" && (
                         <div className="flex flex-col items-center gap-5">
@@ -260,7 +350,7 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                   >
                      {isProcessing ? <RefreshCcw className="w-6 h-6 animate-spin" /> : (
                        <>
-                         {currentStep === 5 ? "Finalize Core" : currentStep === 2 && ollamaState === "not_found" ? "Skip for Now" : "Continue"}
+                         {currentStep === 5 ? "Finalize Core" : currentStep === 2 && (ollamaState === "not_found" || ollamaState === "missing_models") ? "Skip for Now" : "Continue"}
                          <ArrowRight className="w-6 h-6" />
                        </>
                      )}

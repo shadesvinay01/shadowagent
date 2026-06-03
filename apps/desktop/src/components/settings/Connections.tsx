@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 import { MessageSquare, Mail, Calendar, Hash, Shield, CheckCircle2, Circle } from "lucide-react";
 
 const tools = [
-  { id: "whatsapp", name: "WhatsApp", icon: MessageSquare, description: "Send & receive messages locally", connected: true },
-  { id: "email", name: "Email (IMAP/SMTP)", icon: Mail, description: "Automate your inbox", connected: false },
-  { id: "calendar", name: "Google/Outlook Calendar", icon: Calendar, description: "Manage your schedule", connected: false },
-  { id: "x", name: "X / Twitter", icon: Hash, description: "Automate social posts", connected: false },
+  { id: "whatsapp", name: "WhatsApp", icon: MessageSquare, description: "Send & receive messages securely via local integrations server", connected: true },
+  { id: "email", name: "Email (IMAP/SMTP)", icon: Mail, description: "Automate your inbox securely via local integrations server", connected: false },
+  { id: "calendar", name: "Google/Outlook Calendar", icon: Calendar, description: "Manage your schedule securely via local integrations server", connected: false },
+  { id: "x", name: "X / Twitter", icon: Hash, description: "Automate social posts", connected: false, comingSoon: true },
 ];
 
 export default function Connections() {
@@ -27,19 +27,23 @@ export default function Connections() {
         {connections.map((tool) => (
           <motion.div
             key={tool.id}
-            whileHover={{ scale: 1.02 }}
-            className={`p-6 rounded-3xl border transition-all cursor-pointer ${
-              tool.connected 
-              ? "bg-primary/5 border-primary/20" 
-              : "bg-white/5 border-white/10 opacity-60 grayscale"
+            whileHover={tool.comingSoon ? {} : { scale: 1.02 }}
+            className={`p-6 rounded-3xl border transition-all ${
+              tool.comingSoon
+                ? "bg-white/[0.02] border-white/5 opacity-40 cursor-not-allowed"
+                : tool.connected 
+                  ? "bg-primary/5 border-primary/20 cursor-pointer" 
+                  : "bg-white/5 border-white/10 opacity-60 grayscale cursor-pointer"
             }`}
-            onClick={() => toggleConnection(tool.id)}
+            onClick={() => !tool.comingSoon && toggleConnection(tool.id)}
           >
             <div className="flex justify-between items-start mb-4">
-              <div className={`p-3 rounded-2xl ${tool.connected ? "bg-primary/10" : "bg-white/5"}`}>
-                <tool.icon className={`w-6 h-6 ${tool.connected ? "text-primary" : "text-white/40"}`} />
+              <div className={`p-3 rounded-2xl ${tool.connected && !tool.comingSoon ? "bg-primary/10" : "bg-white/5"}`}>
+                <tool.icon className={`w-6 h-6 ${tool.connected && !tool.comingSoon ? "text-primary" : "text-white/40"}`} />
               </div>
-              {tool.connected ? (
+              {tool.comingSoon ? (
+                <span className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[8px] font-black uppercase tracking-wider text-white/40">Coming Soon</span>
+              ) : tool.connected ? (
                 <CheckCircle2 className="w-5 h-5 text-primary" />
               ) : (
                 <Circle className="w-5 h-5 text-white/20" />
@@ -48,7 +52,7 @@ export default function Connections() {
             <h3 className="text-lg font-syne font-bold mb-1">{tool.name}</h3>
             <p className="text-xs text-white/40 font-manrope leading-relaxed">{tool.description}</p>
             
-            {tool.connected && (
+            {tool.connected && !tool.comingSoon && (
               <div className="mt-4 pt-4 border-t border-primary/10 flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                 <span className="text-[10px] font-mono text-primary/60 uppercase tracking-widest">Local Session Active</span>

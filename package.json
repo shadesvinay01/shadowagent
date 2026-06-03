@@ -7,6 +7,7 @@
   "scripts": {
     "dev:website": "npm run dev -w website",
     "dev:desktop": "npm run tauri dev -w desktop",
+    "dev:integrations": "npx ts-node apps/integrations/index.ts",
     "build:website": "npm run build -w website",
     "build:desktop": "npm run tauri build -w desktop"
   }

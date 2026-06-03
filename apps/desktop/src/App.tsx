@@ -7,7 +7,7 @@ import OnboardingWizard from "./components/onboarding/OnboardingWizard";
 import SettingsPage from "./components/settings/SettingsPage";
 import AutonomousHub from "./components/automation/AutonomousHub";
 // FIX: removed unused `getWhatsappMessages` import
-import { checkOllamaStatus, getHardwareInfo, HardwareInfo } from "./lib/tauri/commands";
+import { checkOllamaStatus, getHardwareInfo, HardwareInfo, getSecureCredential, storeSecureCredential } from "./lib/tauri/commands";
 import { shadowAgent } from "./lib/agent/agent";
 import {
   MessageSquare, LayoutGrid, History, Library, Settings,
@@ -53,6 +53,13 @@ export default function App() {
   const [calendarConnected, setCalendarConnected] = useState(false);
   const [isConnectingCalendar, setIsConnectingCalendar] = useState(false);
 
+  // SECURE EMAIL SETTINGS
+  const [emailUser, setEmailUser] = useState("");
+  const [emailPass, setEmailPass] = useState("");
+  const [emailHost, setEmailHost] = useState("");
+  const [emailConfigured, setEmailConfigured] = useState(false);
+  const [showEmailConfig, setShowEmailConfig] = useState(false);
+
   // FIX: global search state
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<string[]>([]);
@@ -62,7 +69,7 @@ export default function App() {
     if (isComplete) setShowOnboarding(false);
 
     const checkStatus = () => {
-      checkOllamaStatus().then(setOllamaRunning).catch(() => setOllamaRunning(false));
+      checkOllamaStatus().then((status) => setOllamaRunning(status.running && status.has_llm && status.has_embedding)).catch(() => setOllamaRunning(false));
       getHardwareInfo().then(setHardwareInfo).catch(console.error);
     };
 
@@ -102,7 +109,7 @@ export default function App() {
     waTimeoutRef.current = setTimeout(() => {
       if (!waConnected) {
         setWaServerError(
-          "Integration server not responding at localhost:3005. Run: node apps/backend/src/index.js"
+          "Integration server not responding at localhost:3005. Please run: npm run dev:integrations"
         );
       }
     }, 15000);
@@ -112,6 +119,28 @@ export default function App() {
       if (waTimeoutRef.current) clearTimeout(waTimeoutRef.current);
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTool]);
+
+  // Load email credentials status from Keychain
+  useEffect(() => {
+    if (selectedTool === "Email Agent") {
+      const checkCredentials = async () => {
+        try {
+          const user = await getSecureCredential("shadowagent_email", "imap_user");
+          const host = await getSecureCredential("shadowagent_email", "imap_host");
+          if (user && host) {
+            setEmailUser(user);
+            setEmailHost(host);
+            setEmailConfigured(true);
+          } else {
+            setEmailConfigured(false);
+          }
+        } catch {
+          setEmailConfigured(false);
+        }
+      };
+      checkCredentials();
+    }
   }, [selectedTool]);
 
   const handleOnboardingComplete = () => {
@@ -160,13 +189,46 @@ export default function App() {
     }
   };
 
+  const handleSaveEmailCredentials = async () => {
+    if (!emailUser || !emailPass || !emailHost) {
+      alert("Please fill in all fields.");
+      return;
+    }
+    try {
+      await storeSecureCredential("shadowagent_email", "imap_user", emailUser);
+      await storeSecureCredential("shadowagent_email", "imap_pass", emailPass);
+      await storeSecureCredential("shadowagent_email", "imap_host", emailHost);
+      setEmailConfigured(true);
+      setShowEmailConfig(false);
+      alert("Credentials stored securely in OS Keychain.");
+    } catch (e: any) {
+      alert("Failed to store credentials in Keychain: " + e.message);
+    }
+  };
+
   const handleGenerateEmail = async () => {
     setIsGeneratingEmail(true);
     try {
-      const res = await fetch("http://localhost:3005/email/inbox");
+      let user = "";
+      let pass = "";
+      let host = "";
+      try {
+        user = await getSecureCredential("shadowagent_email", "imap_user");
+        pass = await getSecureCredential("shadowagent_email", "imap_pass");
+        host = await getSecureCredential("shadowagent_email", "imap_host");
+      } catch (err) {
+        console.warn("Keychain credentials missing, falling back to server environment.");
+      }
+
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (user) headers["x-imap-user"] = user;
+      if (pass) headers["x-imap-pass"] = pass;
+      if (host) headers["x-imap-host"] = host;
+
+      const res = await fetch("http://localhost:3005/email/inbox", { headers });
       const data = await res.json();
       if (data.error) {
-        setEmailSummary(`Error: ${data.error}.\nPlease configure .env in the integrations folder with IMAP_USER, IMAP_PASS, and IMAP_HOST.`);
+        setEmailSummary(`Error: ${data.error}.\nPlease configure email credentials in your Keychain or check .env file.`);
       } else if (data.emails) {
         const subjects = data.emails.map((e: any, i: number) => `${i + 1}. ${e.subject}`).join("\n");
         setEmailSummary(`You have ${data.emails.length} new emails:\n${subjects}`);
@@ -363,22 +425,86 @@ export default function App() {
                       <div className="w-16 h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500 border border-blue-500/20"><Mail className="w-8 h-8" /></div>
                       <h2 className="text-4xl font-extrabold uppercase">Email Intelligence</h2>
                     </div>
-                    <div className="glass-panel rounded-3xl p-10 flex flex-col items-center justify-center text-center space-y-8">
-                      <Zap className={`w-12 h-12 text-blue-400 ${isGeneratingEmail ? "animate-spin" : "animate-pulse"}`} />
-                      <div className="space-y-2">
-                        <h4 className="text-xl font-bold">Local Inbox Analysis</h4>
-                        <p className="text-sm text-white/30 max-w-sm">ShadowAgent is scanning your unread emails to generate autonomous summaries.</p>
-                      </div>
-                      {emailSummary ? (
-                        <div className="p-6 bg-blue-500/10 border border-blue-500/20 rounded-xl text-left w-full max-w-md">
-                          <p className="text-sm text-blue-100 whitespace-pre-line leading-relaxed">{emailSummary}</p>
+
+                    {!emailConfigured || showEmailConfig ? (
+                      <div className="glass-panel rounded-3xl p-10 max-w-lg mx-auto space-y-6">
+                        <h3 className="text-xl font-bold">Configure Email Node</h3>
+                        <p className="text-xs text-white/40 leading-relaxed">
+                          Your credentials are saved directly to your OS Keychain (Windows Credential Manager / macOS Keychain). They never leave your device.
+                        </p>
+                        <div className="space-y-4">
+                          <div>
+                            <label className="text-[10px] font-black text-white/40 uppercase tracking-widest block mb-2 text-left">IMAP Server (Host)</label>
+                            <input
+                              type="text"
+                              value={emailHost}
+                              onChange={(e) => setEmailHost(e.target.value)}
+                              placeholder="imap.gmail.com"
+                              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-cyan-500/50 focus:outline-none"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-[10px] font-black text-white/40 uppercase tracking-widest block mb-2 text-left">IMAP Username (Email)</label>
+                            <input
+                              type="email"
+                              value={emailUser}
+                              onChange={(e) => setEmailUser(e.target.value)}
+                              placeholder="user@gmail.com"
+                              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-cyan-500/50 focus:outline-none"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-[10px] font-black text-white/40 uppercase tracking-widest block mb-2 text-left">Password / App Password</label>
+                            <input
+                              type="password"
+                              value={emailPass}
+                              onChange={(e) => setEmailPass(e.target.value)}
+                              placeholder="••••••••••••••••"
+                              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-cyan-500/50 focus:outline-none"
+                            />
+                          </div>
                         </div>
-                      ) : (
-                        <button onClick={handleGenerateEmail} disabled={isGeneratingEmail} className="btn-primary bg-blue-600 text-white shadow-blue-500/20 disabled:opacity-50">
-                          {isGeneratingEmail ? "Analyzing..." : "Generate Summary"}
+                        <div className="flex gap-4 pt-4">
+                          {emailConfigured && (
+                            <button
+                              onClick={() => setShowEmailConfig(false)}
+                              className="px-6 py-3 border border-white/10 text-xs font-black uppercase tracking-widest rounded-xl hover:bg-white/5 text-white"
+                            >
+                              Cancel
+                            </button>
+                          )}
+                          <button
+                            onClick={handleSaveEmailCredentials}
+                            className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-xs font-black uppercase tracking-widest rounded-xl text-white"
+                          >
+                            Save securely
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="glass-panel rounded-3xl p-10 flex flex-col items-center justify-center text-center space-y-8">
+                        <Zap className={`w-12 h-12 text-blue-400 ${isGeneratingEmail ? "animate-spin" : "animate-pulse"}`} />
+                        <div className="space-y-2">
+                          <h4 className="text-xl font-bold">Local Inbox Analysis</h4>
+                          <p className="text-sm text-white/30 max-w-sm">ShadowAgent is scanning your inbox ({emailUser}) to generate autonomous summaries.</p>
+                        </div>
+                        {emailSummary ? (
+                          <div className="p-6 bg-blue-500/10 border border-blue-500/20 rounded-xl text-left w-full max-w-md">
+                            <p className="text-sm text-blue-100 whitespace-pre-line leading-relaxed">{emailSummary}</p>
+                          </div>
+                        ) : (
+                          <button onClick={handleGenerateEmail} disabled={isGeneratingEmail} className="btn-primary bg-blue-600 text-white shadow-blue-500/20 disabled:opacity-50">
+                            {isGeneratingEmail ? "Analyzing..." : "Generate Summary"}
+                          </button>
+                        )}
+                        <button
+                          onClick={() => { setEmailPass(""); setShowEmailConfig(true); }}
+                          className="text-[10px] text-white/40 hover:text-white underline tracking-wider uppercase font-black pt-4 block"
+                        >
+                          Modify Credentials
                         </button>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </div>
                 )}
 

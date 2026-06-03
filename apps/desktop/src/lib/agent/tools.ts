@@ -3,6 +3,7 @@ import { z } from "zod";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { OllamaEmbeddings } from "@langchain/ollama";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { getSecureCredential } from "../tauri/commands";
 
 // --- PERSISTENT MEMORY & RAG ---
 let vectorStore: MemoryVectorStore | null = null;
@@ -99,18 +100,34 @@ export const whatsappTool = tool(
 export const emailTool = tool(
   async ({ recipient, subject, body, action = "send" }: { recipient?: string, subject?: string, body?: string, action?: "send" | "read" }) => {
     try {
+      let user = "";
+      let pass = "";
+      let host = "";
+      try {
+        user = await getSecureCredential("shadowagent_email", "imap_user");
+        pass = await getSecureCredential("shadowagent_email", "imap_pass");
+        host = await getSecureCredential("shadowagent_email", "imap_host");
+      } catch (err) {
+        console.warn("Keychain credentials missing, falling back to server environment.");
+      }
+
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (user) headers["x-imap-user"] = user;
+      if (pass) headers["x-imap-pass"] = pass;
+      if (host) headers["x-imap-host"] = host;
+
       if (action === "send") {
         if (!recipient || !subject || !body) return "ERROR: recipient, subject, and body are required for sending email";
         const res = await fetch("http://localhost:3005/email/send", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers,
           body: JSON.stringify({ to: recipient, subject, body })
         });
         const data = await res.json();
         if (data.error) return `ERROR: Email failed - ${data.error}`;
         return `SUCCESS: Email sent to ${recipient}. Message ID: ${data.messageId}`;
       } else {
-        const res = await fetch("http://localhost:3005/email/inbox");
+        const res = await fetch("http://localhost:3005/email/inbox", { headers });
         const data = await res.json();
         if (data.error) return `ERROR: Email failed - ${data.error}`;
         return `SUCCESS: Fetched unread emails - ${JSON.stringify(data.emails)}`;

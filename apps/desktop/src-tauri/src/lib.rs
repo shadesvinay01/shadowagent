@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 use keyring::Entry;
 use tauri::Manager;
+use tauri_plugin_shell::ShellExt;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LicenseResponse {
@@ -260,6 +261,21 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_store::Builder::default().build())
+        .setup(|app| {
+            let shell = app.shell();
+            if let Ok(sidecar) = shell.sidecar("shadowagent-integrations-server") {
+                tauri::async_runtime::spawn(async move {
+                    if let Ok((mut rx, _child)) = sidecar.spawn() {
+                        while let Some(event) = rx.recv().await {
+                            if let tauri_plugin_shell::process::CommandEvent::Stdout(line) = event {
+                                println!("Sidecar: {}", String::from_utf8_lossy(&line));
+                            }
+                        }
+                    }
+                });
+            }
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             validate_license,
             store_secure_credential,

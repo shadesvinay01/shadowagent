@@ -49,10 +49,46 @@ let mockChats = [
     }
 ];
 
+function getChromePath(): string | undefined {
+    if (process.platform === 'win32') {
+        const paths = [
+            'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+            'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+            'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
+            'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+        ];
+        for (const p of paths) {
+            if (fs.existsSync(p)) return p;
+        }
+    } else if (process.platform === 'darwin') {
+        const paths = [
+            '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+            '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge',
+        ];
+        for (const p of paths) {
+            if (fs.existsSync(p)) return p;
+        }
+    } else {
+        const paths = [
+            '/usr/bin/google-chrome',
+            '/usr/bin/microsoft-edge',
+            '/usr/bin/chromium',
+            '/usr/bin/chromium-browser'
+        ];
+        for (const p of paths) {
+            if (fs.existsSync(p)) return p;
+        }
+    }
+    return undefined;
+}
+
+const chromePath = getChromePath();
+
 const waClient = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: {
         headless: true,
+        executablePath: chromePath,
         args: ['--no-sandbox', '--disable-setuid-sandbox']
     }
 });

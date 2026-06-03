@@ -8,7 +8,8 @@
     "dev:website": "npm run dev -w website",
     "dev:desktop": "npm run tauri dev -w desktop",
     "dev:integrations": "npx ts-node apps/integrations/index.ts",
+    "build:sidecar": "npx esbuild apps/integrations/index.ts --bundle --platform=node --outfile=apps/integrations/dist/index.js && npx pkg apps/integrations/dist/index.js --targets node18-win-x64 --output apps/desktop/src-tauri/binaries/shadowagent-integrations-server-x86_64-pc-windows-msvc.exe",
     "build:website": "npm run build -w website",
-    "build:desktop": "npm run tauri build -w desktop"
+    "build:desktop": "npm run build:sidecar && npm run tauri build -w desktop"
   }
 }

@@ -44,7 +44,21 @@ export default function Footer() {
       </div>
 
       <div className="container mx-auto px-6 mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/30 font-manrope uppercase tracking-widest">
-        <p>© 2026 ShadowAgent. All rights reserved locally.</p>
+        <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
+          <p>© 2026 ShadowAgent. All rights reserved locally.</p>
+          <span className="hidden md:inline text-white/10">|</span>
+          <p>
+            Powered by{" "}
+            <a 
+              href="https://optivra.in" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-white hover:underline transition-colors"
+            >
+              Optivra.in
+            </a>
+          </p>
+        </div>
         <div className="flex gap-6">
           <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
           <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
